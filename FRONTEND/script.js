@@ -1,4 +1,5 @@
 "use strict";
+const API_URL = "https://bloodlink-x2h7.onrender.com/api";
 
 console.log("BloodLink script loaded");
 
