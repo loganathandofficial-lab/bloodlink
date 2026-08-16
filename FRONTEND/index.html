@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BloodLink | Blood Donor System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <div class="logo">
+        🩸 BloodLink
+    </div>
+
+    <div class="online-status">
+        <span></span>
+        SYSTEM ONLINE
+    </div>
+
+</header>
+
+
+
+<!-- ================= NAVIGATION ================= -->
+
+<nav class="navbar">
+
+    <button class="menu-btn active"
+            data-page="home">
+        🏠 Home
+    </button>
+
+    <button class="menu-btn"
+            data-page="search">
+        🔎 Search Donors
+    </button>
+
+    <button class="menu-btn"
+            data-page="register">
+        🩸 Donor Register
+    </button>
+
+    <button class="menu-btn"
+            data-page="compatibility">
+        🩸 Blood Compatibility
+    </button>
+
+    <button class="menu-btn"
+            data-page="eligibility">
+        🧮 Donation Eligibility
+    </button>
+
+    <button class="menu-btn"
+            data-page="location">
+        📍 Population & Location
+    </button>
+
+</nav>
+
+
+
+<main class="container">
+
+
+<!-- ================================================= -->
+<!-- HOME -->
+<!-- ================================================= -->
+
+<section id="home" class="page active">
+
+    <div class="hero">
+
+        <div class="hero-icon">
+            🩸
+        </div>
+
+        <h1>
+            BloodLink
+        </h1>
+
+        <h2>
+            Blood Donor Management System
+        </h2>
+
+        <p>
+            Find blood donors, register as a donor,
+            check blood compatibility and explore
+            locations worldwide.
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <button class="primary-btn"
+                    id="goSearch">
+
+                🔎 Search Donors
+
+            </button>
+
+
+            <button class="secondary-btn"
+                    id="goRegister">
+
+                🩸 Register as Donor
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="stats">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🩸
+            </div>
+
+            <div>
+
+                <h3 id="donorCount">
+                    3
+                </h3>
+
+                <p>
+                    Registered Donors
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🩺
+            </div>
+
+            <div>
+
+                <h3>
+                    8
+                </h3>
+
+                <p>
+                    Blood Groups
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🌍
+            </div>
+
+            <div>
+
+                <h3>
+                    Worldwide
+                </h3>
+
+                <p>
+                    Location Search
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- SEARCH DONORS -->
+<!-- ================================================= -->
+
+<section id="search" class="page">
+
+    <div class="section-heading">
+
+        <h1>
+            🔎 Search Blood Donors
+        </h1>
+
+        <p>
+            Find donors using blood group and location.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+                <label>
+                    Blood Group
+                </label>
+
+                <select id="searchBlood">
+
+                    <option value="">
+                        All Blood Groups
+                    </option>
+
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    City / District
+                </label>
+
+                <input
+                    id="searchCity"
+                    type="text"
+                    placeholder="Example: Chennai">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="button-row">
+
+            <button
+                class="primary-btn"
+                id="searchButton">
+
+                🔎 Search Donors
+
+            </button>
+
+
+            <button
+                class="clear-btn"
+                id="clearButton">
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <div id="searchMessage"
+         class="message">
+    </div>
+
+
+
+    <div id="donorResults">
+
+        <div class="empty-box">
+
+            🩸
+
+            <h3>
+                Search for Blood Donors
+            </h3>
+
+            <p>
+                Select a blood group or enter a city.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- DONOR REGISTER -->
+<!-- ================================================= -->
+
+<section id="register" class="page">
+
+    <div class="section-heading">
+
+        <h1>
+            🩸 Donor Registration
+        </h1>
+
+        <p>
+            Register yourself as a blood donor.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+                <label>
+                    Full Name
+                </label>
+
+                <input
+                    id="donorName"
+                    type="text"
+                    placeholder="Enter full name">
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Age
+                </label>
+
+                <input
+                    id="donorAge"
+                    type="number"
+                    min="18"
+                    max="65"
+                    placeholder="18 - 65">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+                <label>
+                    Blood Group
+                </label>
+
+                <select id="donorBlood">
+
+                    <option value="">
+                        Select Blood Group
+                    </option>
+
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    City / District
+                </label>
+
+                <input
+                    id="donorCity"
+                    type="text"
+                    placeholder="Example: Chennai">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+                Mobile Number
+            </label>
+
+            <input
+                id="donorPhone"
+                type="tel"
+                placeholder="Example: 9876543210">
+
+        </div>
+
+
+
+        <button
+            class="primary-btn full-width"
+            id="registerButton">
+
+            🩸 Register Donor
+
+        </button>
+
+
+
+        <div id="registerMessage"
+             class="message">
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- BLOOD COMPATIBILITY -->
+<!-- ================================================= -->
+
+<section id="compatibility" class="page">
+
+    <div class="section-heading">
+
+        <h1>
+            🩸 Blood Group Compatibility
+        </h1>
+
+        <p>
+            Check blood donation compatibility.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+
+        <div class="form-group">
+
+            <label>
+                Select Blood Group
+            </label>
+
+            <select id="compatibilityBlood">
+
+                <option value="">
+                    Select Blood Group
+                </option>
+
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+
+            </select>
+
+        </div>
+
+
+        <div id="compatibilityResult"
+             class="compatibility-result">
+
+            Select a blood group to see compatibility.
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- ELIGIBILITY -->
+<!-- ================================================= -->
+
+<section id="eligibility" class="page">
+
+    <div class="section-heading">
+
+        <h1>
+            🧮 Blood Donation Eligibility
+        </h1>
+
+        <p>
+            Basic eligibility checker.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+
+        <div class="form-group">
+
+            <label>
+                Age
+            </label>
+
+            <input
+                id="eligibilityAge"
+                type="number"
+                placeholder="Enter your age">
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+                Last Donation Date
+            </label>
+
+            <input
+                id="lastDonation"
+                type="date">
+
+        </div>
+
+
+
+        <button
+            class="primary-btn full-width"
+            id="eligibilityButton">
+
+            🧮 Check Eligibility
+
+        </button>
+
+
+
+        <div id="eligibilityResult"
+             class="eligibility-result">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- LOCATION -->
+<!-- ================================================= -->
+
+<section id="location" class="page">
+
+    <div class="section-heading">
+
+        <h1>
+            📍 Population & Location
+        </h1>
+
+        <p>
+            Search worldwide cities, districts and countries.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+
+        <div class="location-search">
+
+            <input
+                id="locationInput"
+                type="text"
+                placeholder="Example: Chennai">
+
+            <button
+                class="primary-btn"
+                id="locationButton">
+
+                🌍 Search Location
+
+            </button>
+
+        </div>
+
+
+        <div id="locationMessage"
+             class="message">
+        </div>
+
+
+        <div id="locationResult">
+
+            <div class="empty-box">
+
+                🌍
+
+                <h3>
+                    Worldwide Location Search
+                </h3>
+
+                <p>
+                    Enter a city or country above.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- ================================================= -->
+<!-- FOOTER -->
+<!-- ================================================= -->
+
+<footer>
+
+    <h2>
+        🩸 BloodLink
+    </h2>
+
+    <p>
+        Blood Donor Management System
+    </p>
+
+    <p>
+        © 2026 BloodLink
+    </p>
+
+</footer>
+
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
