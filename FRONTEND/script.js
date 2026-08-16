@@ -1,166 +1,101 @@
 "use strict";
+
 const API_URL = "https://bloodlink-x2h7.onrender.com/api";
 
-console.log("BloodLink script loaded");
-
-const API_URL = "http://localhost:3000/api";
-
+console.log("BloodLink frontend loaded");
 
 // =====================================================
-// WAIT FOR PAGE
+// PAGE LOAD
 // =====================================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
     console.log("BloodLink DOM loaded");
 
-    // =================================================
     // MENU
-    // =================================================
-
-    const menuButtons =
-        document.querySelectorAll(".menu-btn");
-
-    menuButtons.forEach(function (button) {
+    document.querySelectorAll(".menu-btn").forEach(function (button) {
 
         button.addEventListener("click", function () {
 
-            const page =
-                button.getAttribute("data-page");
+            const page = button.getAttribute("data-page");
 
             showPage(page);
         });
     });
 
-
-    // =================================================
     // HOME BUTTONS
-    // =================================================
-
-    const goSearch =
-        document.getElementById("goSearch");
+    const goSearch = document.getElementById("goSearch");
 
     if (goSearch) {
-
         goSearch.addEventListener("click", function () {
-
             showPage("search");
         });
     }
 
-
-    const goRegister =
-        document.getElementById("goRegister");
+    const goRegister = document.getElementById("goRegister");
 
     if (goRegister) {
-
         goRegister.addEventListener("click", function () {
-
             showPage("register");
         });
     }
 
-
-    // =================================================
     // SEARCH
-    // =================================================
-
-    const searchButton =
-        document.getElementById("searchButton");
+    const searchButton = document.getElementById("searchButton");
 
     if (searchButton) {
-
-        searchButton.addEventListener(
-            "click",
-            searchDonors
-        );
+        searchButton.addEventListener("click", searchDonors);
     }
 
-
-    const clearButton =
-        document.getElementById("clearButton");
+    const clearButton = document.getElementById("clearButton");
 
     if (clearButton) {
-
-        clearButton.addEventListener(
-            "click",
-            clearSearch
-        );
+        clearButton.addEventListener("click", clearSearch);
     }
 
-
-    // =================================================
     // REGISTER
-    // =================================================
-
     const registerButton =
         document.getElementById("registerButton");
 
     if (registerButton) {
-
-        registerButton.addEventListener(
-            "click",
-            registerDonor
-        );
+        registerButton.addEventListener("click", registerDonor);
     }
 
-
-    // =================================================
     // COMPATIBILITY
-    // =================================================
-
     const compatibilityBlood =
-        document.getElementById(
-            "compatibilityBlood"
-        );
+        document.getElementById("compatibilityBlood");
 
     if (compatibilityBlood) {
-
         compatibilityBlood.addEventListener(
             "change",
             showCompatibility
         );
     }
 
-
-    // =================================================
     // ELIGIBILITY
-    // =================================================
-
     const eligibilityButton =
-        document.getElementById(
-            "eligibilityButton"
-        );
+        document.getElementById("eligibilityButton");
 
     if (eligibilityButton) {
-
         eligibilityButton.addEventListener(
             "click",
             checkEligibility
         );
     }
 
-
-    // =================================================
     // LOCATION
-    // =================================================
-
     const locationButton =
-        document.getElementById(
-            "locationButton"
-        );
+        document.getElementById("locationButton");
 
     if (locationButton) {
-
         locationButton.addEventListener(
             "click",
             searchLocation
         );
     }
 
-
-    // Load database count
-    updateDonorCount();
+    // LOAD REAL DONOR COUNT
+    loadDonorCount();
 });
 
 
@@ -170,42 +105,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function showPage(pageId) {
 
-    console.log("Opening:", pageId);
-
-    const pages =
-        document.querySelectorAll(".page");
+    const pages = document.querySelectorAll(".page");
 
     pages.forEach(function (page) {
-
         page.classList.remove("active");
     });
-
 
     const selectedPage =
         document.getElementById(pageId);
 
     if (!selectedPage) {
-
-        console.error(
-            "Page not found:",
-            pageId
-        );
-
+        console.error("Page not found:", pageId);
         return;
     }
 
-
     selectedPage.classList.add("active");
-
 
     const buttons =
         document.querySelectorAll(".menu-btn");
 
     buttons.forEach(function (button) {
-
         button.classList.remove("active");
     });
-
 
     const activeButton =
         document.querySelector(
@@ -215,10 +136,8 @@ function showPage(pageId) {
         );
 
     if (activeButton) {
-
         activeButton.classList.add("active");
     }
-
 
     window.scrollTo({
         top: 0,
@@ -228,26 +147,25 @@ function showPage(pageId) {
 
 
 // =====================================================
-// DONOR COUNT FROM DATABASE
+// LOAD DONOR COUNT FROM DATABASE
 // =====================================================
 
-async function updateDonorCount() {
+async function loadDonorCount() {
 
     const element =
         document.getElementById("donorCount");
 
-    if (!element) return;
+    if (!element) {
+        return;
+    }
 
     try {
 
         const response =
-            await fetch(`${API_URL}/donors`);
+            await fetch(API_URL + "/donors");
 
         if (!response.ok) {
-
-            throw new Error(
-                "Unable to load donors"
-            );
+            throw new Error("Failed to load donors");
         }
 
         const donors =
@@ -275,47 +193,35 @@ async function updateDonorCount() {
 async function registerDonor() {
 
     const name =
-        document.getElementById(
-            "donorName"
-        ).value.trim();
-
+        document.getElementById("donorName")
+            .value
+            .trim();
 
     const age =
         Number(
-            document.getElementById(
-                "donorAge"
-            ).value
+            document.getElementById("donorAge")
+                .value
         );
-
 
     const blood =
-        document.getElementById(
-            "donorBlood"
-        ).value;
-
+        document.getElementById("donorBlood")
+            .value;
 
     const city =
-        document.getElementById(
-            "donorCity"
-        ).value.trim();
-
+        document.getElementById("donorCity")
+            .value
+            .trim();
 
     const phone =
-        document.getElementById(
-            "donorPhone"
-        ).value.trim();
-
+        document.getElementById("donorPhone")
+            .value
+            .trim();
 
     const message =
-        document.getElementById(
-            "registerMessage"
-        );
+        document.getElementById("registerMessage");
 
 
-    // =================================================
     // VALIDATION
-    // =================================================
-
     if (
         !name ||
         !age ||
@@ -334,10 +240,7 @@ async function registerDonor() {
     }
 
 
-    if (
-        age < 18 ||
-        age > 65
-    ) {
+    if (age < 18 || age > 65) {
 
         message.textContent =
             "⚠️ Age must be between 18 and 65.";
@@ -349,7 +252,11 @@ async function registerDonor() {
     }
 
 
-    if (!/^[0-9+\-\s]{7,15}$/.test(phone)) {
+    // PHONE VALIDATION
+    const phonePattern =
+        /^[0-9+()\-\s]{7,20}$/;
+
+    if (!phonePattern.test(phone)) {
 
         message.textContent =
             "⚠️ Enter a valid mobile number.";
@@ -372,7 +279,7 @@ async function registerDonor() {
 
         const response =
             await fetch(
-                `${API_URL}/donors`,
+                API_URL + "/donors",
                 {
                     method: "POST",
 
@@ -385,16 +292,19 @@ async function registerDonor() {
 
                         name: name,
 
-                        age: age,
-
                         bloodGroup: blood,
 
                         phone: phone,
 
                         city: city,
 
-                        country: "India"
+                        state: "",
 
+                        country: "",
+
+                        latitude: null,
+
+                        longitude: null
                     })
                 }
             );
@@ -420,36 +330,30 @@ async function registerDonor() {
             "#16803d";
 
 
-        // Clear fields
-
+        // CLEAR FORM
         document.getElementById(
             "donorName"
         ).value = "";
-
 
         document.getElementById(
             "donorAge"
         ).value = "";
 
-
         document.getElementById(
             "donorBlood"
         ).value = "";
 
-
         document.getElementById(
             "donorCity"
         ).value = "";
-
 
         document.getElementById(
             "donorPhone"
         ).value = "";
 
 
-        // Update count
-
-        updateDonorCount();
+        // UPDATE COUNT
+        loadDonorCount();
 
 
     } catch (error) {
@@ -459,9 +363,8 @@ async function registerDonor() {
             error
         );
 
-
         message.textContent =
-            "❌ Unable to register donor. Make sure the backend is running.";
+            "❌ Unable to register donor. Check backend connection.";
 
         message.style.color =
             "#b91c2c";
@@ -470,7 +373,7 @@ async function registerDonor() {
 
 
 // =====================================================
-// SEARCH DONORS FROM DATABASE
+// SEARCH DONORS
 // =====================================================
 
 async function searchDonors() {
@@ -480,18 +383,17 @@ async function searchDonors() {
             "searchBlood"
         ).value;
 
-
     const city =
         document.getElementById(
             "searchCity"
-        ).value.trim();
+        ).value
+        .trim();
 
 
     const results =
         document.getElementById(
             "donorResults"
         );
-
 
     const message =
         document.getElementById(
@@ -500,14 +402,14 @@ async function searchDonors() {
 
 
     message.textContent =
-        "🔎 Searching...";
+        "🔎 Searching donors...";
 
 
     results.innerHTML = `
 
         <div class="empty-box">
 
-            🔎 Searching donors...
+            🔎 Searching...
 
         </div>
 
@@ -538,10 +440,14 @@ async function searchDonors() {
         }
 
 
+        const url =
+            API_URL +
+            "/donors/search?" +
+            params.toString();
+
+
         const response =
-            await fetch(
-                `${API_URL}/donors/search?${params.toString()}`
-            );
+            await fetch(url);
 
 
         if (!response.ok) {
@@ -631,19 +537,10 @@ async function searchDonors() {
 
                 <p>
 
-                    👤 Age:
-                    ${escapeHTML(
-                        donor.age
-                    )}
-
-                </p>
-
-
-                <p>
-
                     📍 City:
+
                     ${escapeHTML(
-                        donor.city
+                        donor.city || "Unknown"
                     )}
 
                 </p>
@@ -678,6 +575,7 @@ async function searchDonors() {
 
 
             results.appendChild(card);
+
         });
 
 
@@ -700,12 +598,11 @@ async function searchDonors() {
                 ❌
 
                 <h3>
-                    Backend Connection Error
+                    Server Connection Error
                 </h3>
 
                 <p>
-                    Make sure your Node.js backend
-                    is running on port 3000.
+                    Please make sure the backend is online.
                 </p>
 
             </div>
@@ -779,6 +676,7 @@ const bloodCompatibility = {
         ]
     },
 
+
     "A-": {
 
         receive: [
@@ -793,6 +691,7 @@ const bloodCompatibility = {
             "AB-"
         ]
     },
+
 
     "B+": {
 
@@ -809,6 +708,7 @@ const bloodCompatibility = {
         ]
     },
 
+
     "B-": {
 
         receive: [
@@ -823,6 +723,7 @@ const bloodCompatibility = {
             "AB-"
         ]
     },
+
 
     "AB+": {
 
@@ -842,6 +743,7 @@ const bloodCompatibility = {
         ]
     },
 
+
     "AB-": {
 
         receive: [
@@ -857,6 +759,7 @@ const bloodCompatibility = {
         ]
     },
 
+
     "O+": {
 
         receive: [
@@ -871,6 +774,7 @@ const bloodCompatibility = {
             "AB+"
         ]
     },
+
 
     "O-": {
 
@@ -926,11 +830,14 @@ function showCompatibility() {
     result.innerHTML = `
 
         <h3>
+
             ${blood} Blood Group
+
         </h3>
 
 
         <div class="compatibility-grid">
+
 
             <div class="compatibility-box">
 
@@ -939,7 +846,9 @@ function showCompatibility() {
                 </strong>
 
                 <p>
+
                     ${data.receive.join(", ")}
+
                 </p>
 
             </div>
@@ -952,10 +861,13 @@ function showCompatibility() {
                 </strong>
 
                 <p>
+
                     ${data.donate.join(", ")}
+
                 </p>
 
             </div>
+
 
         </div>
 
@@ -998,10 +910,7 @@ function checkEligibility() {
     }
 
 
-    if (
-        age < 18 ||
-        age > 65
-    ) {
+    if (age < 18 || age > 65) {
 
         result.innerHTML =
             "❌ Basic age range not satisfied.";
@@ -1258,16 +1167,20 @@ async function searchLocation() {
             <div class="location-card">
 
                 <h2>
+
                     📍
                     ${escapeHTML(
                         place.name
                     )}
+
                 </h2>
 
 
                 <p>
+
                     ${escapeHTML(region)},
                     ${escapeHTML(country)}
+
                 </p>
 
 
@@ -1275,7 +1188,9 @@ async function searchLocation() {
 
 
                 <h3>
+
                     👥 Population
+
                 </h3>
 
 
@@ -1287,6 +1202,7 @@ async function searchLocation() {
 
 
                 <div class="compatibility-grid">
+
 
                     <div class="compatibility-box">
 
@@ -1339,6 +1255,7 @@ async function searchLocation() {
 
                     </div>
 
+
                 </div>
 
 
@@ -1360,9 +1277,8 @@ async function searchLocation() {
         message.textContent =
             "✅ Location found.";
 
-    }
 
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "Location error:",
@@ -1404,28 +1320,13 @@ function escapeHTML(value) {
 
     return String(value)
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+        .replace(/&/g, "&amp;")
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+        .replace(/</g, "&lt;")
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+        .replace(/>/g, "&gt;")
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+        .replace(/"/g, "&quot;")
 
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/'/g, "&#039;");
 }
