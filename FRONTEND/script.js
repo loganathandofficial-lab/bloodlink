@@ -5,491 +5,304 @@
 // =========================================================
 
 const API_URL = "https://bloodlink-x2h7.onrender.com/api";
-
 const LOGGED_IN_USER_KEY = "bloodlink_logged_in_user";
-
 
 // =========================================================
 // HELPER FUNCTIONS
 // =========================================================
 
 function saveLoggedInUser(user) {
-
     localStorage.setItem(
         LOGGED_IN_USER_KEY,
         JSON.stringify(user)
     );
-
 }
 
-
 function getLoggedInUser() {
-
-    const user =
-        localStorage.getItem(
-            LOGGED_IN_USER_KEY
-        );
+    const user = localStorage.getItem(
+        LOGGED_IN_USER_KEY
+    );
 
     if (!user) {
         return null;
     }
 
     try {
-
         return JSON.parse(user);
-
     } catch (error) {
-
-        console.error(
-            "Login session error:",
-            error
-        );
-
+        console.error("Login session error:", error);
         return null;
     }
-
 }
 
-
 function showMessage(element, message, color) {
-
     if (!element) {
         return;
     }
 
     element.textContent = message;
     element.style.color = color;
-
 }
-
 
 // =========================================================
 // SIGNUP
 // =========================================================
 
-const signupButton =
-    document.getElementById(
-        "signupButton"
-    );
-
+const signupButton = document.getElementById("signupButton");
 
 if (signupButton) {
+    signupButton.addEventListener("click", async function () {
 
-    signupButton.addEventListener(
-        "click",
-        async function () {
+        const name = document
+            .getElementById("signupName")
+            .value
+            .trim();
 
-            const name =
-                document
-                    .getElementById(
-                        "signupName"
-                    )
-                    .value
-                    .trim();
+        const email = document
+            .getElementById("signupEmail")
+            .value
+            .trim();
 
+        const password = document
+            .getElementById("signupPassword")
+            .value;
 
-            const email =
-                document
-                    .getElementById(
-                        "signupEmail"
-                    )
-                    .value
-                    .trim();
+        const documentInput = document.getElementById(
+            "aadhaarDocument"
+        );
 
+        const message = document.getElementById(
+            "signupMessage"
+        );
 
-            const password =
-                document
-                    .getElementById(
-                        "signupPassword"
-                    )
-                    .value;
+        const ageMessage = document.getElementById(
+            "ageVerificationMessage"
+        );
 
+        if (!name || !email || !password) {
+            showMessage(
+                message,
+                "Please fill in your name, email and password.",
+                "#d00037"
+            );
+            return;
+        }
 
-            const documentInput =
-                document.getElementById(
-                    "aadhaarDocument"
-                );
+        const emailPattern =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+        if (!emailPattern.test(email)) {
+            showMessage(
+                message,
+                "Please enter a valid email address.",
+                "#d00037"
+            );
+            return;
+        }
 
-            const message =
-                document.getElementById(
-                    "signupMessage"
-                );
+        if (password.length < 6) {
+            showMessage(
+                message,
+                "Password must contain at least 6 characters.",
+                "#d00037"
+            );
+            return;
+        }
 
-
-            const ageMessage =
-                document.getElementById(
-                    "ageVerificationMessage"
-                );
-
-
-            // -------------------------------------------------
-            // VALIDATION
-            // -------------------------------------------------
-
-            if (
-                !name ||
-                !email ||
-                !password
-            ) {
-
-                showMessage(
-                    message,
-                    "Please fill in your name, email and password.",
-                    "#d00037"
-                );
-
-                return;
-            }
-
-
-            const emailPattern =
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-            if (
-                !emailPattern.test(email)
-            ) {
-
-                showMessage(
-                    message,
-                    "Please enter a valid email address.",
-                    "#d00037"
-                );
-
-                return;
-            }
-
-
-            if (
-                password.length < 6
-            ) {
-
-                showMessage(
-                    message,
-                    "Password must contain at least 6 characters.",
-                    "#d00037"
-                );
-
-                return;
-            }
-
-
-            // -------------------------------------------------
-            // ID DOCUMENT
-            // -------------------------------------------------
-
-            if (
-                !documentInput ||
-                documentInput.files.length === 0
-            ) {
-
-                showMessage(
-                    ageMessage,
-                    "Please upload your Aadhaar or valid ID document.",
-                    "#d00037"
-                );
-
-                return;
-            }
-
-
-            const file =
-                documentInput.files[0];
-
-
-            const allowedTypes = [
-
-                "application/pdf",
-                "image/jpeg",
-                "image/png",
-                "image/jpg",
-                "image/webp"
-
-            ];
-
-
-            if (
-                !allowedTypes.includes(
-                    file.type
-                )
-            ) {
-
-                showMessage(
-                    ageMessage,
-                    "Please upload a valid PDF or image document.",
-                    "#d00037"
-                );
-
-                return;
-            }
-
-
-            const maximumFileSize =
-                5 * 1024 * 1024;
-
-
-            if (
-                file.size >
-                maximumFileSize
-            ) {
-
-                showMessage(
-                    ageMessage,
-                    "ID document must be smaller than 5 MB.",
-                    "#d00037"
-                );
-
-                return;
-            }
-
-
+        if (
+            !documentInput ||
+            documentInput.files.length === 0
+        ) {
             showMessage(
                 ageMessage,
-                "✓ ID document submitted successfully.",
+                "Please upload your Aadhaar or valid ID document.",
+                "#d00037"
+            );
+            return;
+        }
+
+        const file = documentInput.files[0];
+
+        const allowedTypes = [
+            "application/pdf",
+            "image/jpeg",
+            "image/png",
+            "image/jpg",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            showMessage(
+                ageMessage,
+                "Please upload a valid PDF or image document.",
+                "#d00037"
+            );
+            return;
+        }
+
+        const maximumFileSize = 5 * 1024 * 1024;
+
+        if (file.size > maximumFileSize) {
+            showMessage(
+                ageMessage,
+                "ID document must be smaller than 5 MB.",
+                "#d00037"
+            );
+            return;
+        }
+
+        showMessage(
+            ageMessage,
+            "✓ ID document submitted successfully.",
+            "#087f5b"
+        );
+
+        signupButton.disabled = true;
+        signupButton.textContent = "Creating Account...";
+
+        try {
+
+            const response = await fetch(
+                `${API_URL}/signup`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password,
+                        documentUploaded: true
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                showMessage(
+                    message,
+                    data.message ||
+                        "Unable to create account.",
+                    "#d00037"
+                );
+                return;
+            }
+
+            showMessage(
+                message,
+                "Account created successfully! Please login.",
                 "#087f5b"
             );
 
+            document.getElementById(
+                "signupName"
+            ).value = "";
 
-            // -------------------------------------------------
-            // DISABLE BUTTON
-            // -------------------------------------------------
+            document.getElementById(
+                "signupEmail"
+            ).value = "";
 
-            signupButton.disabled = true;
+            document.getElementById(
+                "signupPassword"
+            ).value = "";
+
+            document.getElementById(
+                "aadhaarDocument"
+            ).value = "";
+
+        } catch (error) {
+
+            console.error(
+                "Signup error:",
+                error
+            );
+
+            showMessage(
+                message,
+                "Unable to connect to BloodLink backend.",
+                "#d00037"
+            );
+
+        } finally {
+
+            signupButton.disabled = false;
 
             signupButton.textContent =
-                "Creating Account...";
-
-
-            try {
-
-                // -------------------------------------------------
-                // SEND DATA TO BACKEND
-                // -------------------------------------------------
-
-                const response =
-                    await fetch(
-                        `${API_URL}/signup`,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body: JSON.stringify({
-
-                                name: name,
-
-                                email: email,
-
-                                password: password,
-
-                                documentUploaded:
-                                    true
-
-                            })
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    showMessage(
-                        message,
-                        data.message ||
-                            "Unable to create account.",
-                        "#d00037"
-                    );
-
-                    return;
-                }
-
-
-                // -------------------------------------------------
-                // SUCCESS
-                // -------------------------------------------------
-
-                showMessage(
-                    message,
-                    "Account created successfully! Please login.",
-                    "#087f5b"
-                );
-
-
-                // Clear form
-                document.getElementById(
-                    "signupName"
-                ).value = "";
-
-
-                document.getElementById(
-                    "signupEmail"
-                ).value = "";
-
-
-                document.getElementById(
-                    "signupPassword"
-                ).value = "";
-
-
-                document.getElementById(
-                    "aadhaarDocument"
-                ).value = "";
-
-
-            } catch (error) {
-
-                console.error(
-                    "Signup error:",
-                    error
-                );
-
-
-                showMessage(
-                    message,
-                    "Unable to connect to BloodLink backend.",
-                    "#d00037"
-                );
-
-            } finally {
-
-                signupButton.disabled =
-                    false;
-
-                signupButton.textContent =
-                    "Verify ID & Create Account";
-
-            }
-
+                "Verify ID & Create Account";
         }
-    );
-
+    });
 }
-
 
 // =========================================================
 // LOGIN
 // =========================================================
 
-const loginButton =
-    document.getElementById(
-        "loginButton"
-    );
-
+const loginButton = document.getElementById(
+    "loginButton"
+);
 
 if (loginButton) {
-
     loginButton.addEventListener(
         "click",
         async function () {
 
-            const email =
-                document
-                    .getElementById(
-                        "loginEmail"
-                    )
-                    .value
-                    .trim();
+            const email = document
+                .getElementById("loginEmail")
+                .value
+                .trim();
 
+            const password = document
+                .getElementById("loginPassword")
+                .value;
 
-            const password =
-                document
-                    .getElementById(
-                        "loginPassword"
-                    )
-                    .value;
+            const message = document.getElementById(
+                "loginMessage"
+            );
 
-
-            const message =
-                document.getElementById(
-                    "loginMessage"
-                );
-
-
-            // -------------------------------------------------
-            // VALIDATION
-            // -------------------------------------------------
-
-            if (
-                !email ||
-                !password
-            ) {
-
+            if (!email || !password) {
                 showMessage(
                     message,
                     "Please enter your email and password.",
                     "#d00037"
                 );
-
                 return;
             }
 
-
             loginButton.disabled = true;
-
-            loginButton.textContent =
-                "Logging in...";
-
+            loginButton.textContent = "Logging in...";
 
             try {
 
-                // -------------------------------------------------
-                // LOGIN REQUEST
-                // -------------------------------------------------
+                const response = await fetch(
+                    `${API_URL}/login`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    }
+                );
 
-                const response =
-                    await fetch(
-                        `${API_URL}/login`,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body: JSON.stringify({
-
-                                email: email,
-
-                                password: password
-
-                            })
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
+                const data = await response.json();
 
                 if (!response.ok) {
-
                     showMessage(
                         message,
                         data.message ||
                             "Invalid email or password.",
                         "#d00037"
                     );
-
                     return;
                 }
 
-
-                // -------------------------------------------------
-                // SAVE LOGIN SESSION
-                // -------------------------------------------------
-
-                saveLoggedInUser(
-                    data.user
-                );
-
+                saveLoggedInUser(data.user);
 
                 showMessage(
                     message,
@@ -497,17 +310,10 @@ if (loginButton) {
                     "#087f5b"
                 );
 
-
-                setTimeout(
-                    function () {
-
-                        window.location.href =
-                            "index.html";
-
-                    },
-                    1000
-                );
-
+                setTimeout(function () {
+                    window.location.href =
+                        "index.html";
+                }, 1000);
 
             } catch (error) {
 
@@ -516,7 +322,6 @@ if (loginButton) {
                     error
                 );
 
-
                 showMessage(
                     message,
                     "Unable to connect to BloodLink backend.",
@@ -525,33 +330,21 @@ if (loginButton) {
 
             } finally {
 
-                loginButton.disabled =
-                    false;
-
-                loginButton.textContent =
-                    "Login";
-
+                loginButton.disabled = false;
+                loginButton.textContent = "Login";
             }
-
         }
     );
-
 }
-
 
 // =========================================================
 // DONOR PAGE LOGIN PROTECTION
 // =========================================================
 
 if (
-    window.location.pathname.endsWith(
-        "donor.html"
-    )
+    window.location.pathname.endsWith("donor.html")
 ) {
-
-    const loggedInUser =
-        getLoggedInUser();
-
+    const loggedInUser = getLoggedInUser();
 
     if (!loggedInUser) {
 
@@ -559,14 +352,9 @@ if (
             "Please login first to register as a blood donor."
         );
 
-
-        window.location.href =
-            "login.html";
-
+        window.location.href = "login.html";
     }
-
 }
-
 
 // =========================================================
 // DONOR REGISTRATION
@@ -577,12 +365,9 @@ const donorRegisterButton =
         "donorRegisterButton"
     );
 
-
 if (donorRegisterButton) {
 
-    const loggedInUser =
-        getLoggedInUser();
-
+    const loggedInUser = getLoggedInUser();
 
     if (loggedInUser) {
 
@@ -591,28 +376,15 @@ if (donorRegisterButton) {
                 "donorName"
             );
 
-
         const donorAgeMessage =
             document.getElementById(
                 "donorAgeMessage"
             );
 
-
-        // -------------------------------------------------
-        // SHOW USER NAME
-        // -------------------------------------------------
-
         if (donorNameInput) {
-
             donorNameInput.value =
                 loggedInUser.name;
-
         }
-
-
-        // -------------------------------------------------
-        // SHOW VERIFICATION STATUS
-        // -------------------------------------------------
 
         if (donorAgeMessage) {
 
@@ -634,25 +406,15 @@ if (donorRegisterButton) {
 
                 donorAgeMessage.style.color =
                     "#d00037";
-
             }
-
         }
-
     }
-
 
     donorRegisterButton.addEventListener(
         "click",
         async function () {
 
-            const user =
-                getLoggedInUser();
-
-
-            // -------------------------------------------------
-            // LOGIN CHECK
-            // -------------------------------------------------
+            const user = getLoggedInUser();
 
             if (!user) {
 
@@ -660,59 +422,34 @@ if (donorRegisterButton) {
                     "Please login first."
                 );
 
-
                 window.location.href =
                     "login.html";
 
                 return;
-
             }
 
+            const name = document
+                .getElementById("donorName")
+                .value
+                .trim();
 
-            const name =
-                document
-                    .getElementById(
-                        "donorName"
-                    )
-                    .value
-                    .trim();
+            const blood = document
+                .getElementById("donorBlood")
+                .value;
 
+            const city = document
+                .getElementById("donorCity")
+                .value
+                .trim();
 
-            const blood =
-                document
-                    .getElementById(
-                        "donorBlood"
-                    )
-                    .value;
+            const phone = document
+                .getElementById("donorPhone")
+                .value
+                .trim();
 
-
-            const city =
-                document
-                    .getElementById(
-                        "donorCity"
-                    )
-                    .value
-                    .trim();
-
-
-            const phone =
-                document
-                    .getElementById(
-                        "donorPhone"
-                    )
-                    .value
-                    .trim();
-
-
-            const message =
-                document.getElementById(
-                    "donorMessage"
-                );
-
-
-            // -------------------------------------------------
-            // VERIFICATION CHECK
-            // -------------------------------------------------
+            const message = document.getElementById(
+                "donorMessage"
+            );
 
             if (
                 !user.ageVerified ||
@@ -727,11 +464,6 @@ if (donorRegisterButton) {
 
                 return;
             }
-
-
-            // -------------------------------------------------
-            // FORM VALIDATION
-            // -------------------------------------------------
 
             if (
                 !name ||
@@ -749,14 +481,10 @@ if (donorRegisterButton) {
                 return;
             }
 
-
             const phonePattern =
                 /^[0-9]{10}$/;
 
-
-            if (
-                !phonePattern.test(phone)
-            ) {
+            if (!phonePattern.test(phone)) {
 
                 showMessage(
                     message,
@@ -767,56 +495,41 @@ if (donorRegisterButton) {
                 return;
             }
 
-
-            donorRegisterButton.disabled =
-                true;
-
+            donorRegisterButton.disabled = true;
             donorRegisterButton.textContent =
                 "Registering...";
 
-
             try {
 
-                // -------------------------------------------------
-                // SEND DONOR TO BACKEND
-                // -------------------------------------------------
+                const response = await fetch(
+                    `${API_URL}/donors`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body: JSON.stringify({
 
-                const response =
-                    await fetch(
-                        `${API_URL}/donors`,
-                        {
-                            method: "POST",
+                            userId:
+                                user.id,
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
+                            name:
+                                name,
 
-                            body: JSON.stringify({
+                            blood:
+                                blood,
 
-                                userId:
-                                    user.id,
+                            city:
+                                city,
 
-                                name:
-                                    name,
+                            phone:
+                                phone
+                        })
+                    }
+                );
 
-                                blood:
-                                    blood,
-
-                                city:
-                                    city,
-
-                                phone:
-                                    phone
-
-                            })
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
+                const data = await response.json();
 
                 if (!response.ok) {
 
@@ -830,29 +543,23 @@ if (donorRegisterButton) {
                     return;
                 }
 
-
                 showMessage(
                     message,
                     "Donor registration successful! ❤️",
                     "#087f5b"
                 );
 
-
-                // Clear donor details
                 document.getElementById(
                     "donorBlood"
                 ).value = "";
-
 
                 document.getElementById(
                     "donorCity"
                 ).value = "";
 
-
                 document.getElementById(
                     "donorPhone"
                 ).value = "";
-
 
             } catch (error) {
 
@@ -860,7 +567,6 @@ if (donorRegisterButton) {
                     "Donor registration error:",
                     error
                 );
-
 
                 showMessage(
                     message,
@@ -875,14 +581,10 @@ if (donorRegisterButton) {
 
                 donorRegisterButton.textContent =
                     "Register as Donor";
-
             }
-
         }
     );
-
 }
-
 
 // =========================================================
 // FIND DONOR
@@ -893,91 +595,64 @@ const searchDonorButton =
         "searchDonorButton"
     );
 
-
 if (searchDonorButton) {
 
     searchDonorButton.addEventListener(
         "click",
         async function () {
 
-            const blood =
-                document
-                    .getElementById(
-                        "searchBlood"
-                    )
-                    .value;
+            const blood = document
+                .getElementById("searchBlood")
+                .value;
 
-
-            const city =
-                document
-                    .getElementById(
-                        "searchCity"
-                    )
-                    .value
-                    .trim();
-
+            const city = document
+                .getElementById("searchCity")
+                .value
+                .trim();
 
             const results =
                 document.getElementById(
                     "searchResults"
                 );
 
-
             const message =
                 document.getElementById(
                     "searchMessage"
                 );
 
-
             results.innerHTML = "";
 
-
-            searchDonorButton.disabled =
-                true;
+            searchDonorButton.disabled = true;
 
             searchDonorButton.textContent =
                 "Searching...";
 
-
             try {
-
-                // -------------------------------------------------
-                // BUILD SEARCH URL
-                // -------------------------------------------------
 
                 const params =
                     new URLSearchParams();
 
-
                 if (blood) {
-
                     params.append(
                         "blood",
                         blood
                     );
-
                 }
 
-
                 if (city) {
-
                     params.append(
                         "city",
                         city
                     );
-
                 }
-
 
                 const response =
                     await fetch(
                         `${API_URL}/donors/search?${params.toString()}`
                     );
 
-
                 const data =
                     await response.json();
-
 
                 if (!response.ok) {
 
@@ -991,18 +666,11 @@ if (searchDonorButton) {
                     return;
                 }
 
-
                 const matchingDonors =
                     data.donors || [];
 
-
-                // -------------------------------------------------
-                // NO RESULTS
-                // -------------------------------------------------
-
                 if (
-                    matchingDonors.length ===
-                    0
+                    matchingDonors.length === 0
                 ) {
 
                     showMessage(
@@ -1014,18 +682,12 @@ if (searchDonorButton) {
                     return;
                 }
 
-
                 showMessage(
                     message,
                     matchingDonors.length +
                         " donor(s) found.",
                     "#087f5b"
                 );
-
-
-                // -------------------------------------------------
-                // DISPLAY DONORS
-                // -------------------------------------------------
 
                 matchingDonors.forEach(
                     function (donor) {
@@ -1035,13 +697,10 @@ if (searchDonorButton) {
                                 "div"
                             );
 
-
                         card.className =
                             "donor-card";
 
-
                         card.innerHTML = `
-
                             <h3>
                                 🩸 ${donor.name}
                             </h3>
@@ -1080,17 +739,11 @@ if (searchDonorButton) {
                             >
                                 💬 Request Blood by SMS
                             </button>
-
                         `;
 
-
-                        results.appendChild(
-                            card
-                        );
-
+                        results.appendChild(card);
                     }
                 );
-
 
             } catch (error) {
 
@@ -1098,7 +751,6 @@ if (searchDonorButton) {
                     "Search error:",
                     error
                 );
-
 
                 showMessage(
                     message,
@@ -1113,38 +765,26 @@ if (searchDonorButton) {
 
                 searchDonorButton.textContent =
                     "Search Donors";
-
             }
-
         }
     );
-
 }
-
 
 // =========================================================
 // SMS BLOOD REQUEST
 // =========================================================
 
-async function sendBloodRequestSMS(
-    donorId
-) {
+async function sendBloodRequestSMS(donorId) {
 
     try {
-
-        // -------------------------------------------------
-        // GET DONOR
-        // -------------------------------------------------
 
         const donorResponse =
             await fetch(
                 `${API_URL}/donors`
             );
 
-
         const donorData =
             await donorResponse.json();
-
 
         if (!donorResponse.ok) {
 
@@ -1155,10 +795,8 @@ async function sendBloodRequestSMS(
             return;
         }
 
-
         const donors =
             donorData.donors || [];
-
 
         const donor =
             donors.find(
@@ -1168,10 +806,8 @@ async function sendBloodRequestSMS(
                         String(item.id) ===
                         String(donorId)
                     );
-
                 }
             );
-
 
         if (!donor) {
 
@@ -1182,20 +818,13 @@ async function sendBloodRequestSMS(
             return;
         }
 
-
-        // -------------------------------------------------
-        // GET REQUESTS
-        // -------------------------------------------------
-
         const requestResponse =
             await fetch(
                 `${API_URL}/requests`
             );
 
-
         const requestData =
             await requestResponse.json();
-
 
         if (!requestResponse.ok) {
 
@@ -1206,15 +835,10 @@ async function sendBloodRequestSMS(
             return;
         }
 
-
         const requests =
             requestData.requests || [];
 
-
-        if (
-            requests.length ===
-            0
-        ) {
+        if (requests.length === 0) {
 
             alert(
                 "Please create a blood request first."
@@ -1223,37 +847,40 @@ async function sendBloodRequestSMS(
             return;
         }
 
-
-        // Get latest request
         const request =
             requests[
                 requests.length - 1
             ];
 
+        const bloodGroup =
+            request.blood ||
+            request.bloodGroup ||
+            "";
 
         const smsMessage =
-            `BloodLink Blood Request
+`BloodLink Blood Request
 
 Patient: ${request.requesterName}
-Blood Group: ${request.blood}
+
+Blood Group: ${bloodGroup}
+
 Location: ${request.city}
+
 Contact: ${request.phone}
 
 Message: ${
-                request.message ||
-                "Urgent blood requirement"
-            }
+    request.message ||
+    "Urgent blood requirement"
+}
 
 Please contact the patient if you are available to donate.
 
 Thank you.`;
 
-
         window.location.href =
             `sms:${donor.phone}?body=${encodeURIComponent(
                 smsMessage
             )}`;
-
 
     } catch (error) {
 
@@ -1262,15 +889,11 @@ Thank you.`;
             error
         );
 
-
         alert(
             "Unable to connect to BloodLink backend."
         );
-
     }
-
 }
-
 
 // =========================================================
 // BLOOD REQUEST
@@ -1280,7 +903,6 @@ const requestBloodButton =
     document.getElementById(
         "requestBloodButton"
     );
-
 
 if (requestBloodButton) {
 
@@ -1296,14 +918,12 @@ if (requestBloodButton) {
                     .value
                     .trim();
 
-
             const blood =
                 document
                     .getElementById(
                         "requestBlood"
                     )
                     .value;
-
 
             const city =
                 document
@@ -1313,7 +933,6 @@ if (requestBloodButton) {
                     .value
                     .trim();
 
-
             const phone =
                 document
                     .getElementById(
@@ -1321,7 +940,6 @@ if (requestBloodButton) {
                     )
                     .value
                     .trim();
-
 
             const requestMessage =
                 document
@@ -1331,12 +949,10 @@ if (requestBloodButton) {
                     .value
                     .trim();
 
-
             const status =
                 document.getElementById(
                     "requestMessageStatus"
                 );
-
 
             // -------------------------------------------------
             // VALIDATION
@@ -1358,14 +974,10 @@ if (requestBloodButton) {
                 return;
             }
 
-
             const phonePattern =
                 /^[0-9]{10}$/;
 
-
-            if (
-                !phonePattern.test(phone)
-            ) {
+            if (!phonePattern.test(phone)) {
 
                 showMessage(
                     status,
@@ -1376,18 +988,15 @@ if (requestBloodButton) {
                 return;
             }
 
-
-            requestBloodButton.disabled =
-                true;
+            requestBloodButton.disabled = true;
 
             requestBloodButton.textContent =
                 "Submitting...";
 
-
             try {
 
                 // -------------------------------------------------
-                // SEND REQUEST TO BACKEND
+                // SEND BLOOD REQUEST TO BACKEND
                 // -------------------------------------------------
 
                 const response =
@@ -1406,7 +1015,12 @@ if (requestBloodButton) {
                                 requesterName:
                                     requesterName,
 
+                                // New backend field
                                 blood:
+                                    blood,
+
+                                // Old backend field
+                                bloodGroup:
                                     blood,
 
                                 city:
@@ -1417,15 +1031,12 @@ if (requestBloodButton) {
 
                                 message:
                                     requestMessage
-
                             })
                         }
                     );
 
-
                 const data =
                     await response.json();
-
 
                 if (!response.ok) {
 
@@ -1439,39 +1050,35 @@ if (requestBloodButton) {
                     return;
                 }
 
-
                 showMessage(
                     status,
                     "Blood request submitted successfully! ❤️",
                     "#087f5b"
                 );
 
+                // -------------------------------------------------
+                // CLEAR FORM
+                // -------------------------------------------------
 
-                // Clear form
                 document.getElementById(
                     "requesterName"
                 ).value = "";
-
 
                 document.getElementById(
                     "requestBlood"
                 ).value = "";
 
-
                 document.getElementById(
                     "requestCity"
                 ).value = "";
-
 
                 document.getElementById(
                     "requestPhone"
                 ).value = "";
 
-
                 document.getElementById(
                     "requestMessage"
                 ).value = "";
-
 
             } catch (error) {
 
@@ -1479,7 +1086,6 @@ if (requestBloodButton) {
                     "Blood request error:",
                     error
                 );
-
 
                 showMessage(
                     status,
@@ -1494,14 +1100,10 @@ if (requestBloodButton) {
 
                 requestBloodButton.textContent =
                     "Submit Blood Request";
-
             }
-
         }
     );
-
 }
-
 
 // =========================================================
 // BLOOD COMPATIBILITY
@@ -1511,7 +1113,6 @@ const compatibilityButton =
     document.getElementById(
         "checkCompatibilityButton"
     );
-
 
 if (compatibilityButton) {
 
@@ -1524,18 +1125,15 @@ if (compatibilityButton) {
                     "donorBloodGroup"
                 ).value;
 
-
             const receiverBlood =
                 document.getElementById(
                     "receiverBloodGroup"
                 ).value;
 
-
             const result =
                 document.getElementById(
                     "compatibilityResult"
                 );
-
 
             if (
                 !donorBlood ||
@@ -1550,7 +1148,6 @@ if (compatibilityButton) {
 
                 return;
             }
-
 
             const compatibility = {
 
@@ -1604,9 +1201,7 @@ if (compatibilityButton) {
                 "AB+": [
                     "AB+"
                 ]
-
             };
-
 
             const compatible =
                 compatibility[
@@ -1617,7 +1212,6 @@ if (compatibilityButton) {
                 ].includes(
                     receiverBlood
                 );
-
 
             if (compatible) {
 
@@ -1634,14 +1228,10 @@ if (compatibilityButton) {
                     `✕ ${donorBlood} donor cannot donate to ${receiverBlood} receiver.`,
                     "#d00037"
                 );
-
             }
-
         }
     );
-
 }
-
 
 // =========================================================
 // CONSOLE INFORMATION
