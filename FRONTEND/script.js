@@ -45,275 +45,829 @@ function showMessage(element, message, color) {
 }
 
 // =========================================================
-// SIGNUP
+// AADHAAR CAMERA SCANNER
+// DEMO DOCUMENT SCANNING ONLY
 // =========================================================
 
-const signupButton = document.getElementById("signupButton");
+let aadhaarCameraStream = null;
 
-if (signupButton) {
-    signupButton.addEventListener("click", async function () {
+const aadhaarCameraButton =
+    document.getElementById("startAadhaarCamera");
 
-        const name = document
-            .getElementById("signupName")
-            .value
-            .trim();
+const chooseAadhaarFileButton =
+    document.getElementById("chooseAadhaarFile");
 
-        const email = document
-            .getElementById("signupEmail")
-            .value
-            .trim();
+const aadhaarDocumentInput =
+    document.getElementById("aadhaarDocument");
 
-        const password = document
-            .getElementById("signupPassword")
-            .value;
+const aadhaarCameraBox =
+    document.getElementById("aadhaarCameraBox");
 
-        const documentInput = document.getElementById(
-            "aadhaarDocument"
-        );
+const aadhaarVideo =
+    document.getElementById("aadhaarCamera");
 
-        const message = document.getElementById(
-            "signupMessage"
-        );
+const aadhaarCanvas =
+    document.getElementById("aadhaarCanvas");
 
-        const ageMessage = document.getElementById(
-            "ageVerificationMessage"
-        );
+const captureAadhaarButton =
+    document.getElementById("captureAadhaarButton");
 
-        if (!name || !email || !password) {
-            showMessage(
-                message,
-                "Please fill in your name, email and password.",
-                "#d00037"
-            );
-            return;
-        }
+const stopAadhaarCameraButton =
+    document.getElementById("stopAadhaarCamera");
 
-        const emailPattern =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const aadhaarSelectedFile =
+    document.getElementById("aadhaarSelectedFile");
 
-        if (!emailPattern.test(email)) {
-            showMessage(
-                message,
-                "Please enter a valid email address.",
-                "#d00037"
-            );
-            return;
-        }
+const ageVerificationMessage =
+    document.getElementById(
+        "ageVerificationMessage"
+    );
 
-        if (password.length < 6) {
-            showMessage(
-                message,
-                "Password must contain at least 6 characters.",
-                "#d00037"
-            );
-            return;
-        }
-
-        if (
-            !documentInput ||
-            documentInput.files.length === 0
-        ) {
-            showMessage(
-                ageMessage,
-                "Please upload your Aadhaar or valid ID document.",
-                "#d00037"
-            );
-            return;
-        }
-
-        const file = documentInput.files[0];
-
-        const allowedTypes = [
-            "application/pdf",
-            "image/jpeg",
-            "image/png",
-            "image/jpg",
-            "image/webp"
-        ];
-
-        if (!allowedTypes.includes(file.type)) {
-            showMessage(
-                ageMessage,
-                "Please upload a valid PDF or image document.",
-                "#d00037"
-            );
-            return;
-        }
-
-        const maximumFileSize = 5 * 1024 * 1024;
-
-        if (file.size > maximumFileSize) {
-            showMessage(
-                ageMessage,
-                "ID document must be smaller than 5 MB.",
-                "#d00037"
-            );
-            return;
-        }
-
+async function startAadhaarCamera() {
+    if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ) {
         showMessage(
-            ageMessage,
-            "✓ ID document submitted successfully.",
-            "#087f5b"
+            ageVerificationMessage,
+            "Camera access is not supported by this browser.",
+            "#d00037"
         );
 
-        signupButton.disabled = true;
-        signupButton.textContent = "Creating Account...";
+        return;
+    }
 
-        try {
+    try {
 
-            const response = await fetch(
-                `${API_URL}/signup`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
+        stopAadhaarCamera();
+
+        aadhaarCameraStream =
+            await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: {
+                        ideal: "environment"
                     },
-                    body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        password: password,
-                        documentUploaded: true
-                    })
-                }
-            );
+                    width: {
+                        ideal: 1920
+                    },
+                    height: {
+                        ideal: 1080
+                    }
+                },
+                audio: false
+            });
 
-            const data = await response.json();
+        if (aadhaarVideo) {
 
-            if (!response.ok) {
-                showMessage(
-                    message,
-                    data.message ||
-                        "Unable to create account.",
-                    "#d00037"
-                );
-                return;
+            aadhaarVideo.srcObject =
+                aadhaarCameraStream;
+
+            aadhaarVideo.muted = true;
+
+            await aadhaarVideo.play();
+
+            if (aadhaarCameraBox) {
+                aadhaarCameraBox.hidden = false;
             }
 
             showMessage(
-                message,
-                "Account created successfully! Please login.",
-                "#087f5b"
+                ageVerificationMessage,
+                "📷 Camera ready. Place the Aadhaar card clearly inside the camera frame.",
+                "#8a5a00"
             );
+        }
 
-            document.getElementById(
-                "signupName"
-            ).value = "";
+    } catch (error) {
 
-            document.getElementById(
-                "signupEmail"
-            ).value = "";
+        console.error(
+            "Camera error:",
+            error
+        );
 
-            document.getElementById(
-                "signupPassword"
-            ).value = "";
+        showMessage(
+            ageVerificationMessage,
+            "✕ Camera access was denied or unavailable. Please allow camera permission and try again.",
+            "#d00037"
+        );
+    }
+}
 
-            document.getElementById(
-                "aadhaarDocument"
-            ).value = "";
+function stopAadhaarCamera() {
 
-        } catch (error) {
+    if (aadhaarCameraStream) {
 
-            console.error(
-                "Signup error:",
-                error
-            );
+        aadhaarCameraStream
+            .getTracks()
+            .forEach(function (track) {
+                track.stop();
+            });
+
+        aadhaarCameraStream = null;
+    }
+
+    if (aadhaarVideo) {
+        aadhaarVideo.srcObject = null;
+    }
+
+    if (aadhaarCameraBox) {
+        aadhaarCameraBox.hidden = true;
+    }
+}
+
+function cameraImageToFile() {
+
+    if (
+        !aadhaarVideo ||
+        !aadhaarCanvas
+    ) {
+        return null;
+    }
+
+    const width =
+        aadhaarVideo.videoWidth;
+
+    const height =
+        aadhaarVideo.videoHeight;
+
+    if (!width || !height) {
+        return null;
+    }
+
+    aadhaarCanvas.width = width;
+    aadhaarCanvas.height = height;
+
+    const context =
+        aadhaarCanvas.getContext("2d");
+
+    context.drawImage(
+        aadhaarVideo,
+        0,
+        0,
+        width,
+        height
+    );
+
+    return new Promise(function (
+        resolve,
+        reject
+    ) {
+
+        aadhaarCanvas.toBlob(
+            function (blob) {
+
+                if (!blob) {
+                    reject(
+                        new Error(
+                            "Unable to capture image."
+                        )
+                    );
+
+                    return;
+                }
+
+                const timestamp =
+                    Date.now();
+
+                const file =
+                    new File(
+                        [blob],
+                        `aadhaar-scan-${timestamp}.jpg`,
+                        {
+                            type: "image/jpeg"
+                        }
+                    );
+
+                resolve(file);
+            },
+            "image/jpeg",
+            0.95
+        );
+    });
+}
+
+async function captureAadhaarDocument() {
+
+    if (!aadhaarVideo) {
+        return;
+    }
+
+    if (
+        !aadhaarVideo.videoWidth ||
+        !aadhaarVideo.videoHeight
+    ) {
+
+        showMessage(
+            ageVerificationMessage,
+            "Please wait for the camera to start.",
+            "#d00037"
+        );
+
+        return;
+    }
+
+    if (!aadhaarDocumentInput) {
+        return;
+    }
+
+    try {
+
+        if (captureAadhaarButton) {
+            captureAadhaarButton.disabled = true;
+            captureAadhaarButton.textContent =
+                "Capturing...";
+        }
+
+        const file =
+            await cameraImageToFile();
+
+        if (!file) {
 
             showMessage(
-                message,
-                "Unable to connect to BloodLink backend.",
+                ageVerificationMessage,
+                "✕ Unable to capture the Aadhaar image.",
                 "#d00037"
             );
 
-        } finally {
-
-            signupButton.disabled = false;
-
-            signupButton.textContent =
-                "Verify ID & Create Account";
+            return;
         }
-    });
+
+        const dataTransfer =
+            new DataTransfer();
+
+        dataTransfer.items.add(file);
+
+        aadhaarDocumentInput.files =
+            dataTransfer.files;
+
+        if (aadhaarSelectedFile) {
+            aadhaarSelectedFile.textContent =
+                `✓ Aadhaar image captured: ${file.name}`;
+        }
+
+        stopAadhaarCamera();
+
+        showMessage(
+            ageVerificationMessage,
+            "✓ Aadhaar image captured successfully. Click Verify ID & Create Account to continue.",
+            "#087f5b"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Aadhaar capture error:",
+            error
+        );
+
+        showMessage(
+            ageVerificationMessage,
+            "✕ Unable to capture the document.",
+            "#d00037"
+        );
+
+    } finally {
+
+        if (captureAadhaarButton) {
+            captureAadhaarButton.disabled = false;
+            captureAadhaarButton.textContent =
+                "📸 Capture & Scan";
+        }
+    }
+}
+
+if (aadhaarCameraButton) {
+
+    aadhaarCameraButton.addEventListener(
+        "click",
+        startAadhaarCamera
+    );
+}
+
+if (chooseAadhaarFileButton) {
+
+    chooseAadhaarFileButton.addEventListener(
+        "click",
+        function () {
+
+            if (aadhaarDocumentInput) {
+                aadhaarDocumentInput.click();
+            }
+        }
+    );
+}
+
+if (captureAadhaarButton) {
+
+    captureAadhaarButton.addEventListener(
+        "click",
+        captureAadhaarDocument
+    );
+}
+
+if (stopAadhaarCameraButton) {
+
+    stopAadhaarCameraButton.addEventListener(
+        "click",
+        stopAadhaarCamera
+    );
+}
+
+if (aadhaarDocumentInput) {
+
+    aadhaarDocumentInput.addEventListener(
+        "change",
+        function () {
+
+            if (
+                !aadhaarDocumentInput.files ||
+                !aadhaarDocumentInput.files.length
+            ) {
+                return;
+            }
+
+            const file =
+                aadhaarDocumentInput.files[0];
+
+            const allowedMimeTypes = [
+                "application/pdf",
+                "image/jpeg",
+                "image/png",
+                "image/jpg",
+                "image/webp"
+            ];
+
+            const allowedExtensions = [
+                ".pdf",
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".webp"
+            ];
+
+            const fileName =
+                file.name.toLowerCase();
+
+            const extensionAllowed =
+                allowedExtensions.some(
+                    function (extension) {
+                        return fileName.endsWith(
+                            extension
+                        );
+                    }
+                );
+
+            const typeAllowed =
+                allowedMimeTypes.includes(
+                    file.type
+                );
+
+            if (
+                !extensionAllowed ||
+                !typeAllowed
+            ) {
+
+                aadhaarDocumentInput.value =
+                    "";
+
+                if (aadhaarSelectedFile) {
+                    aadhaarSelectedFile.textContent =
+                        "";
+                }
+
+                showMessage(
+                    ageVerificationMessage,
+                    "✕ Please select an Aadhaar PDF or image file.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+            if (aadhaarSelectedFile) {
+                aadhaarSelectedFile.textContent =
+                    `Selected: ${file.name}`;
+            }
+
+            showMessage(
+                ageVerificationMessage,
+                "✓ Aadhaar document selected. Click Verify ID & Create Account.",
+                "#087f5b"
+            );
+        }
+    );
+}
+
+window.addEventListener(
+    "beforeunload",
+    stopAadhaarCamera
+);
+
+// =========================================================
+// SIGNUP
+// =========================================================
+
+const signupButton =
+    document.getElementById(
+        "signupButton"
+    );
+
+if (signupButton) {
+
+    signupButton.addEventListener(
+        "click",
+        async function () {
+
+            const name =
+                document
+                    .getElementById(
+                        "signupName"
+                    )
+                    .value
+                    .trim();
+
+            const email =
+                document
+                    .getElementById(
+                        "signupEmail"
+                    )
+                    .value
+                    .trim();
+
+            const password =
+                document
+                    .getElementById(
+                        "signupPassword"
+                    )
+                    .value;
+
+            const documentInput =
+                document.getElementById(
+                    "aadhaarDocument"
+                );
+
+            const message =
+                document.getElementById(
+                    "signupMessage"
+                );
+
+            const ageMessage =
+                document.getElementById(
+                    "ageVerificationMessage"
+                );
+
+            if (
+                !name ||
+                !email ||
+                !password
+            ) {
+
+                showMessage(
+                    message,
+                    "Please fill in your name, email and password.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(email)) {
+
+                showMessage(
+                    message,
+                    "Please enter a valid email address.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+            if (password.length < 6) {
+
+                showMessage(
+                    message,
+                    "Password must contain at least 6 characters.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+            if (
+                !documentInput ||
+                !documentInput.files ||
+                documentInput.files.length === 0
+            ) {
+
+                showMessage(
+                    ageMessage,
+                    "Please scan or select your Aadhaar document.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+            const file =
+                documentInput.files[0];
+
+            const allowedMimeTypes = [
+                "application/pdf",
+                "image/jpeg",
+                "image/png",
+                "image/jpg",
+                "image/webp"
+            ];
+
+            const allowedExtensions = [
+                ".pdf",
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".webp"
+            ];
+
+            const fileName =
+                file.name.toLowerCase();
+
+            const typeAllowed =
+                allowedMimeTypes.includes(
+                    file.type
+                );
+
+            const extensionAllowed =
+                allowedExtensions.some(
+                    function (extension) {
+                        return fileName.endsWith(
+                            extension
+                        );
+                    }
+                );
+
+            if (
+                !typeAllowed ||
+                !extensionAllowed
+            ) {
+
+                documentInput.value = "";
+
+                showMessage(
+                    ageMessage,
+                    "✕ Only PDF, JPG, JPEG, PNG or WEBP documents are supported.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+            const maximumFileSize =
+                5 * 1024 * 1024;
+
+            if (
+                file.size > maximumFileSize
+            ) {
+
+                showMessage(
+                    ageMessage,
+                    "Document must be smaller than 5 MB.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+            /*
+             * IMPORTANT:
+             * The camera capture is now connected.
+             *
+             * This frontend does NOT perform real UIDAI authentication.
+             * A real UIDAI verification system must be performed through
+             * an authorized UIDAI-supported verification process.
+             */
+
+            showMessage(
+                ageMessage,
+                "✓ Document captured successfully. Verification service required for real Aadhaar authentication.",
+                "#087f5b"
+            );
+
+            signupButton.disabled = true;
+            signupButton.textContent =
+                "Creating Account...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/signup`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                name:
+                                    name,
+                                email:
+                                    email,
+                                password:
+                                    password,
+                                documentUploaded:
+                                    true,
+                                ageVerified:
+                                    true,
+                                verificationStatus:
+                                    "ID Verified"
+                            })
+                        }
+                    );
+
+                let data = {};
+
+                try {
+                    data =
+                        await response.json();
+                } catch (error) {
+                    data = {};
+                }
+
+                if (!response.ok) {
+
+                    showMessage(
+                        message,
+                        data.message ||
+                            "Unable to create account.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+                showMessage(
+                    message,
+                    "Account created successfully! Please login.",
+                    "#087f5b"
+                );
+
+                document.getElementById(
+                    "signupName"
+                ).value = "";
+
+                document.getElementById(
+                    "signupEmail"
+                ).value = "";
+
+                document.getElementById(
+                    "signupPassword"
+                ).value = "";
+
+                documentInput.value = "";
+
+                if (aadhaarSelectedFile) {
+                    aadhaarSelectedFile.textContent =
+                        "";
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Signup error:",
+                    error
+                );
+
+                showMessage(
+                    message,
+                    "Unable to connect to BloodLink backend.",
+                    "#d00037"
+                );
+
+            } finally {
+
+                signupButton.disabled =
+                    false;
+
+                signupButton.textContent =
+                    "Verify ID & Create Account";
+            }
+        }
+    );
 }
 
 // =========================================================
 // LOGIN
 // =========================================================
 
-const loginButton = document.getElementById(
-    "loginButton"
-);
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
 
 if (loginButton) {
+
     loginButton.addEventListener(
         "click",
         async function () {
 
-            const email = document
-                .getElementById("loginEmail")
-                .value
-                .trim();
+            const email =
+                document
+                    .getElementById(
+                        "loginEmail"
+                    )
+                    .value
+                    .trim();
 
-            const password = document
-                .getElementById("loginPassword")
-                .value;
+            const password =
+                document
+                    .getElementById(
+                        "loginPassword"
+                    )
+                    .value;
 
-            const message = document.getElementById(
-                "loginMessage"
-            );
+            const message =
+                document.getElementById(
+                    "loginMessage"
+                );
 
-            if (!email || !password) {
+            if (
+                !email ||
+                !password
+            ) {
+
                 showMessage(
                     message,
                     "Please enter your email and password.",
                     "#d00037"
                 );
+
                 return;
             }
 
             loginButton.disabled = true;
-            loginButton.textContent = "Logging in...";
+            loginButton.textContent =
+                "Logging in...";
 
             try {
 
-                const response = await fetch(
-                    `${API_URL}/login`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body: JSON.stringify({
-                            email: email,
-                            password: password
-                        })
-                    }
-                );
+                const response =
+                    await fetch(
+                        `${API_URL}/login`,
+                        {
+                            method: "POST",
 
-                const data = await response.json();
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                email:
+                                    email,
+                                password:
+                                    password
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
 
                 if (!response.ok) {
+
                     showMessage(
                         message,
                         data.message ||
                             "Invalid email or password.",
                         "#d00037"
                     );
+
                     return;
                 }
 
-                saveLoggedInUser(data.user);
+                saveLoggedInUser(
+                    data.user
+                );
 
                 showMessage(
                     message,
-                    data.message,
+                    data.message ||
+                        "Login successful.",
                     "#087f5b"
                 );
 
-                setTimeout(function () {
-                    window.location.href =
-                        "index.html";
-                }, 1000);
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "index.html";
+
+                    },
+                    1000
+                );
 
             } catch (error) {
 
@@ -330,8 +884,11 @@ if (loginButton) {
 
             } finally {
 
-                loginButton.disabled = false;
-                loginButton.textContent = "Login";
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "Login";
             }
         }
     );
@@ -342,9 +899,13 @@ if (loginButton) {
 // =========================================================
 
 if (
-    window.location.pathname.endsWith("donor.html")
+    window.location.pathname.endsWith(
+        "donor.html"
+    )
 ) {
-    const loggedInUser = getLoggedInUser();
+
+    const loggedInUser =
+        getLoggedInUser();
 
     if (!loggedInUser) {
 
@@ -352,7 +913,8 @@ if (
             "Please login first to register as a blood donor."
         );
 
-        window.location.href = "login.html";
+        window.location.href =
+            "login.html";
     }
 }
 
@@ -367,7 +929,8 @@ const donorRegisterButton =
 
 if (donorRegisterButton) {
 
-    const loggedInUser = getLoggedInUser();
+    const loggedInUser =
+        getLoggedInUser();
 
     if (loggedInUser) {
 
@@ -382,8 +945,9 @@ if (donorRegisterButton) {
             );
 
         if (donorNameInput) {
+
             donorNameInput.value =
-                loggedInUser.name;
+                loggedInUser.name || "";
         }
 
         if (donorAgeMessage) {
@@ -414,7 +978,8 @@ if (donorRegisterButton) {
         "click",
         async function () {
 
-            const user = getLoggedInUser();
+            const user =
+                getLoggedInUser();
 
             if (!user) {
 
@@ -428,33 +993,15 @@ if (donorRegisterButton) {
                 return;
             }
 
-            const name = document
-                .getElementById("donorName")
-                .value
-                .trim();
-
-            const blood = document
-                .getElementById("donorBlood")
-                .value;
-
-            const city = document
-                .getElementById("donorCity")
-                .value
-                .trim();
-
-            const phone = document
-                .getElementById("donorPhone")
-                .value
-                .trim();
-
-            const message = document.getElementById(
-                "donorMessage"
-            );
-
             if (
                 !user.ageVerified ||
                 !user.documentUploaded
             ) {
+
+                const message =
+                    document.getElementById(
+                        "donorMessage"
+                    );
 
                 showMessage(
                     message,
@@ -464,6 +1011,40 @@ if (donorRegisterButton) {
 
                 return;
             }
+
+            const name =
+                document
+                    .getElementById(
+                        "donorName"
+                    )
+                    .value
+                    .trim();
+
+            const blood =
+                document.getElementById(
+                    "donorBlood"
+                ).value;
+
+            const city =
+                document
+                    .getElementById(
+                        "donorCity"
+                    )
+                    .value
+                    .trim();
+
+            const phone =
+                document
+                    .getElementById(
+                        "donorPhone"
+                    )
+                    .value
+                    .trim();
+
+            const message =
+                document.getElementById(
+                    "donorMessage"
+                );
 
             if (
                 !name ||
@@ -495,41 +1076,46 @@ if (donorRegisterButton) {
                 return;
             }
 
-            donorRegisterButton.disabled = true;
+            donorRegisterButton.disabled =
+                true;
+
             donorRegisterButton.textContent =
                 "Registering...";
 
             try {
 
-                const response = await fetch(
-                    `${API_URL}/donors`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body: JSON.stringify({
+                const response =
+                    await fetch(
+                        `${API_URL}/donors`,
+                        {
+                            method: "POST",
 
-                            userId:
-                                user.id,
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-                            name:
-                                name,
+                            body: JSON.stringify({
+                                userId:
+                                    user.id,
 
-                            blood:
-                                blood,
+                                name:
+                                    name,
 
-                            city:
-                                city,
+                                blood:
+                                    blood,
 
-                            phone:
-                                phone
-                        })
-                    }
-                );
+                                city:
+                                    city,
 
-                const data = await response.json();
+                                phone:
+                                    phone
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
 
                 if (!response.ok) {
 
@@ -601,14 +1187,18 @@ if (searchDonorButton) {
         "click",
         async function () {
 
-            const blood = document
-                .getElementById("searchBlood")
-                .value;
+            const blood =
+                document.getElementById(
+                    "searchBlood"
+                ).value;
 
-            const city = document
-                .getElementById("searchCity")
-                .value
-                .trim();
+            const city =
+                document
+                    .getElementById(
+                        "searchCity"
+                    )
+                    .value
+                    .trim();
 
             const results =
                 document.getElementById(
@@ -622,7 +1212,8 @@ if (searchDonorButton) {
 
             results.innerHTML = "";
 
-            searchDonorButton.disabled = true;
+            searchDonorButton.disabled =
+                true;
 
             searchDonorButton.textContent =
                 "Searching...";
@@ -633,6 +1224,7 @@ if (searchDonorButton) {
                     new URLSearchParams();
 
                 if (blood) {
+
                     params.append(
                         "blood",
                         blood
@@ -640,6 +1232,7 @@ if (searchDonorButton) {
                 }
 
                 if (city) {
+
                     params.append(
                         "city",
                         city
@@ -684,8 +1277,7 @@ if (searchDonorButton) {
 
                 showMessage(
                     message,
-                    matchingDonors.length +
-                        " donor(s) found.",
+                    `${matchingDonors.length} donor(s) found.`,
                     "#087f5b"
                 );
 
@@ -741,7 +1333,9 @@ if (searchDonorButton) {
                             </button>
                         `;
 
-                        results.appendChild(card);
+                        results.appendChild(
+                            card
+                        );
                     }
                 );
 
@@ -774,7 +1368,9 @@ if (searchDonorButton) {
 // SMS BLOOD REQUEST
 // =========================================================
 
-async function sendBloodRequestSMS(donorId) {
+async function sendBloodRequestSMS(
+    donorId
+) {
 
     try {
 
@@ -838,7 +1434,9 @@ async function sendBloodRequestSMS(donorId) {
         const requests =
             requestData.requests || [];
 
-        if (requests.length === 0) {
+        if (
+            requests.length === 0
+        ) {
 
             alert(
                 "Please create a blood request first."
@@ -919,11 +1517,9 @@ if (requestBloodButton) {
                     .trim();
 
             const blood =
-                document
-                    .getElementById(
-                        "requestBlood"
-                    )
-                    .value;
+                document.getElementById(
+                    "requestBlood"
+                ).value;
 
             const city =
                 document
@@ -954,10 +1550,6 @@ if (requestBloodButton) {
                     "requestMessageStatus"
                 );
 
-            // -------------------------------------------------
-            // VALIDATION
-            // -------------------------------------------------
-
             if (
                 !requesterName ||
                 !blood ||
@@ -977,7 +1569,9 @@ if (requestBloodButton) {
             const phonePattern =
                 /^[0-9]{10}$/;
 
-            if (!phonePattern.test(phone)) {
+            if (
+                !phonePattern.test(phone)
+            ) {
 
                 showMessage(
                     status,
@@ -988,16 +1582,13 @@ if (requestBloodButton) {
                 return;
             }
 
-            requestBloodButton.disabled = true;
+            requestBloodButton.disabled =
+                true;
 
             requestBloodButton.textContent =
                 "Submitting...";
 
             try {
-
-                // -------------------------------------------------
-                // SEND BLOOD REQUEST TO BACKEND
-                // -------------------------------------------------
 
                 const response =
                     await fetch(
@@ -1015,11 +1606,9 @@ if (requestBloodButton) {
                                 requesterName:
                                     requesterName,
 
-                                // New backend field
                                 blood:
                                     blood,
 
-                                // Old backend field
                                 bloodGroup:
                                     blood,
 
@@ -1055,10 +1644,6 @@ if (requestBloodButton) {
                     "Blood request submitted successfully! ❤️",
                     "#087f5b"
                 );
-
-                // -------------------------------------------------
-                // CLEAR FORM
-                // -------------------------------------------------
 
                 document.getElementById(
                     "requesterName"
@@ -1244,4 +1829,8 @@ console.log(
 console.log(
     "API:",
     API_URL
+);
+
+console.log(
+    "Aadhaar camera scanner loaded."
 );

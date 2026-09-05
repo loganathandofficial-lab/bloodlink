@@ -262,6 +262,92 @@
             font-weight: 600;
         }
 
+        .aadhaar-scan-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .aadhaar-scan-button,
+        .aadhaar-file-button,
+        .aadhaar-capture-button,
+        .aadhaar-stop-button {
+            border: none;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .aadhaar-scan-button {
+            background: #8d1028;
+            color: #fff;
+        }
+
+        .aadhaar-file-button {
+            background: #f5e7ea;
+            color: #680b20;
+            border: 1px solid #e6cdd3;
+        }
+
+        .aadhaar-scan-button:hover,
+        .aadhaar-file-button:hover,
+        .aadhaar-capture-button:hover,
+        .aadhaar-stop-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .aadhaar-camera-box {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 14px;
+            background: #1e1e1e;
+        }
+
+        #aadhaarCamera {
+            display: block;
+            width: 100%;
+            max-height: 360px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .aadhaar-camera-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .aadhaar-capture-button {
+            background: #b51d3b;
+            color: #fff;
+        }
+
+        .aadhaar-stop-button {
+            background: #fff;
+            color: #5d1121;
+        }
+
+        .aadhaar-selected-file {
+            min-height: 18px;
+            margin: 10px 0 0;
+            color: #5f4450;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            .aadhaar-scan-actions,
+            .aadhaar-camera-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* BUTTONS */
 
         #signupButton,
@@ -661,14 +747,73 @@
                         </p>
 
                         <label for="aadhaarDocument">
-                            Upload Aadhaar / Valid ID
+                            Aadhaar Document
                         </label>
 
                         <input
                             type="file"
                             id="aadhaarDocument"
-                            accept="image/*,.pdf"
+                            accept=".pdf,.jpg,.jpeg,.png,.webp"
+                            hidden
                         >
+
+                        <div class="aadhaar-scan-actions">
+                            <button
+                                type="button"
+                                id="startAadhaarCamera"
+                                class="aadhaar-scan-button"
+                            >
+                                📷 Scan Aadhaar with Camera
+                            </button>
+
+                            <button
+                                type="button"
+                                id="chooseAadhaarFile"
+                                class="aadhaar-file-button"
+                            >
+                                📄 Choose Aadhaar File
+                            </button>
+                        </div>
+
+                        <div
+                            id="aadhaarCameraBox"
+                            class="aadhaar-camera-box"
+                            hidden
+                        >
+                            <video
+                                id="aadhaarCamera"
+                                autoplay
+                                playsinline
+                            ></video>
+
+                            <canvas
+                                id="aadhaarCanvas"
+                                hidden
+                            ></canvas>
+
+                            <div class="aadhaar-camera-controls">
+                                <button
+                                    type="button"
+                                    id="captureAadhaarButton"
+                                    class="aadhaar-capture-button"
+                                >
+                                    📸 Capture & Scan
+                                </button>
+
+                                <button
+                                    type="button"
+                                    id="stopAadhaarCamera"
+                                    class="aadhaar-stop-button"
+                                >
+                                    ✕ Stop Camera
+                                </button>
+                            </div>
+                        </div>
+
+                        <p
+                            id="aadhaarSelectedFile"
+                            class="aadhaar-selected-file"
+                        ></p>
 
                         <p id="ageVerificationMessage"></p>
 
