@@ -1,704 +1,745 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ta">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <title>BloodLink - Blood Donor Management System</title>
 
-    <title>BloodLink | Blood Donor System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body>
 
+    <!-- ================================================
+         NAVIGATION
+    ================================================= -->
 
-<!-- ================= HEADER ================= -->
+    <header class="main-header">
 
-<header class="header">
+        <nav class="navbar">
 
-    <div class="logo">
-        🩸 BloodLink
-    </div>
+            <a href="index.html" class="brand">
 
-    <div class="online-status">
-        <span></span>
-        SYSTEM ONLINE
-    </div>
+                <div class="brand-drop">
+                    🩸
+                </div>
 
-</header>
+                <div>
+                    <strong>BloodLink</strong>
+                    <span>Life • Hope • Humanity</span>
+                </div>
 
-
-
-<!-- ================= NAVIGATION ================= -->
-
-<nav class="navbar">
-
-    <button class="menu-btn active"
-            data-page="home">
-        🏠 Home
-    </button>
-
-    <button class="menu-btn"
-            data-page="search">
-        🔎 Search Donors
-    </button>
-
-    <button class="menu-btn"
-            data-page="register">
-        🩸 Donor Register
-    </button>
-
-    <button class="menu-btn"
-            data-page="compatibility">
-        🩸 Blood Compatibility
-    </button>
-
-    <button class="menu-btn"
-            data-page="eligibility">
-        🧮 Donation Eligibility
-    </button>
-
-    <button class="menu-btn"
-            data-page="location">
-        📍 Population & Location
-    </button>
-
-</nav>
+            </a>
 
 
+            <div class="nav-menu">
 
-<main class="container">
+                <a href="index.html" class="active">
+                    Home
+                </a>
 
+                <a href="donor.html">
+                    Become a Donor
+                </a>
 
-<!-- ================================================= -->
-<!-- HOME -->
-<!-- ================================================= -->
+                <a href="search.html">
+                    Find Donor
+                </a>
 
-<section id="home" class="page active">
+                <a href="request.html">
+                    Request Blood
+                </a>
 
-    <div class="hero">
+                <a href="compatibility.html">
+                    Compatibility
+                </a>
 
-        <div class="hero-icon">
-            🩸
-        </div>
+                <a href="about.html">
+                    About
+                </a>
 
-        <h1>
-            BloodLink
-        </h1>
+                <a href="login.html" class="nav-login">
+                    Login
+                </a>
 
-        <h2>
-            Blood Donor Management System
-        </h2>
+            </div>
 
-        <p>
-            Find blood donors, register as a donor,
-            check blood compatibility and explore
-            locations worldwide.
-        </p>
+        </nav>
 
-
-        <div class="hero-buttons">
-
-            <button class="primary-btn"
-                    id="goSearch">
-
-                🔎 Search Donors
-
-            </button>
+    </header>
 
 
-            <button class="secondary-btn"
-                    id="goRegister">
+    <!-- ================================================
+         HERO SECTION
+    ================================================= -->
 
-                🩸 Register as Donor
+    <main>
 
-            </button>
+        <section class="hero-section">
 
-        </div>
-
-    </div>
-
-
-
-    <div class="stats">
+            <div class="hero-glow glow-one"></div>
+            <div class="hero-glow glow-two"></div>
 
 
-        <div class="stat-card">
+            <div class="hero-content">
 
-            <div class="stat-icon">
+                <div class="hero-label">
+                    <span class="pulse-dot"></span>
+                    BLOODLINK • SAVE A LIFE
+                </div>
+
+
+                <h1>
+
+                    Your Blood Can Be
+
+                    <span>
+                        Someone's Hope.
+                    </span>
+
+                </h1>
+
+
+                <p class="hero-description">
+
+                    BloodLink connects blood donors with patients
+                    who need life-saving blood. One registration,
+                    one donation, one precious life.
+
+                </p>
+
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="donor.html"
+                        class="primary-button"
+                    >
+                        🩸 Become a Donor
+                    </a>
+
+
+                    <a
+                        href="search.html"
+                        class="secondary-button"
+                    >
+                        Find a Donor →
+                    </a>
+
+                </div>
+
+
+                <div class="hero-mini-stats">
+
+                    <div>
+                        <strong>8</strong>
+                        <span>Blood Groups</span>
+                    </div>
+
+                    <div>
+                        <strong>24/7</strong>
+                        <span>Connection</span>
+                    </div>
+
+                    <div>
+                        <strong>1</strong>
+                        <span>Life to Save</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BLOOD DROP VISUAL -->
+
+            <div class="hero-visual">
+
+                <div class="blood-orbit orbit-one"></div>
+                <div class="blood-orbit orbit-two"></div>
+
+
+                <div class="blood-drop-large">
+
+                    <div class="drop-shine"></div>
+
+                    <div class="drop-content">
+
+                        <span>
+                            🩸
+                        </span>
+
+                        <strong>
+                            GIVE
+                        </strong>
+
+                        <small>
+                            THE GIFT OF LIFE
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="floating-card card-top">
+
+                    <span>❤️</span>
+
+                    <div>
+                        <strong>
+                            Every Drop
+                        </strong>
+
+                        <small>
+                            Matters
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="floating-card card-bottom">
+
+                    <span>✓</span>
+
+                    <div>
+                        <strong>
+                            BloodLink
+                        </strong>
+
+                        <small>
+                            Connecting Lives
+                        </small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================
+             QUICK ACTIONS
+        ================================================= -->
+
+        <section class="quick-section">
+
+            <div class="section-title">
+
+                <span>
+                    BLOODLINK SERVICES
+                </span>
+
+                <h2>
+                    How Can We Help?
+                </h2>
+
+                <p>
+                    Choose what you need and take the next step.
+                </p>
+
+            </div>
+
+
+            <div class="quick-grid">
+
+
+                <a
+                    href="donor.html"
+                    class="service-card donor-card-theme"
+                >
+
+                    <div class="service-icon">
+                        🩸
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Become a Donor
+                        </h3>
+
+                        <p>
+                            Register yourself as a blood donor
+                            and help save lives.
+                        </p>
+
+                        <span class="service-link">
+                            Register Now →
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="search.html"
+                    class="service-card search-card-theme"
+                >
+
+                    <div class="service-icon">
+                        🔎
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Find a Donor
+                        </h3>
+
+                        <p>
+                            Search for available donors by
+                            blood group and location.
+                        </p>
+
+                        <span class="service-link">
+                            Search Donors →
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="request.html"
+                    class="service-card request-card-theme"
+                >
+
+                    <div class="service-icon">
+                        🚑
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Request Blood
+                        </h3>
+
+                        <p>
+                            Submit an urgent blood requirement
+                            for a patient.
+                        </p>
+
+                        <span class="service-link">
+                            Request Blood →
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a
+                    href="compatibility.html"
+                    class="service-card compatibility-card-theme"
+                >
+
+                    <div class="service-icon">
+                        🧬
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Check Compatibility
+                        </h3>
+
+                        <p>
+                            Check blood compatibility between
+                            donor and receiver groups.
+                        </p>
+
+                        <span class="service-link">
+                            Check Now →
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================
+             THIRUKKURAL
+        ================================================= -->
+
+        <section class="thirukkural-section">
+
+            <div class="thirukkural-decoration">
+                ❝
+            </div>
+
+
+            <div class="thirukkural-content">
+
+                <span class="tamil-label">
+                    திருக்குறள்
+                </span>
+
+
+                <h2>
+                    “அருளில்லார்க்கு அவ்வுலகம் இல்லை;
+                    பொருளில்லார்க்கு இவ்வுலகம் இல்லாகி யாங்கு.”
+                </h2>
+
+
+                <div class="kural-line"></div>
+
+
+                <p class="kural-number">
+                    குறள் 247
+                </p>
+
+
+                <p class="kural-meaning">
+
+                    பிறரிடம் அன்பும் இரக்கமும் கொண்டிருப்பது
+                    மனித வாழ்வின் மிக உயர்ந்த பண்பாகும்.
+
+                </p>
+
+
+                <p class="kural-english">
+
+                    Compassion and kindness are essential
+                    qualities of humanity.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================
+             BLOOD GROUPS
+        ================================================= -->
+
+        <section class="blood-groups-section">
+
+            <div class="section-title">
+
+                <span>
+                    BLOOD GROUPS
+                </span>
+
+                <h2>
+                    Every Blood Group Matters
+                </h2>
+
+                <p>
+                    A single donation can become a precious
+                    gift for someone in need.
+                </p>
+
+            </div>
+
+
+            <div class="blood-group-grid">
+
+                <div class="blood-type">
+                    <span>A</span>
+                    <small>Positive</small>
+                </div>
+
+                <div class="blood-type">
+                    <span>A−</span>
+                    <small>Negative</small>
+                </div>
+
+                <div class="blood-type">
+                    <span>B+</span>
+                    <small>Positive</small>
+                </div>
+
+                <div class="blood-type">
+                    <span>B−</span>
+                    <small>Negative</small>
+                </div>
+
+                <div class="blood-type">
+                    <span>AB+</span>
+                    <small>Positive</small>
+                </div>
+
+                <div class="blood-type">
+                    <span>AB−</span>
+                    <small>Negative</small>
+                </div>
+
+                <div class="blood-type">
+                    <span>O+</span>
+                    <small>Positive</small>
+                </div>
+
+                <div class="blood-type">
+                    <span>O−</span>
+                    <small>Negative</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================
+             WHY BLOODLINK
+        ================================================= -->
+
+        <section class="why-section">
+
+            <div class="why-visual">
+
+                <div class="medical-circle">
+
+                    <div class="medical-cross">
+                        +
+                    </div>
+
+                    <span>
+                        BLOOD
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="why-content">
+
+                <span>
+                    WHY BLOODLINK?
+                </span>
+
+                <h2>
+                    Technology With
+                    <strong>Humanity.</strong>
+                </h2>
+
+
+                <p>
+                    BloodLink provides a simple digital platform
+                    for managing blood donors and blood requests.
+                    Our goal is to make it easier for people to
+                    connect when every second matters.
+                </p>
+
+
+                <div class="why-points">
+
+                    <div>
+
+                        <span>01</span>
+
+                        <p>
+                            <strong>
+                                Easy Registration
+                            </strong>
+
+                            <br>
+
+                            Register as a donor in just a few steps.
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>02</span>
+
+                        <p>
+                            <strong>
+                                Smart Search
+                            </strong>
+
+                            <br>
+
+                            Find donors based on blood group
+                            and location.
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>03</span>
+
+                        <p>
+                            <strong>
+                                Faster Connection
+                            </strong>
+
+                            <br>
+
+                            Connect patients and donors
+                            when help is needed.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================
+             FINAL CTA
+        ================================================= -->
+
+        <section class="final-cta">
+
+            <div class="cta-drop">
                 🩸
             </div>
 
-            <div>
-
-                <h3 id="donorCount">
-                    3
-                </h3>
-
-                <p>
-                    Registered Donors
-                </p>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="stat-card">
-
-            <div class="stat-icon">
-                🩺
-            </div>
 
             <div>
 
-                <h3>
-                    8
-                </h3>
+                <span>
+                    BE THE DIFFERENCE
+                </span>
+
+                <h2>
+                    Someone, Somewhere,
+                    Needs Your Blood.
+                </h2>
 
                 <p>
-                    Blood Groups
+                    Become a BloodLink donor today.
                 </p>
 
             </div>
 
-        </div>
+
+            <a
+                href="donor.html"
+                class="cta-button"
+            >
+                Become a Donor →
+            </a>
+
+        </section>
+
+    </main>
 
 
+    <!-- ================================================
+         FOOTER
+    ================================================= -->
 
-        <div class="stat-card">
+    <footer class="new-footer">
 
-            <div class="stat-icon">
-                🌍
-            </div>
+        <div class="footer-main">
 
-            <div>
+            <div class="footer-brand">
 
-                <h3>
-                    Worldwide
-                </h3>
+                <div class="brand footer-brand-logo">
+
+                    <div class="brand-drop">
+                        🩸
+                    </div>
+
+                    <div>
+                        <strong>
+                            BloodLink
+                        </strong>
+
+                        <span>
+                            Life • Hope • Humanity
+                        </span>
+                    </div>
+
+                </div>
+
 
                 <p>
-                    Location Search
+                    Connecting blood donors with people
+                    who need them.
                 </p>
 
             </div>
 
-        </div>
 
-    </div>
+            <div class="footer-column">
 
-</section>
+                <h4>
+                    Quick Links
+                </h4>
 
+                <a href="index.html">
+                    Home
+                </a>
 
+                <a href="donor.html">
+                    Become a Donor
+                </a>
 
-<!-- ================================================= -->
-<!-- SEARCH DONORS -->
-<!-- ================================================= -->
-
-<section id="search" class="page">
-
-    <div class="section-heading">
-
-        <h1>
-            🔎 Search Blood Donors
-        </h1>
-
-        <p>
-            Find donors using blood group and location.
-        </p>
-
-    </div>
-
-
-    <div class="card">
-
-
-        <div class="form-row">
-
-
-            <div class="form-group">
-
-                <label>
-                    Blood Group
-                </label>
-
-                <select id="searchBlood">
-
-                    <option value="">
-                        All Blood Groups
-                    </option>
-
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-
-                </select>
+                <a href="search.html">
+                    Find Donor
+                </a>
 
             </div>
 
 
+            <div class="footer-column">
 
-            <div class="form-group">
+                <h4>
+                    Services
+                </h4>
 
-                <label>
-                    City / District
-                </label>
+                <a href="request.html">
+                    Request Blood
+                </a>
 
-                <input
-                    id="searchCity"
-                    type="text"
-                    placeholder="Example: Chennai">
+                <a href="compatibility.html">
+                    Compatibility
+                </a>
+
+                <a href="about.html">
+                    About BloodLink
+                </a>
 
             </div>
 
         </div>
 
 
+        <div class="footer-bottom">
 
-        <div class="button-row">
+            <span>
+                © 2026 BloodLink
+            </span>
 
-            <button
-                class="primary-btn"
-                id="searchButton">
-
-                🔎 Search Donors
-
-            </button>
-
-
-            <button
-                class="clear-btn"
-                id="clearButton">
-
-                Clear
-
-            </button>
+            <span>
+                Blood Donor Management System
+            </span>
 
         </div>
 
-    </div>
+    </footer>
 
 
-
-    <div id="searchMessage"
-         class="message">
-    </div>
-
-
-
-    <div id="donorResults">
-
-        <div class="empty-box">
-
-            🩸
-
-            <h3>
-                Search for Blood Donors
-            </h3>
-
-            <p>
-                Select a blood group or enter a city.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- ================================================= -->
-<!-- DONOR REGISTER -->
-<!-- ================================================= -->
-
-<section id="register" class="page">
-
-    <div class="section-heading">
-
-        <h1>
-            🩸 Donor Registration
-        </h1>
-
-        <p>
-            Register yourself as a blood donor.
-        </p>
-
-    </div>
-
-
-    <div class="card">
-
-
-        <div class="form-row">
-
-
-            <div class="form-group">
-
-                <label>
-                    Full Name
-                </label>
-
-                <input
-                    id="donorName"
-                    type="text"
-                    placeholder="Enter full name">
-
-            </div>
-
-
-
-            <div class="form-group">
-
-                <label>
-                    Age
-                </label>
-
-                <input
-                    id="donorAge"
-                    type="number"
-                    min="18"
-                    max="65"
-                    placeholder="18 - 65">
-
-            </div>
-
-        </div>
-
-
-
-        <div class="form-row">
-
-
-            <div class="form-group">
-
-                <label>
-                    Blood Group
-                </label>
-
-                <select id="donorBlood">
-
-                    <option value="">
-                        Select Blood Group
-                    </option>
-
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-
-                </select>
-
-            </div>
-
-
-
-            <div class="form-group">
-
-                <label>
-                    City / District
-                </label>
-
-                <input
-                    id="donorCity"
-                    type="text"
-                    placeholder="Example: Chennai">
-
-            </div>
-
-        </div>
-
-
-
-        <div class="form-group">
-
-            <label>
-                Mobile Number
-            </label>
-
-            <input
-                id="donorPhone"
-                type="tel"
-                placeholder="Example: 9876543210">
-
-        </div>
-
-
-
-        <button
-            class="primary-btn full-width"
-            id="registerButton">
-
-            🩸 Register Donor
-
-        </button>
-
-
-
-        <div id="registerMessage"
-             class="message">
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- ================================================= -->
-<!-- BLOOD COMPATIBILITY -->
-<!-- ================================================= -->
-
-<section id="compatibility" class="page">
-
-    <div class="section-heading">
-
-        <h1>
-            🩸 Blood Group Compatibility
-        </h1>
-
-        <p>
-            Check blood donation compatibility.
-        </p>
-
-    </div>
-
-
-    <div class="card">
-
-
-        <div class="form-group">
-
-            <label>
-                Select Blood Group
-            </label>
-
-            <select id="compatibilityBlood">
-
-                <option value="">
-                    Select Blood Group
-                </option>
-
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-
-            </select>
-
-        </div>
-
-
-        <div id="compatibilityResult"
-             class="compatibility-result">
-
-            Select a blood group to see compatibility.
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- ================================================= -->
-<!-- ELIGIBILITY -->
-<!-- ================================================= -->
-
-<section id="eligibility" class="page">
-
-    <div class="section-heading">
-
-        <h1>
-            🧮 Blood Donation Eligibility
-        </h1>
-
-        <p>
-            Basic eligibility checker.
-        </p>
-
-    </div>
-
-
-    <div class="card">
-
-
-        <div class="form-group">
-
-            <label>
-                Age
-            </label>
-
-            <input
-                id="eligibilityAge"
-                type="number"
-                placeholder="Enter your age">
-
-        </div>
-
-
-
-        <div class="form-group">
-
-            <label>
-                Last Donation Date
-            </label>
-
-            <input
-                id="lastDonation"
-                type="date">
-
-        </div>
-
-
-
-        <button
-            class="primary-btn full-width"
-            id="eligibilityButton">
-
-            🧮 Check Eligibility
-
-        </button>
-
-
-
-        <div id="eligibilityResult"
-             class="eligibility-result">
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- ================================================= -->
-<!-- LOCATION -->
-<!-- ================================================= -->
-
-<section id="location" class="page">
-
-    <div class="section-heading">
-
-        <h1>
-            📍 Population & Location
-        </h1>
-
-        <p>
-            Search worldwide cities, districts and countries.
-        </p>
-
-    </div>
-
-
-    <div class="card">
-
-
-        <div class="location-search">
-
-            <input
-                id="locationInput"
-                type="text"
-                placeholder="Example: Chennai">
-
-            <button
-                class="primary-btn"
-                id="locationButton">
-
-                🌍 Search Location
-
-            </button>
-
-        </div>
-
-
-        <div id="locationMessage"
-             class="message">
-        </div>
-
-
-        <div id="locationResult">
-
-            <div class="empty-box">
-
-                🌍
-
-                <h3>
-                    Worldwide Location Search
-                </h3>
-
-                <p>
-                    Enter a city or country above.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-</main>
-
-
-
-<!-- ================================================= -->
-<!-- FOOTER -->
-<!-- ================================================= -->
-
-<footer>
-
-    <h2>
-        🩸 BloodLink
-    </h2>
-
-    <p>
-        Blood Donor Management System
-    </p>
-
-    <p>
-        © 2026 BloodLink
-    </p>
-
-</footer>
-
-
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 

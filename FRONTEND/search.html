@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Find Donor | BloodLink</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* =========================================================
+           FIND DONOR - FULL BLOODLINK THEME
+           ========================================================= */
+
+        .search-page {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 15%, rgba(181, 29, 59, 0.07), transparent 28%),
+                radial-gradient(circle at 90% 25%, rgba(181, 29, 59, 0.06), transparent 30%),
+                #fafafa;
+        }
+
+        /* HERO */
+        .search-hero {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #5f0718, #8d1028 50%, #b51d3b);
+            color: white;
+            padding: 75px 7% 105px;
+        }
+
+        .search-hero::before {
+            content: "";
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            right: -130px;
+            top: -180px;
+        }
+
+        .search-hero::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            left: -140px;
+            bottom: -190px;
+        }
+
+        .search-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1150px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .search-hero-text {
+            max-width: 700px;
+        }
+
+        .search-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 17px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .search-hero h1 {
+            font-size: clamp(38px, 5vw, 62px);
+            line-height: 1.05;
+            margin: 0 0 20px;
+            font-weight: 800;
+        }
+
+        .search-hero h1 span {
+            color: #ffd5dc;
+        }
+
+        .search-hero p {
+            margin: 0;
+            color: #ffeef1;
+            font-size: 18px;
+            line-height: 1.7;
+            max-width: 650px;
+        }
+
+        .search-hero-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-visual-circle {
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.09);
+            border: 1px solid rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 105px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            animation: searchFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes searchFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* MAIN */
+        .search-main {
+            max-width: 1150px;
+            margin: -50px auto 0;
+            padding: 0 20px 80px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* SEARCH CARD */
+        .search-card {
+            background: white;
+            border-radius: 22px;
+            padding: 38px;
+            box-shadow: 0 18px 50px rgba(70, 10, 25, 0.12);
+            border: 1px solid #f0dfe3;
+        }
+
+        .search-card-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .search-card-heading h2 {
+            margin: 0 0 9px;
+            color: #65091d;
+            font-size: 30px;
+        }
+
+        .search-card-heading p {
+            margin: 0 auto;
+            color: #777;
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 18px;
+            align-items: end;
+        }
+
+        .search-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #3b2027;
+        }
+
+        .search-field select,
+        .search-field input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
+            border-radius: 11px;
+            background: white;
+            color: #333;
+            font-size: 15px;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        .search-field select:focus,
+        .search-field input:focus {
+            border-color: #a91432;
+            box-shadow: 0 0 0 4px rgba(169, 20, 50, 0.08);
+        }
+
+        #searchDonorButton {
+            border: none;
+            border-radius: 11px;
+            padding: 14px 25px;
+            background: linear-gradient(135deg, #8c1028, #b51d3b);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 48px;
+            transition: 0.25s;
+            white-space: nowrap;
+            box-shadow: 0 9px 22px rgba(140, 16, 40, 0.20);
+        }
+
+        #searchDonorButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 13px 28px rgba(140, 16, 40, 0.28);
+        }
+
+        /* MESSAGE */
+        #searchMessage {
+            margin-top: 20px;
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* RESULTS */
+        .search-results-section {
+            margin-top: 55px;
+        }
+
+        .search-section-heading {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .search-section-heading span {
+            color: #a91432;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .search-section-heading h2 {
+            margin: 8px 0 8px;
+            color: #4f0818;
+            font-size: 34px;
+        }
+
+        .search-section-heading p {
+            margin: 0 auto;
+            color: #777;
+            line-height: 1.6;
+            max-width: 650px;
+        }
+
+        #searchResults {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* Common donor-result styling */
+        #searchResults > div {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(70, 10, 25, 0.07);
+            transition: 0.25s;
+        }
+
+        #searchResults > div:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.11);
+        }
+
+        /* Empty / initial result area */
+        .search-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            background: white;
+            border: 1px dashed #e1c8ce;
+            border-radius: 18px;
+            padding: 45px 25px;
+            color: #777;
+        }
+
+        .search-empty-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        /* HOW IT WORKS */
+        .search-how-section {
+            margin-top: 65px;
+        }
+
+        .search-how-heading {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .search-how-heading h2 {
+            margin: 0 0 8px;
+            color: #4f0818;
+            font-size: 33px;
+        }
+
+        .search-how-heading p {
+            color: #777;
+            margin: 0;
+        }
+
+        .search-how-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .search-how-card {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            border: 1px solid #f0dfe3;
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .search-how-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.09);
+        }
+
+        .search-how-number {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: #fff0f3;
+            color: #a91432;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .search-how-card h3 {
+            color: #4b1d26;
+            margin: 0 0 8px;
+        }
+
+        .search-how-card p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* CTA */
+        .search-cta {
+            margin-top: 65px;
+            border-radius: 22px;
+            padding: 45px;
+            text-align: center;
+            background: linear-gradient(135deg, #65091d, #a91432);
+            color: white;
+            box-shadow: 0 18px 40px rgba(100, 9, 29, 0.16);
+        }
+
+        .search-cta h2 {
+            margin: 0 0 10px;
+            font-size: 32px;
+        }
+
+        .search-cta p {
+            margin: 0 auto;
+            max-width: 650px;
+            color: #ffe9ed;
+            line-height: 1.7;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .search-hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .search-hero p {
+                margin: auto;
+            }
+
+            .search-hero-visual {
+                display: none;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            #searchResults {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-how-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .search-hero {
+                padding: 55px 20px 80px;
+            }
+
+            .search-main {
+                padding: 0 12px 55px;
+            }
+
+            .search-card {
+                padding: 25px 20px;
+            }
+
+            #searchResults {
+                grid-template-columns: 1fr;
+            }
+
+            .search-section-heading h2,
+            .search-how-heading h2 {
+                font-size: 28px;
+            }
+
+            .search-cta {
+                padding: 32px 20px;
+            }
+
+            .search-cta h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <nav class="navbar">
+
+            <a href="index.html" class="brand">
+                <div class="brand-drop">🩸</div>
+
+                <div>
+                    <strong>BloodLink</strong>
+                    <span>Life • Hope • Humanity</span>
+                </div>
+            </a>
+
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="donor.html">Become a Donor</a>
+                <a href="search.html" class="active">Find Donor</a>
+                <a href="request.html">Request Blood</a>
+                <a href="compatibility.html">Compatibility</a>
+                <a href="about.html">About</a>
+                <a href="login.html" class="nav-login">Login</a>
+            </div>
+
+        </nav>
+    </header>
+
+
+    <main class="search-page">
+
+        <!-- HERO -->
+        <section class="search-hero">
+
+            <div class="search-hero-content">
+
+                <div class="search-hero-text">
+
+                    <div class="search-badge">
+                        🔎 Find Help Faster
+                    </div>
+
+                    <h1>
+                        Find a Blood Donor.<br>
+                        <span>Find Hope.</span>
+                    </h1>
+
+                    <p>
+                        Search for registered blood donors based on blood group
+                        and location. BloodLink helps bring people together when
+                        every moment matters.
+                    </p>
+
+                </div>
+
+
+                <div class="search-hero-visual">
+
+                    <div class="search-visual-circle">
+                        🔎🩸
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN -->
+        <section class="search-main">
+
+            <!-- SEARCH FORM -->
+            <div class="search-card">
+
+                <div class="search-card-heading">
+
+                    <h2>Search for a Donor</h2>
+
+                    <p>
+                        Enter the required blood group and city or district
+                        to find matching registered donors.
+                    </p>
+
+                </div>
+
+
+                <div class="search-form">
+
+                    <div class="search-field">
+
+                        <label for="searchBlood">
+                            Required Blood Group
+                        </label>
+
+                        <select id="searchBlood">
+
+                            <option value="">
+                                Select blood group
+                            </option>
+
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="search-field">
+
+                        <label for="searchCity">
+                            City / District
+                        </label>
+
+                        <input
+                            type="text"
+                            id="searchCity"
+                            placeholder="Enter city or district"
+                        >
+
+                    </div>
+
+
+                    <button id="searchDonorButton" type="button">
+                        🔎 Find Donors
+                    </button>
+
+                </div>
+
+
+                <div id="searchMessage"></div>
+
+            </div>
+
+
+            <!-- RESULTS -->
+            <section class="search-results-section">
+
+                <div class="search-section-heading">
+
+                    <span>BloodLink Donor Network</span>
+
+                    <h2>Available Donors</h2>
+
+                    <p>
+                        Matching donor information will appear here after
+                        you perform a search.
+                    </p>
+
+                </div>
+
+
+                <div id="searchResults">
+
+                    <div class="search-empty">
+
+                        <div class="search-empty-icon">
+                            🩸
+                        </div>
+
+                        <strong>
+                            Search for a donor
+                        </strong>
+
+                        <p>
+                            Select a blood group and enter a location
+                            to see matching donors.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- HOW IT WORKS -->
+            <section class="search-how-section">
+
+                <div class="search-how-heading">
+
+                    <h2>How BloodLink Helps</h2>
+
+                    <p>
+                        Finding a donor is simple.
+                    </p>
+
+                </div>
+
+
+                <div class="search-how-grid">
+
+                    <div class="search-how-card">
+
+                        <div class="search-how-number">
+                            01
+                        </div>
+
+                        <h3>Choose Blood Group</h3>
+
+                        <p>
+                            Select the blood group required by the patient.
+                        </p>
+
+                    </div>
+
+
+                    <div class="search-how-card">
+
+                        <div class="search-how-number">
+                            02
+                        </div>
+
+                        <h3>Enter Location</h3>
+
+                        <p>
+                            Search within a city or district to find
+                            nearby registered donors.
+                        </p>
+
+                    </div>
+
+
+                    <div class="search-how-card">
+
+                        <div class="search-how-number">
+                            03
+                        </div>
+
+                        <h3>Connect</h3>
+
+                        <p>
+                            Review matching donor information available
+                            through the BloodLink system.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CTA -->
+            <section class="search-cta">
+
+                <h2>
+                    Can't Find the Blood You Need?
+                </h2>
+
+                <p>
+                    Create a blood request through BloodLink so your
+                    requirement can be recorded and managed through
+                    the system.
+                </p>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="new-footer">
+
+        <div class="footer-main">
+
+            <div class="footer-brand">
+
+                <div class="brand">
+
+                    <div class="brand-drop">🩸</div>
+
+                    <div>
+                        <strong>BloodLink</strong>
+                        <span>Life • Hope • Humanity</span>
+                    </div>
+
+                </div>
+
+                <p>
+                    Connecting blood donors with people who need them.
+                </p>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Quick Links</h4>
+
+                <a href="index.html">Home</a>
+                <a href="donor.html">Become a Donor</a>
+                <a href="search.html">Find Donor</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Services</h4>
+
+                <a href="request.html">Request Blood</a>
+                <a href="compatibility.html">Compatibility</a>
+                <a href="about.html">About BloodLink</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>© 2026 BloodLink</span>
+
+            <span>
+                Blood Donor Management System
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

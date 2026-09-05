@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Become a Donor | BloodLink</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* =========================================================
+           DONOR PAGE - FULL BLOODLINK THEME
+           ========================================================= */
+
+        .donor-page {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(190, 20, 45, 0.08), transparent 30%),
+                radial-gradient(circle at 90% 20%, rgba(190, 20, 45, 0.06), transparent 28%),
+                #fafafa;
+        }
+
+        /* HERO */
+        .donor-hero {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(135deg, #5f0718 0%, #8d1028 48%, #b51d3b 100%);
+            color: white;
+            padding: 80px 7% 95px;
+        }
+
+        .donor-hero::before {
+            content: "";
+            position: absolute;
+            width: 430px;
+            height: 430px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            right: -130px;
+            top: -180px;
+        }
+
+        .donor-hero::after {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            left: -120px;
+            bottom: -150px;
+        }
+
+        .donor-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1150px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .donor-hero-text h1 {
+            font-size: clamp(38px, 5vw, 64px);
+            line-height: 1.05;
+            margin: 0 0 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .donor-hero-text h1 span {
+            color: #ffd5dc;
+        }
+
+        .donor-hero-text p {
+            font-size: 19px;
+            line-height: 1.7;
+            max-width: 650px;
+            color: #ffeef1;
+            margin: 0;
+        }
+
+        .donor-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 17px;
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            margin-bottom: 22px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .donor-hero-card {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .blood-drop-large {
+            width: 210px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 115px;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.25));
+            animation: donorFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes donorFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        /* MAIN CONTENT */
+        .donor-main {
+            max-width: 1150px;
+            margin: -45px auto 0;
+            position: relative;
+            z-index: 5;
+            padding: 0 20px 80px;
+        }
+
+        .donor-layout {
+            display: grid;
+            grid-template-columns: 0.85fr 1.25fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* INFORMATION PANEL */
+        .donor-info {
+            background: white;
+            border-radius: 22px;
+            padding: 34px;
+            box-shadow: 0 18px 50px rgba(70, 10, 25, 0.10);
+            border: 1px solid #f0dfe3;
+        }
+
+        .donor-info h2 {
+            color: #780c23;
+            font-size: 28px;
+            margin: 0 0 12px;
+        }
+
+        .donor-info > p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .donor-benefit {
+            display: flex;
+            gap: 15px;
+            padding: 17px 0;
+            border-bottom: 1px solid #f0e7e9;
+        }
+
+        .donor-benefit:last-child {
+            border-bottom: none;
+        }
+
+        .donor-benefit-icon {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border-radius: 14px;
+            background: #fff0f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+        }
+
+        .donor-benefit h3 {
+            margin: 0 0 5px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .donor-benefit p {
+            margin: 0;
+            font-size: 13px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+        /* FORM CARD */
+        .donor-form-card {
+            background: white;
+            border-radius: 22px;
+            padding: 40px;
+            box-shadow: 0 18px 50px rgba(70, 10, 25, 0.12);
+            border: 1px solid #f0dfe3;
+        }
+
+        .donor-form-heading {
+            margin-bottom: 30px;
+        }
+
+        .donor-form-heading h2 {
+            color: #65091d;
+            font-size: 30px;
+            margin: 0 0 8px;
+        }
+
+        .donor-form-heading p {
+            color: #777;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .verification-notice {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: #fff5f6;
+            border: 1px solid #f2d5da;
+            border-left: 4px solid #a91432;
+            border-radius: 12px;
+            padding: 15px 17px;
+            margin-bottom: 25px;
+            color: #6c2634;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .verification-notice strong {
+            display: block;
+            margin-bottom: 3px;
+            color: #7c0c24;
+        }
+
+        .donor-form-group {
+            margin-bottom: 20px;
+        }
+
+        .donor-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #3b2027;
+        }
+
+        .donor-form-group input,
+        .donor-form-group select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
+            border-radius: 11px;
+            background: #fff;
+            color: #333;
+            font-size: 15px;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        .donor-form-group input:focus,
+        .donor-form-group select:focus {
+            border-color: #a91432;
+            box-shadow: 0 0 0 4px rgba(169, 20, 50, 0.08);
+        }
+
+        .donor-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .blood-select-wrapper {
+            position: relative;
+        }
+
+        .blood-group-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        #donorRegisterButton {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #8c1028, #b51d3b);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 10px 24px rgba(140, 16, 40, 0.20);
+        }
+
+        #donorRegisterButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(140, 16, 40, 0.28);
+        }
+
+        #donorRegisterButton:active {
+            transform: translateY(0);
+        }
+
+        #donorMessage {
+            margin-top: 18px;
+            padding: 13px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        /* WHY DONATE */
+        .why-donate {
+            margin-top: 70px;
+        }
+
+        .donor-section-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .donor-section-heading span {
+            color: #a91432;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .donor-section-heading h2 {
+            margin: 8px 0 10px;
+            font-size: 35px;
+            color: #4f0818;
+        }
+
+        .donor-section-heading p {
+            margin: auto;
+            max-width: 650px;
+            color: #777;
+            line-height: 1.7;
+        }
+
+        .donor-impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .impact-card {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            border: 1px solid #f0dfe3;
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.10);
+        }
+
+        .impact-number {
+            color: #a91432;
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .impact-card h3 {
+            margin: 5px 0 8px;
+            color: #4b1d26;
+        }
+
+        .impact-card p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* CTA */
+        .donor-bottom-cta {
+            margin-top: 65px;
+            background: linear-gradient(135deg, #65091d, #a91432);
+            color: white;
+            border-radius: 22px;
+            padding: 45px;
+            text-align: center;
+            box-shadow: 0 18px 40px rgba(100, 9, 29, 0.16);
+        }
+
+        .donor-bottom-cta h2 {
+            margin: 0 0 10px;
+            font-size: 32px;
+        }
+
+        .donor-bottom-cta p {
+            margin: 0 auto;
+            max-width: 650px;
+            color: #ffe9ed;
+            line-height: 1.7;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .donor-hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .donor-hero-text p {
+                margin: auto;
+            }
+
+            .donor-hero-card {
+                display: none;
+            }
+
+            .donor-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .donor-impact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .donor-hero {
+                padding: 55px 20px 75px;
+            }
+
+            .donor-main {
+                padding: 0 12px 55px;
+            }
+
+            .donor-info,
+            .donor-form-card {
+                padding: 25px 20px;
+            }
+
+            .donor-form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .donor-section-heading h2 {
+                font-size: 28px;
+            }
+
+            .donor-bottom-cta {
+                padding: 32px 20px;
+            }
+
+            .donor-bottom-cta h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <nav class="navbar">
+
+            <a href="index.html" class="brand">
+                <div class="brand-drop">🩸</div>
+
+                <div>
+                    <strong>BloodLink</strong>
+                    <span>Life • Hope • Humanity</span>
+                </div>
+            </a>
+
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="donor.html" class="active">Become a Donor</a>
+                <a href="search.html">Find Donor</a>
+                <a href="request.html">Request Blood</a>
+                <a href="compatibility.html">Compatibility</a>
+                <a href="about.html">About</a>
+                <a href="login.html" class="nav-login">Login</a>
+            </div>
+
+        </nav>
+    </header>
+
+
+    <main class="donor-page">
+
+        <!-- HERO -->
+        <section class="donor-hero">
+
+            <div class="donor-hero-content">
+
+                <div class="donor-hero-text">
+
+                    <div class="donor-hero-badge">
+                        ❤️ Be a Lifesaver
+                    </div>
+
+                    <h1>
+                        Give Blood.<br>
+                        <span>Give Hope.</span>
+                    </h1>
+
+                    <p>
+                        Your decision to donate blood can make a real difference
+                        in someone's life. Join BloodLink and become part of a
+                        community that connects donors with people who need help.
+                    </p>
+
+                </div>
+
+                <div class="donor-hero-card">
+                    <div class="blood-drop-large">🩸</div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN -->
+        <section class="donor-main">
+
+            <div class="donor-layout">
+
+                <!-- LEFT INFORMATION -->
+                <div class="donor-info">
+
+                    <h2>Why Become a Donor?</h2>
+
+                    <p>
+                        Blood cannot be manufactured. It can only come from
+                        generous people like you.
+                    </p>
+
+                    <div class="donor-benefit">
+
+                        <div class="donor-benefit-icon">❤️</div>
+
+                        <div>
+                            <h3>Save Lives</h3>
+
+                            <p>
+                                A single blood donation can help patients
+                                during emergencies, surgeries and treatments.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="donor-benefit">
+
+                        <div class="donor-benefit-icon">🤝</div>
+
+                        <div>
+                            <h3>Help Your Community</h3>
+
+                            <p>
+                                Connect with people in your city who may
+                                urgently need your blood group.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="donor-benefit">
+
+                        <div class="donor-benefit-icon">🌱</div>
+
+                        <div>
+                            <h3>Make an Impact</h3>
+
+                            <p>
+                                Your small act of kindness can become someone's
+                                biggest reason to hope.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="donor-benefit">
+
+                        <div class="donor-benefit-icon">🔒</div>
+
+                        <div>
+                            <h3>Verified Community</h3>
+
+                            <p>
+                                BloodLink is designed to connect registered
+                                users through a simple donor management system.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DONOR FORM -->
+                <div class="donor-form-card">
+
+                    <div class="donor-form-heading">
+
+                        <h2>Register as a Donor</h2>
+
+                        <p>
+                            Share your basic details so people can find your
+                            blood group when help is needed.
+                        </p>
+
+                    </div>
+
+
+                    <div class="verification-notice">
+
+                        <div>🛡️</div>
+
+                        <div>
+                            <strong>Verification Required</strong>
+
+                            Your account must have a completed government-ID
+                            verification step before donor registration.
+                        </div>
+
+                    </div>
+
+
+                    <div class="donor-form-group">
+
+                        <label for="donorName">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="donorName"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                        >
+
+                    </div>
+
+
+                    <div class="donor-form-row">
+
+                        <div class="donor-form-group">
+
+                            <label for="donorBlood">
+                                Blood Group
+                            </label>
+
+                            <div class="blood-select-wrapper">
+
+                                <select id="donorBlood">
+
+                                    <option value="">
+                                        Select blood group
+                                    </option>
+
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="blood-group-hint">
+                                Select your confirmed blood group.
+                            </div>
+
+                        </div>
+
+
+                        <div class="donor-form-group">
+
+                            <label for="donorCity">
+                                City / District
+                            </label>
+
+                            <input
+                                type="text"
+                                id="donorCity"
+                                placeholder="Enter your city or district"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="donor-form-group">
+
+                        <label for="donorPhone">
+                            Mobile Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="donorPhone"
+                            placeholder="Enter your mobile number"
+                            autocomplete="tel"
+                        >
+
+                    </div>
+
+
+                    <button id="donorRegisterButton" type="button">
+                        🩸 Register as Blood Donor
+                    </button>
+
+
+                    <div id="donorMessage"></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- IMPACT SECTION -->
+            <section class="why-donate">
+
+                <div class="donor-section-heading">
+
+                    <span>The Power of One Donation</span>
+
+                    <h2>Your Blood Can Change a Life</h2>
+
+                    <p>
+                        BloodLink makes it easier for donors and patients to
+                        find each other when every minute matters.
+                    </p>
+
+                </div>
+
+
+                <div class="donor-impact-grid">
+
+                    <div class="impact-card">
+
+                        <div class="impact-number">01</div>
+
+                        <h3>Register</h3>
+
+                        <p>
+                            Create your donor profile with your blood group,
+                            location and contact information.
+                        </p>
+
+                    </div>
+
+
+                    <div class="impact-card">
+
+                        <div class="impact-number">02</div>
+
+                        <h3>Get Connected</h3>
+
+                        <p>
+                            Your donor information can help people searching
+                            for compatible blood in your area.
+                        </p>
+
+                    </div>
+
+
+                    <div class="impact-card">
+
+                        <div class="impact-number">03</div>
+
+                        <h3>Make a Difference</h3>
+
+                        <p>
+                            When someone needs help, your willingness to donate
+                            can become a source of hope.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- BOTTOM CTA -->
+            <section class="donor-bottom-cta">
+
+                <h2>
+                    Someone, Somewhere, May Need Your Blood.
+                </h2>
+
+                <p>
+                    Take the first step today. Register with BloodLink and
+                    become part of a community built around life, hope and
+                    humanity.
+                </p>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="new-footer">
+
+        <div class="footer-main">
+
+            <div class="footer-brand">
+
+                <div class="brand">
+
+                    <div class="brand-drop">🩸</div>
+
+                    <div>
+                        <strong>BloodLink</strong>
+                        <span>Life • Hope • Humanity</span>
+                    </div>
+
+                </div>
+
+                <p>
+                    Connecting blood donors with people who need them.
+                </p>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Quick Links</h4>
+
+                <a href="index.html">Home</a>
+                <a href="donor.html">Become a Donor</a>
+                <a href="search.html">Find Donor</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Services</h4>
+
+                <a href="request.html">Request Blood</a>
+                <a href="compatibility.html">Compatibility</a>
+                <a href="about.html">About BloodLink</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>© 2026 BloodLink</span>
+
+            <span>
+                Blood Donor Management System
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

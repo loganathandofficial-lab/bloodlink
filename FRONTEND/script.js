@@ -1,1332 +1,1657 @@
-"use strict";
+// =========================================================
+// BLOODLINK
+// FRONTEND JAVASCRIPT
+// BACKEND + JSON STORAGE
+// =========================================================
 
-const API_URL = "https://bloodlink-x2h7.onrender.com/api";
+const API_URL = "http://localhost:5000/api";
 
-console.log("BloodLink frontend loaded");
-
-// =====================================================
-// PAGE LOAD
-// =====================================================
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    console.log("BloodLink DOM loaded");
-
-    // MENU
-    document.querySelectorAll(".menu-btn").forEach(function (button) {
-
-        button.addEventListener("click", function () {
-
-            const page = button.getAttribute("data-page");
-
-            showPage(page);
-        });
-    });
-
-    // HOME BUTTONS
-    const goSearch = document.getElementById("goSearch");
-
-    if (goSearch) {
-        goSearch.addEventListener("click", function () {
-            showPage("search");
-        });
-    }
-
-    const goRegister = document.getElementById("goRegister");
-
-    if (goRegister) {
-        goRegister.addEventListener("click", function () {
-            showPage("register");
-        });
-    }
-
-    // SEARCH
-    const searchButton = document.getElementById("searchButton");
-
-    if (searchButton) {
-        searchButton.addEventListener("click", searchDonors);
-    }
-
-    const clearButton = document.getElementById("clearButton");
-
-    if (clearButton) {
-        clearButton.addEventListener("click", clearSearch);
-    }
-
-    // REGISTER
-    const registerButton =
-        document.getElementById("registerButton");
-
-    if (registerButton) {
-        registerButton.addEventListener("click", registerDonor);
-    }
-
-    // COMPATIBILITY
-    const compatibilityBlood =
-        document.getElementById("compatibilityBlood");
-
-    if (compatibilityBlood) {
-        compatibilityBlood.addEventListener(
-            "change",
-            showCompatibility
-        );
-    }
-
-    // ELIGIBILITY
-    const eligibilityButton =
-        document.getElementById("eligibilityButton");
-
-    if (eligibilityButton) {
-        eligibilityButton.addEventListener(
-            "click",
-            checkEligibility
-        );
-    }
-
-    // LOCATION
-    const locationButton =
-        document.getElementById("locationButton");
-
-    if (locationButton) {
-        locationButton.addEventListener(
-            "click",
-            searchLocation
-        );
-    }
-
-    // LOAD REAL DONOR COUNT
-    loadDonorCount();
-});
+const LOGGED_IN_USER_KEY = "bloodlink_logged_in_user";
 
 
-// =====================================================
-// PAGE NAVIGATION
-// =====================================================
+// =========================================================
+// HELPER FUNCTIONS
+// =========================================================
 
-function showPage(pageId) {
+function saveLoggedInUser(user) {
 
-    const pages = document.querySelectorAll(".page");
+    localStorage.setItem(
+        LOGGED_IN_USER_KEY,
+        JSON.stringify(user)
+    );
 
-    pages.forEach(function (page) {
-        page.classList.remove("active");
-    });
-
-    const selectedPage =
-        document.getElementById(pageId);
-
-    if (!selectedPage) {
-        console.error("Page not found:", pageId);
-        return;
-    }
-
-    selectedPage.classList.add("active");
-
-    const buttons =
-        document.querySelectorAll(".menu-btn");
-
-    buttons.forEach(function (button) {
-        button.classList.remove("active");
-    });
-
-    const activeButton =
-        document.querySelector(
-            '.menu-btn[data-page="' +
-            pageId +
-            '"]'
-        );
-
-    if (activeButton) {
-        activeButton.classList.add("active");
-    }
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
 }
 
 
-// =====================================================
-// LOAD DONOR COUNT FROM DATABASE
-// =====================================================
+function getLoggedInUser() {
 
-async function loadDonorCount() {
+    const user =
+        localStorage.getItem(
+            LOGGED_IN_USER_KEY
+        );
 
-    const element =
-        document.getElementById("donorCount");
+    if (!user) {
+        return null;
+    }
+
+    try {
+
+        return JSON.parse(user);
+
+    } catch (error) {
+
+        console.error(
+            "Login session error:",
+            error
+        );
+
+        return null;
+    }
+
+}
+
+
+function showMessage(element, message, color) {
 
     if (!element) {
         return;
     }
 
-    try {
+    element.textContent = message;
+    element.style.color = color;
 
-        const response =
-            await fetch(API_URL + "/donors");
-
-        if (!response.ok) {
-            throw new Error("Failed to load donors");
-        }
-
-        const donors =
-            await response.json();
-
-        element.textContent =
-            donors.length;
-
-    } catch (error) {
-
-        console.error(
-            "Donor count error:",
-            error
-        );
-
-        element.textContent = "0";
-    }
 }
 
 
-// =====================================================
-// REGISTER DONOR
-// =====================================================
+// =========================================================
+// SIGNUP
+// =========================================================
 
-async function registerDonor() {
+const signupButton =
+    document.getElementById(
+        "signupButton"
+    );
 
-    const name =
-        document.getElementById("donorName")
-            .value
-            .trim();
 
-    const age =
-        Number(
-            document.getElementById("donorAge")
-                .value
+if (signupButton) {
+
+    signupButton.addEventListener(
+        "click",
+        async function () {
+
+            const name =
+                document
+                    .getElementById(
+                        "signupName"
+                    )
+                    .value
+                    .trim();
+
+
+            const email =
+                document
+                    .getElementById(
+                        "signupEmail"
+                    )
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById(
+                        "signupPassword"
+                    )
+                    .value;
+
+
+            const documentInput =
+                document.getElementById(
+                    "aadhaarDocument"
+                );
+
+
+            const message =
+                document.getElementById(
+                    "signupMessage"
+                );
+
+
+            const ageMessage =
+                document.getElementById(
+                    "ageVerificationMessage"
+                );
+
+
+            // -------------------------------------------------
+            // VALIDATION
+            // -------------------------------------------------
+
+            if (
+                !name ||
+                !email ||
+                !password
+            ) {
+
+                showMessage(
+                    message,
+                    "Please fill in your name, email and password.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+            if (
+                !emailPattern.test(email)
+            ) {
+
+                showMessage(
+                    message,
+                    "Please enter a valid email address.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            if (
+                password.length < 6
+            ) {
+
+                showMessage(
+                    message,
+                    "Password must contain at least 6 characters.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            // -------------------------------------------------
+            // ID DOCUMENT
+            // -------------------------------------------------
+
+            if (
+                !documentInput ||
+                documentInput.files.length === 0
+            ) {
+
+                showMessage(
+                    ageMessage,
+                    "Please upload your Aadhaar or valid ID document.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            const file =
+                documentInput.files[0];
+
+
+            const allowedTypes = [
+
+                "application/pdf",
+                "image/jpeg",
+                "image/png",
+                "image/jpg",
+                "image/webp"
+
+            ];
+
+
+            if (
+                !allowedTypes.includes(
+                    file.type
+                )
+            ) {
+
+                showMessage(
+                    ageMessage,
+                    "Please upload a valid PDF or image document.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            const maximumFileSize =
+                5 * 1024 * 1024;
+
+
+            if (
+                file.size >
+                maximumFileSize
+            ) {
+
+                showMessage(
+                    ageMessage,
+                    "ID document must be smaller than 5 MB.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            showMessage(
+                ageMessage,
+                "✓ ID document submitted successfully.",
+                "#087f5b"
+            );
+
+
+            // -------------------------------------------------
+            // DISABLE BUTTON
+            // -------------------------------------------------
+
+            signupButton.disabled = true;
+
+            signupButton.textContent =
+                "Creating Account...";
+
+
+            try {
+
+                // -------------------------------------------------
+                // SEND DATA TO BACKEND
+                // -------------------------------------------------
+
+                const response =
+                    await fetch(
+                        `${API_URL}/signup`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                name: name,
+
+                                email: email,
+
+                                password: password,
+
+                                documentUploaded:
+                                    true
+
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    showMessage(
+                        message,
+                        data.message ||
+                            "Unable to create account.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+
+                // -------------------------------------------------
+                // SUCCESS
+                // -------------------------------------------------
+
+                showMessage(
+                    message,
+                    "Account created successfully! Please login.",
+                    "#087f5b"
+                );
+
+
+                // Clear form
+                document.getElementById(
+                    "signupName"
+                ).value = "";
+
+
+                document.getElementById(
+                    "signupEmail"
+                ).value = "";
+
+
+                document.getElementById(
+                    "signupPassword"
+                ).value = "";
+
+
+                document.getElementById(
+                    "aadhaarDocument"
+                ).value = "";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Signup error:",
+                    error
+                );
+
+
+                showMessage(
+                    message,
+                    "Unable to connect to BloodLink backend.",
+                    "#d00037"
+                );
+
+            } finally {
+
+                signupButton.disabled =
+                    false;
+
+                signupButton.textContent =
+                    "Verify ID & Create Account";
+
+            }
+
+        }
+    );
+
+}
+
+
+// =========================================================
+// LOGIN
+// =========================================================
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+
+if (loginButton) {
+
+    loginButton.addEventListener(
+        "click",
+        async function () {
+
+            const email =
+                document
+                    .getElementById(
+                        "loginEmail"
+                    )
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById(
+                        "loginPassword"
+                    )
+                    .value;
+
+
+            const message =
+                document.getElementById(
+                    "loginMessage"
+                );
+
+
+            // -------------------------------------------------
+            // VALIDATION
+            // -------------------------------------------------
+
+            if (
+                !email ||
+                !password
+            ) {
+
+                showMessage(
+                    message,
+                    "Please enter your email and password.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            loginButton.disabled = true;
+
+            loginButton.textContent =
+                "Logging in...";
+
+
+            try {
+
+                // -------------------------------------------------
+                // LOGIN REQUEST
+                // -------------------------------------------------
+
+                const response =
+                    await fetch(
+                        `${API_URL}/login`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                email: email,
+
+                                password: password
+
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    showMessage(
+                        message,
+                        data.message ||
+                            "Invalid email or password.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+
+                // -------------------------------------------------
+                // SAVE LOGIN SESSION
+                // -------------------------------------------------
+
+                saveLoggedInUser(
+                    data.user
+                );
+
+
+                showMessage(
+                    message,
+                    data.message,
+                    "#087f5b"
+                );
+
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "index.html";
+
+                    },
+                    1000
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Login error:",
+                    error
+                );
+
+
+                showMessage(
+                    message,
+                    "Unable to connect to BloodLink backend.",
+                    "#d00037"
+                );
+
+            } finally {
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "Login";
+
+            }
+
+        }
+    );
+
+}
+
+
+// =========================================================
+// DONOR PAGE LOGIN PROTECTION
+// =========================================================
+
+if (
+    window.location.pathname.endsWith(
+        "donor.html"
+    )
+) {
+
+    const loggedInUser =
+        getLoggedInUser();
+
+
+    if (!loggedInUser) {
+
+        alert(
+            "Please login first to register as a blood donor."
         );
 
-    const blood =
-        document.getElementById("donorBlood")
-            .value;
 
-    const city =
-        document.getElementById("donorCity")
-            .value
-            .trim();
+        window.location.href =
+            "login.html";
 
-    const phone =
-        document.getElementById("donorPhone")
-            .value
-            .trim();
+    }
 
-    const message =
-        document.getElementById("registerMessage");
+}
 
 
-    // VALIDATION
-    if (
-        !name ||
-        !age ||
-        !blood ||
-        !city ||
-        !phone
-    ) {
+// =========================================================
+// DONOR REGISTRATION
+// =========================================================
 
-        message.textContent =
-            "⚠️ Please fill all fields.";
+const donorRegisterButton =
+    document.getElementById(
+        "donorRegisterButton"
+    );
 
-        message.style.color =
-            "#b91c2c";
 
-        return;
+if (donorRegisterButton) {
+
+    const loggedInUser =
+        getLoggedInUser();
+
+
+    if (loggedInUser) {
+
+        const donorNameInput =
+            document.getElementById(
+                "donorName"
+            );
+
+
+        const donorAgeMessage =
+            document.getElementById(
+                "donorAgeMessage"
+            );
+
+
+        // -------------------------------------------------
+        // SHOW USER NAME
+        // -------------------------------------------------
+
+        if (donorNameInput) {
+
+            donorNameInput.value =
+                loggedInUser.name;
+
+        }
+
+
+        // -------------------------------------------------
+        // SHOW VERIFICATION STATUS
+        // -------------------------------------------------
+
+        if (donorAgeMessage) {
+
+            if (
+                loggedInUser.ageVerified &&
+                loggedInUser.documentUploaded
+            ) {
+
+                donorAgeMessage.textContent =
+                    "✓ Your ID verification is completed. You can register as a donor.";
+
+                donorAgeMessage.style.color =
+                    "#087f5b";
+
+            } else {
+
+                donorAgeMessage.textContent =
+                    "✕ ID verification is required.";
+
+                donorAgeMessage.style.color =
+                    "#d00037";
+
+            }
+
+        }
+
     }
 
 
-    if (age < 18 || age > 65) {
+    donorRegisterButton.addEventListener(
+        "click",
+        async function () {
 
-        message.textContent =
-            "⚠️ Age must be between 18 and 65.";
-
-        message.style.color =
-            "#b91c2c";
-
-        return;
-    }
+            const user =
+                getLoggedInUser();
 
 
-    // PHONE VALIDATION
-    const phonePattern =
-        /^[0-9+()\-\s]{7,20}$/;
+            // -------------------------------------------------
+            // LOGIN CHECK
+            // -------------------------------------------------
 
-    if (!phonePattern.test(phone)) {
+            if (!user) {
 
-        message.textContent =
-            "⚠️ Enter a valid mobile number.";
-
-        message.style.color =
-            "#b91c2c";
-
-        return;
-    }
+                alert(
+                    "Please login first."
+                );
 
 
-    message.textContent =
-        "⏳ Registering donor...";
+                window.location.href =
+                    "login.html";
 
-    message.style.color =
-        "#555";
+                return;
 
+            }
+
+
+            const name =
+                document
+                    .getElementById(
+                        "donorName"
+                    )
+                    .value
+                    .trim();
+
+
+            const blood =
+                document
+                    .getElementById(
+                        "donorBlood"
+                    )
+                    .value;
+
+
+            const city =
+                document
+                    .getElementById(
+                        "donorCity"
+                    )
+                    .value
+                    .trim();
+
+
+            const phone =
+                document
+                    .getElementById(
+                        "donorPhone"
+                    )
+                    .value
+                    .trim();
+
+
+            const message =
+                document.getElementById(
+                    "donorMessage"
+                );
+
+
+            // -------------------------------------------------
+            // VERIFICATION CHECK
+            // -------------------------------------------------
+
+            if (
+                !user.ageVerified ||
+                !user.documentUploaded
+            ) {
+
+                showMessage(
+                    message,
+                    "You must complete ID verification before donor registration.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            // -------------------------------------------------
+            // FORM VALIDATION
+            // -------------------------------------------------
+
+            if (
+                !name ||
+                !blood ||
+                !city ||
+                !phone
+            ) {
+
+                showMessage(
+                    message,
+                    "Please fill in all donor details.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            const phonePattern =
+                /^[0-9]{10}$/;
+
+
+            if (
+                !phonePattern.test(phone)
+            ) {
+
+                showMessage(
+                    message,
+                    "Please enter a valid 10-digit mobile number.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            donorRegisterButton.disabled =
+                true;
+
+            donorRegisterButton.textContent =
+                "Registering...";
+
+
+            try {
+
+                // -------------------------------------------------
+                // SEND DONOR TO BACKEND
+                // -------------------------------------------------
+
+                const response =
+                    await fetch(
+                        `${API_URL}/donors`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                userId:
+                                    user.id,
+
+                                name:
+                                    name,
+
+                                blood:
+                                    blood,
+
+                                city:
+                                    city,
+
+                                phone:
+                                    phone
+
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    showMessage(
+                        message,
+                        data.message ||
+                            "Unable to register donor.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+
+                showMessage(
+                    message,
+                    "Donor registration successful! ❤️",
+                    "#087f5b"
+                );
+
+
+                // Clear donor details
+                document.getElementById(
+                    "donorBlood"
+                ).value = "";
+
+
+                document.getElementById(
+                    "donorCity"
+                ).value = "";
+
+
+                document.getElementById(
+                    "donorPhone"
+                ).value = "";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Donor registration error:",
+                    error
+                );
+
+
+                showMessage(
+                    message,
+                    "Unable to connect to BloodLink backend.",
+                    "#d00037"
+                );
+
+            } finally {
+
+                donorRegisterButton.disabled =
+                    false;
+
+                donorRegisterButton.textContent =
+                    "Register as Donor";
+
+            }
+
+        }
+    );
+
+}
+
+
+// =========================================================
+// FIND DONOR
+// =========================================================
+
+const searchDonorButton =
+    document.getElementById(
+        "searchDonorButton"
+    );
+
+
+if (searchDonorButton) {
+
+    searchDonorButton.addEventListener(
+        "click",
+        async function () {
+
+            const blood =
+                document
+                    .getElementById(
+                        "searchBlood"
+                    )
+                    .value;
+
+
+            const city =
+                document
+                    .getElementById(
+                        "searchCity"
+                    )
+                    .value
+                    .trim();
+
+
+            const results =
+                document.getElementById(
+                    "searchResults"
+                );
+
+
+            const message =
+                document.getElementById(
+                    "searchMessage"
+                );
+
+
+            results.innerHTML = "";
+
+
+            searchDonorButton.disabled =
+                true;
+
+            searchDonorButton.textContent =
+                "Searching...";
+
+
+            try {
+
+                // -------------------------------------------------
+                // BUILD SEARCH URL
+                // -------------------------------------------------
+
+                const params =
+                    new URLSearchParams();
+
+
+                if (blood) {
+
+                    params.append(
+                        "blood",
+                        blood
+                    );
+
+                }
+
+
+                if (city) {
+
+                    params.append(
+                        "city",
+                        city
+                    );
+
+                }
+
+
+                const response =
+                    await fetch(
+                        `${API_URL}/donors/search?${params.toString()}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    showMessage(
+                        message,
+                        data.message ||
+                            "Unable to search donors.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+
+                const matchingDonors =
+                    data.donors || [];
+
+
+                // -------------------------------------------------
+                // NO RESULTS
+                // -------------------------------------------------
+
+                if (
+                    matchingDonors.length ===
+                    0
+                ) {
+
+                    showMessage(
+                        message,
+                        "No matching donors found.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+
+                showMessage(
+                    message,
+                    matchingDonors.length +
+                        " donor(s) found.",
+                    "#087f5b"
+                );
+
+
+                // -------------------------------------------------
+                // DISPLAY DONORS
+                // -------------------------------------------------
+
+                matchingDonors.forEach(
+                    function (donor) {
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "donor-card";
+
+
+                        card.innerHTML = `
+
+                            <h3>
+                                🩸 ${donor.name}
+                            </h3>
+
+                            <p>
+                                <strong>
+                                    Blood Group:
+                                </strong>
+                                ${donor.blood}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Location:
+                                </strong>
+                                ${donor.city}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Mobile:
+                                </strong>
+                                ${donor.phone}
+                            </p>
+
+                            <a
+                                class="call-button"
+                                href="tel:${donor.phone}"
+                            >
+                                📞 Call Donor
+                            </a>
+
+                            <button
+                                class="sms-button"
+                                onclick="sendBloodRequestSMS('${donor.id}')"
+                            >
+                                💬 Request Blood by SMS
+                            </button>
+
+                        `;
+
+
+                        results.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Search error:",
+                    error
+                );
+
+
+                showMessage(
+                    message,
+                    "Unable to connect to BloodLink backend.",
+                    "#d00037"
+                );
+
+            } finally {
+
+                searchDonorButton.disabled =
+                    false;
+
+                searchDonorButton.textContent =
+                    "Search Donors";
+
+            }
+
+        }
+    );
+
+}
+
+
+// =========================================================
+// SMS BLOOD REQUEST
+// =========================================================
+
+async function sendBloodRequestSMS(
+    donorId
+) {
 
     try {
 
-        const response =
+        // -------------------------------------------------
+        // GET DONOR
+        // -------------------------------------------------
+
+        const donorResponse =
             await fetch(
-                API_URL + "/donors",
-                {
-                    method: "POST",
+                `${API_URL}/donors`
+            );
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
 
-                    body: JSON.stringify({
+        const donorData =
+            await donorResponse.json();
 
-                        name: name,
 
-                        bloodGroup: blood,
+        if (!donorResponse.ok) {
 
-                        phone: phone,
+            alert(
+                "Unable to get donor information."
+            );
 
-                        city: city,
+            return;
+        }
 
-                        state: "",
 
-                        country: "",
+        const donors =
+            donorData.donors || [];
 
-                        latitude: null,
 
-                        longitude: null
-                    })
+        const donor =
+            donors.find(
+                function (item) {
+
+                    return (
+                        String(item.id) ===
+                        String(donorId)
+                    );
+
                 }
             );
 
 
-        const data =
-            await response.json();
+        if (!donor) {
 
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.error ||
-                "Registration failed"
+            alert(
+                "Donor information not found."
             );
-        }
-
-
-        message.textContent =
-            "✅ Donor registered successfully!";
-
-        message.style.color =
-            "#16803d";
-
-
-        // CLEAR FORM
-        document.getElementById(
-            "donorName"
-        ).value = "";
-
-        document.getElementById(
-            "donorAge"
-        ).value = "";
-
-        document.getElementById(
-            "donorBlood"
-        ).value = "";
-
-        document.getElementById(
-            "donorCity"
-        ).value = "";
-
-        document.getElementById(
-            "donorPhone"
-        ).value = "";
-
-
-        // UPDATE COUNT
-        loadDonorCount();
-
-
-    } catch (error) {
-
-        console.error(
-            "Registration error:",
-            error
-        );
-
-        message.textContent =
-            "❌ Unable to register donor. Check backend connection.";
-
-        message.style.color =
-            "#b91c2c";
-    }
-}
-
-
-// =====================================================
-// SEARCH DONORS
-// =====================================================
-
-async function searchDonors() {
-
-    const blood =
-        document.getElementById(
-            "searchBlood"
-        ).value;
-
-    const city =
-        document.getElementById(
-            "searchCity"
-        ).value
-        .trim();
-
-
-    const results =
-        document.getElementById(
-            "donorResults"
-        );
-
-    const message =
-        document.getElementById(
-            "searchMessage"
-        );
-
-
-    message.textContent =
-        "🔎 Searching donors...";
-
-
-    results.innerHTML = `
-
-        <div class="empty-box">
-
-            🔎 Searching...
-
-        </div>
-
-    `;
-
-
-    try {
-
-        const params =
-            new URLSearchParams();
-
-
-        if (blood) {
-
-            params.append(
-                "bloodGroup",
-                blood
-            );
-        }
-
-
-        if (city) {
-
-            params.append(
-                "city",
-                city
-            );
-        }
-
-
-        const url =
-            API_URL +
-            "/donors/search?" +
-            params.toString();
-
-
-        const response =
-            await fetch(url);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Search failed"
-            );
-        }
-
-
-        const donors =
-            await response.json();
-
-
-        message.textContent =
-            donors.length +
-            " donor(s) found.";
-
-
-        if (donors.length === 0) {
-
-            results.innerHTML = `
-
-                <div class="empty-box">
-
-                    🩸
-
-                    <h3>
-                        No Donors Found
-                    </h3>
-
-                    <p>
-                        Try another blood group or city.
-                    </p>
-
-                </div>
-
-            `;
 
             return;
         }
 
 
-        results.innerHTML = "";
-
-
-        donors.forEach(function (donor) {
-
-            const phone =
-                String(
-                    donor.phone || ""
-                ).replace(
-                    /[^0-9+]/g,
-                    ""
-                );
-
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "donor-card";
-
-
-            card.innerHTML = `
-
-                <span class="blood-badge">
-
-                    ${escapeHTML(
-                        donor.bloodGroup
-                    )}
-
-                </span>
-
-
-                <h3>
-
-                    ${escapeHTML(
-                        donor.name
-                    )}
-
-                </h3>
-
-
-                <p>
-
-                    📍 City:
-
-                    ${escapeHTML(
-                        donor.city || "Unknown"
-                    )}
-
-                </p>
-
-
-                <p>
-
-                    📞
-
-                    <a
-                        href="tel:${phone}"
-                        class="phone-link">
-
-                        ${escapeHTML(
-                            donor.phone
-                        )}
-
-                    </a>
-
-                </p>
-
-
-                <a
-                    href="tel:${phone}"
-                    class="call-btn">
-
-                    📞 Call Donor
-
-                </a>
-
-            `;
-
-
-            results.appendChild(card);
-
-        });
-
-
-    } catch (error) {
-
-        console.error(
-            "Search error:",
-            error
-        );
-
-
-        message.textContent =
-            "❌ Unable to search donors.";
-
-
-        results.innerHTML = `
-
-            <div class="empty-box">
-
-                ❌
-
-                <h3>
-                    Server Connection Error
-                </h3>
-
-                <p>
-                    Please make sure the backend is online.
-                </p>
-
-            </div>
-
-        `;
-    }
-}
-
-
-// =====================================================
-// CLEAR SEARCH
-// =====================================================
-
-function clearSearch() {
-
-    document.getElementById(
-        "searchBlood"
-    ).value = "";
-
-
-    document.getElementById(
-        "searchCity"
-    ).value = "";
-
-
-    document.getElementById(
-        "searchMessage"
-    ).textContent = "";
-
-
-    document.getElementById(
-        "donorResults"
-    ).innerHTML = `
-
-        <div class="empty-box">
-
-            🩸
-
-            <h3>
-                Search for Blood Donors
-            </h3>
-
-            <p>
-                Select a blood group or enter a city.
-            </p>
-
-        </div>
-
-    `;
-}
-
-
-// =====================================================
-// BLOOD COMPATIBILITY
-// =====================================================
-
-const bloodCompatibility = {
-
-    "A+": {
-
-        receive: [
-            "A+",
-            "A-",
-            "O+",
-            "O-"
-        ],
-
-        donate: [
-            "A+",
-            "AB+"
-        ]
-    },
-
-
-    "A-": {
-
-        receive: [
-            "A-",
-            "O-"
-        ],
-
-        donate: [
-            "A+",
-            "A-",
-            "AB+",
-            "AB-"
-        ]
-    },
-
-
-    "B+": {
-
-        receive: [
-            "B+",
-            "B-",
-            "O+",
-            "O-"
-        ],
-
-        donate: [
-            "B+",
-            "AB+"
-        ]
-    },
-
-
-    "B-": {
-
-        receive: [
-            "B-",
-            "O-"
-        ],
-
-        donate: [
-            "B+",
-            "B-",
-            "AB+",
-            "AB-"
-        ]
-    },
-
-
-    "AB+": {
-
-        receive: [
-            "A+",
-            "A-",
-            "B+",
-            "B-",
-            "AB+",
-            "AB-",
-            "O+",
-            "O-"
-        ],
-
-        donate: [
-            "AB+"
-        ]
-    },
-
-
-    "AB-": {
-
-        receive: [
-            "A-",
-            "B-",
-            "AB-",
-            "O-"
-        ],
-
-        donate: [
-            "AB-",
-            "AB+"
-        ]
-    },
-
-
-    "O+": {
-
-        receive: [
-            "O+",
-            "O-"
-        ],
-
-        donate: [
-            "O+",
-            "A+",
-            "B+",
-            "AB+"
-        ]
-    },
-
-
-    "O-": {
-
-        receive: [
-            "O-"
-        ],
-
-        donate: [
-            "O+",
-            "O-",
-            "A+",
-            "A-",
-            "B+",
-            "B-",
-            "AB+",
-            "AB-"
-        ]
-    }
-};
-
-
-// =====================================================
-// SHOW COMPATIBILITY
-// =====================================================
-
-function showCompatibility() {
-
-    const blood =
-        document.getElementById(
-            "compatibilityBlood"
-        ).value;
-
-
-    const result =
-        document.getElementById(
-            "compatibilityResult"
-        );
-
-
-    if (!blood) {
-
-        result.innerHTML =
-            "Select a blood group to see compatibility.";
-
-        return;
-    }
-
-
-    const data =
-        bloodCompatibility[blood];
-
-
-    result.innerHTML = `
-
-        <h3>
-
-            ${blood} Blood Group
-
-        </h3>
-
-
-        <div class="compatibility-grid">
-
-
-            <div class="compatibility-box">
-
-                <strong>
-                    🩸 Can Receive From
-                </strong>
-
-                <p>
-
-                    ${data.receive.join(", ")}
-
-                </p>
-
-            </div>
-
-
-            <div class="compatibility-box">
-
-                <strong>
-                    ❤️ Can Donate To
-                </strong>
-
-                <p>
-
-                    ${data.donate.join(", ")}
-
-                </p>
-
-            </div>
-
-
-        </div>
-
-    `;
-}
-
-
-// =====================================================
-// DONATION ELIGIBILITY
-// =====================================================
-
-function checkEligibility() {
-
-    const age =
-        Number(
-            document.getElementById(
-                "eligibilityAge"
-            ).value
-        );
-
-
-    const lastDate =
-        document.getElementById(
-            "lastDonation"
-        ).value;
-
-
-    const result =
-        document.getElementById(
-            "eligibilityResult"
-        );
-
-
-    if (!age) {
-
-        result.innerHTML =
-            "⚠️ Please enter your age.";
-
-        return;
-    }
-
-
-    if (age < 18 || age > 65) {
-
-        result.innerHTML =
-            "❌ Basic age range not satisfied.";
-
-        return;
-    }
-
-
-    if (!lastDate) {
-
-        result.innerHTML = `
-
-            <strong>
-                ✅ Basic age requirement satisfied.
-            </strong>
-
-            <p>
-                Enter your last donation date
-                for the interval check.
-            </p>
-
-        `;
-
-        return;
-    }
-
-
-    const previous =
-        new Date(lastDate);
-
-
-    const today =
-        new Date();
-
-
-    const milliseconds =
-        today.getTime() -
-        previous.getTime();
-
-
-    const days =
-        Math.floor(
-            milliseconds /
-            (1000 * 60 * 60 * 24)
-        );
-
-
-    if (days < 0) {
-
-        result.innerHTML =
-            "⚠️ Please enter a valid previous donation date.";
-
-        return;
-    }
-
-
-    if (days >= 56) {
-
-        result.innerHTML = `
-
-            <strong>
-                ✅ Basic interval requirement satisfied.
-            </strong>
-
-            <p>
-                ${days} days since your last donation.
-            </p>
-
-            <p>
-                This is only a basic informational check.
-                Final eligibility should be confirmed by
-                a qualified blood-donation service.
-            </p>
-
-        `;
-
-    } else {
-
-        result.innerHTML = `
-
-            <strong>
-                ⏳ Donation interval not reached.
-            </strong>
-
-            <p>
-                ${days} days since your last donation.
-            </p>
-
-            <p>
-                Approximately
-                ${56 - days}
-                more days in this basic calculation.
-            </p>
-
-        `;
-    }
-}
-
-
-// =====================================================
-// WORLD LOCATION SEARCH
-// =====================================================
-
-async function searchLocation() {
-
-    const input =
-        document.getElementById(
-            "locationInput"
-        );
-
-
-    const result =
-        document.getElementById(
-            "locationResult"
-        );
-
-
-    const message =
-        document.getElementById(
-            "locationMessage"
-        );
-
-
-    const location =
-        input.value.trim();
-
-
-    if (!location) {
-
-        message.textContent =
-            "⚠️ Enter a location.";
-
-        return;
-    }
-
-
-    message.textContent =
-        "🔎 Searching location...";
-
-
-    result.innerHTML = `
-
-        <div class="empty-box">
-
-            🌍 Searching...
-
-        </div>
-
-    `;
-
-
-    try {
-
-        const url =
-            "https://geocoding-api.open-meteo.com/v1/search" +
-            "?name=" +
-            encodeURIComponent(location) +
-            "&count=5" +
-            "&language=en" +
-            "&format=json";
-
-
-        const response =
-            await fetch(url);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Location API failed"
+        // -------------------------------------------------
+        // GET REQUESTS
+        // -------------------------------------------------
+
+        const requestResponse =
+            await fetch(
+                `${API_URL}/requests`
             );
+
+
+        const requestData =
+            await requestResponse.json();
+
+
+        if (!requestResponse.ok) {
+
+            alert(
+                "Unable to get blood request."
+            );
+
+            return;
         }
 
 
-        const data =
-            await response.json();
+        const requests =
+            requestData.requests || [];
 
 
         if (
-            !data.results ||
-            data.results.length === 0
+            requests.length ===
+            0
         ) {
 
-            message.textContent =
-                "❌ Location not found.";
-
-
-            result.innerHTML = `
-
-                <div class="empty-box">
-
-                    ❌
-
-                    <h3>
-                        Location Not Found
-                    </h3>
-
-                    <p>
-                        Try Chennai, Mumbai,
-                        London or Tokyo.
-                    </p>
-
-                </div>
-
-            `;
+            alert(
+                "Please create a blood request first."
+            );
 
             return;
         }
 
 
-        const place =
-            data.results[0];
+        // Get latest request
+        const request =
+            requests[
+                requests.length - 1
+            ];
 
 
-        const country =
-            place.country ||
-            "Unknown";
+        const smsMessage =
+            `BloodLink Blood Request
 
+Patient: ${request.requesterName}
+Blood Group: ${request.blood}
+Location: ${request.city}
+Contact: ${request.phone}
 
-        const region =
-            place.admin1 ||
-            "Unknown";
+Message: ${
+                request.message ||
+                "Urgent blood requirement"
+            }
 
+Please contact the patient if you are available to donate.
 
-        const latitude =
-            Number(
-                place.latitude
-            ).toFixed(5);
+Thank you.`;
 
 
-        const longitude =
-            Number(
-                place.longitude
-            ).toFixed(5);
-
-
-        const population =
-            place.population
-                ? Number(
-                    place.population
-                ).toLocaleString()
-                : "Unavailable";
-
-
-        const mapURL =
-            "https://www.google.com/maps/search/?api=1&query=" +
-            latitude +
-            "," +
-            longitude;
-
-
-        result.innerHTML = `
-
-            <div class="location-card">
-
-                <h2>
-
-                    📍
-                    ${escapeHTML(
-                        place.name
-                    )}
-
-                </h2>
-
-
-                <p>
-
-                    ${escapeHTML(region)},
-                    ${escapeHTML(country)}
-
-                </p>
-
-
-                <hr>
-
-
-                <h3>
-
-                    👥 Population
-
-                </h3>
-
-
-                <div class="population">
-
-                    ${population}
-
-                </div>
-
-
-                <div class="compatibility-grid">
-
-
-                    <div class="compatibility-box">
-
-                        <strong>
-                            🌐 Country
-                        </strong>
-
-                        <p>
-                            ${escapeHTML(country)}
-                        </p>
-
-                    </div>
-
-
-                    <div class="compatibility-box">
-
-                        <strong>
-                            🏛️ Region
-                        </strong>
-
-                        <p>
-                            ${escapeHTML(region)}
-                        </p>
-
-                    </div>
-
-
-                    <div class="compatibility-box">
-
-                        <strong>
-                            📍 Latitude
-                        </strong>
-
-                        <p>
-                            ${latitude}
-                        </p>
-
-                    </div>
-
-
-                    <div class="compatibility-box">
-
-                        <strong>
-                            📍 Longitude
-                        </strong>
-
-                        <p>
-                            ${longitude}
-                        </p>
-
-                    </div>
-
-
-                </div>
-
-
-                <a
-                    href="${mapURL}"
-                    target="_blank"
-                    rel="noopener"
-                    class="primary-btn map-button">
-
-                    🗺️ Open Location in Google Maps
-
-                </a>
-
-            </div>
-
-        `;
-
-
-        message.textContent =
-            "✅ Location found.";
+        window.location.href =
+            `sms:${donor.phone}?body=${encodeURIComponent(
+                smsMessage
+            )}`;
 
 
     } catch (error) {
 
         console.error(
-            "Location error:",
+            "SMS request error:",
             error
         );
 
 
-        message.textContent =
-            "❌ Unable to load location.";
+        alert(
+            "Unable to connect to BloodLink backend."
+        );
 
-
-        result.innerHTML = `
-
-            <div class="empty-box">
-
-                ❌
-
-                <h3>
-                    Location Service Error
-                </h3>
-
-                <p>
-                    Check your internet connection
-                    and try again.
-                </p>
-
-            </div>
-
-        `;
     }
+
 }
 
 
-// =====================================================
-// HTML SAFETY
-// =====================================================
+// =========================================================
+// BLOOD REQUEST
+// =========================================================
 
-function escapeHTML(value) {
+const requestBloodButton =
+    document.getElementById(
+        "requestBloodButton"
+    );
 
-    return String(value)
 
-        .replace(/&/g, "&amp;")
+if (requestBloodButton) {
 
-        .replace(/</g, "&lt;")
+    requestBloodButton.addEventListener(
+        "click",
+        async function () {
 
-        .replace(/>/g, "&gt;")
+            const requesterName =
+                document
+                    .getElementById(
+                        "requesterName"
+                    )
+                    .value
+                    .trim();
 
-        .replace(/"/g, "&quot;")
 
-        .replace(/'/g, "&#039;");
+            const blood =
+                document
+                    .getElementById(
+                        "requestBlood"
+                    )
+                    .value;
+
+
+            const city =
+                document
+                    .getElementById(
+                        "requestCity"
+                    )
+                    .value
+                    .trim();
+
+
+            const phone =
+                document
+                    .getElementById(
+                        "requestPhone"
+                    )
+                    .value
+                    .trim();
+
+
+            const requestMessage =
+                document
+                    .getElementById(
+                        "requestMessage"
+                    )
+                    .value
+                    .trim();
+
+
+            const status =
+                document.getElementById(
+                    "requestMessageStatus"
+                );
+
+
+            // -------------------------------------------------
+            // VALIDATION
+            // -------------------------------------------------
+
+            if (
+                !requesterName ||
+                !blood ||
+                !city ||
+                !phone
+            ) {
+
+                showMessage(
+                    status,
+                    "Please fill in all required fields.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            const phonePattern =
+                /^[0-9]{10}$/;
+
+
+            if (
+                !phonePattern.test(phone)
+            ) {
+
+                showMessage(
+                    status,
+                    "Please enter a valid 10-digit mobile number.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            requestBloodButton.disabled =
+                true;
+
+            requestBloodButton.textContent =
+                "Submitting...";
+
+
+            try {
+
+                // -------------------------------------------------
+                // SEND REQUEST TO BACKEND
+                // -------------------------------------------------
+
+                const response =
+                    await fetch(
+                        `${API_URL}/requests`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                requesterName:
+                                    requesterName,
+
+                                blood:
+                                    blood,
+
+                                city:
+                                    city,
+
+                                phone:
+                                    phone,
+
+                                message:
+                                    requestMessage
+
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    showMessage(
+                        status,
+                        data.message ||
+                            "Unable to submit blood request.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+
+                showMessage(
+                    status,
+                    "Blood request submitted successfully! ❤️",
+                    "#087f5b"
+                );
+
+
+                // Clear form
+                document.getElementById(
+                    "requesterName"
+                ).value = "";
+
+
+                document.getElementById(
+                    "requestBlood"
+                ).value = "";
+
+
+                document.getElementById(
+                    "requestCity"
+                ).value = "";
+
+
+                document.getElementById(
+                    "requestPhone"
+                ).value = "";
+
+
+                document.getElementById(
+                    "requestMessage"
+                ).value = "";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Blood request error:",
+                    error
+                );
+
+
+                showMessage(
+                    status,
+                    "Unable to connect to BloodLink backend.",
+                    "#d00037"
+                );
+
+            } finally {
+
+                requestBloodButton.disabled =
+                    false;
+
+                requestBloodButton.textContent =
+                    "Submit Blood Request";
+
+            }
+
+        }
+    );
+
 }
+
+
+// =========================================================
+// BLOOD COMPATIBILITY
+// =========================================================
+
+const compatibilityButton =
+    document.getElementById(
+        "checkCompatibilityButton"
+    );
+
+
+if (compatibilityButton) {
+
+    compatibilityButton.addEventListener(
+        "click",
+        function () {
+
+            const donorBlood =
+                document.getElementById(
+                    "donorBloodGroup"
+                ).value;
+
+
+            const receiverBlood =
+                document.getElementById(
+                    "receiverBloodGroup"
+                ).value;
+
+
+            const result =
+                document.getElementById(
+                    "compatibilityResult"
+                );
+
+
+            if (
+                !donorBlood ||
+                !receiverBlood
+            ) {
+
+                showMessage(
+                    result,
+                    "Please select both blood groups.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+
+            const compatibility = {
+
+                "O-": [
+                    "O-",
+                    "O+",
+                    "A-",
+                    "A+",
+                    "B-",
+                    "B+",
+                    "AB-",
+                    "AB+"
+                ],
+
+                "O+": [
+                    "O+",
+                    "A+",
+                    "B+",
+                    "AB+"
+                ],
+
+                "A-": [
+                    "A-",
+                    "A+",
+                    "AB-",
+                    "AB+"
+                ],
+
+                "A+": [
+                    "A+",
+                    "AB+"
+                ],
+
+                "B-": [
+                    "B-",
+                    "B+",
+                    "AB-",
+                    "AB+"
+                ],
+
+                "B+": [
+                    "B+",
+                    "AB+"
+                ],
+
+                "AB-": [
+                    "AB-",
+                    "AB+"
+                ],
+
+                "AB+": [
+                    "AB+"
+                ]
+
+            };
+
+
+            const compatible =
+                compatibility[
+                    donorBlood
+                ] &&
+                compatibility[
+                    donorBlood
+                ].includes(
+                    receiverBlood
+                );
+
+
+            if (compatible) {
+
+                showMessage(
+                    result,
+                    `✓ ${donorBlood} donor can donate to ${receiverBlood} receiver.`,
+                    "#087f5b"
+                );
+
+            } else {
+
+                showMessage(
+                    result,
+                    `✕ ${donorBlood} donor cannot donate to ${receiverBlood} receiver.`,
+                    "#d00037"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// =========================================================
+// CONSOLE INFORMATION
+// =========================================================
+
+console.log(
+    "BloodLink frontend connected to backend."
+);
+
+console.log(
+    "API:",
+    API_URL
+);

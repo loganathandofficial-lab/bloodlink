@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Request Blood | BloodLink</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* =========================================================
+           REQUEST BLOOD - FULL BLOODLINK THEME
+           ========================================================= */
+
+        .request-page {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 8% 12%, rgba(181, 29, 59, 0.07), transparent 28%),
+                radial-gradient(circle at 92% 30%, rgba(181, 29, 59, 0.06), transparent 30%),
+                #fafafa;
+        }
+
+        /* HERO */
+        .request-hero {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #5f0718, #8d1028 50%, #b51d3b);
+            color: white;
+            padding: 75px 7% 110px;
+        }
+
+        .request-hero::before {
+            content: "";
+            position: absolute;
+            width: 430px;
+            height: 430px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            right: -140px;
+            top: -190px;
+        }
+
+        .request-hero::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            left: -140px;
+            bottom: -190px;
+        }
+
+        .request-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1150px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1.35fr 0.85fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .request-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 17px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .request-hero h1 {
+            margin: 0 0 20px;
+            font-size: clamp(38px, 5vw, 62px);
+            line-height: 1.05;
+            font-weight: 800;
+        }
+
+        .request-hero h1 span {
+            color: #ffd5dc;
+        }
+
+        .request-hero p {
+            margin: 0;
+            max-width: 650px;
+            color: #ffeef1;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .request-hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .request-heart {
+            width: 225px;
+            height: 225px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.09);
+            border: 1px solid rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 105px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            animation: requestFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes requestFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* MAIN */
+        .request-main {
+            max-width: 1150px;
+            margin: -50px auto 0;
+            padding: 0 20px 80px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .request-layout {
+            display: grid;
+            grid-template-columns: 0.8fr 1.25fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* INFO CARD */
+        .request-info {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 22px;
+            padding: 34px;
+            box-shadow: 0 18px 50px rgba(70, 10, 25, 0.10);
+        }
+
+        .request-info-heading {
+            margin-bottom: 25px;
+        }
+
+        .request-info-heading span {
+            color: #a91432;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .request-info h2 {
+            margin: 7px 0 10px;
+            color: #65091d;
+            font-size: 29px;
+        }
+
+        .request-info-heading p {
+            margin: 0;
+            color: #777;
+            line-height: 1.65;
+        }
+
+        .request-step {
+            display: flex;
+            gap: 15px;
+            padding: 18px 0;
+            border-bottom: 1px solid #f0e7e9;
+        }
+
+        .request-step:last-child {
+            border-bottom: none;
+        }
+
+        .request-info-icon {
+            width: 47px;
+            height: 47px;
+            min-width: 47px;
+            border-radius: 14px;
+            background: #fff0f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .request-step h3 {
+            margin: 0 0 5px;
+            color: #3f2028;
+            font-size: 16px;
+        }
+
+        .request-step p {
+            margin: 0;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        /* EMERGENCY CARD */
+        .emergency-box {
+            margin-top: 22px;
+            padding: 19px;
+            border-radius: 14px;
+            background: #fff5f6;
+            border: 1px solid #f0d5da;
+            border-left: 4px solid #a91432;
+        }
+
+        .emergency-box strong {
+            display: block;
+            color: #7b0d25;
+            margin-bottom: 6px;
+        }
+
+        .emergency-box p {
+            margin: 0;
+            color: #70434d;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        /* FORM */
+        .request-form-card {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 22px;
+            padding: 40px;
+            box-shadow: 0 18px 50px rgba(70, 10, 25, 0.12);
+        }
+
+        .request-section {
+            margin: 0;
+        }
+
+        .request-form-heading {
+            margin-bottom: 28px;
+        }
+
+        .request-form-heading h2 {
+            margin: 0 0 8px;
+            color: #65091d;
+            font-size: 30px;
+        }
+
+        .request-form-heading p {
+            margin: 0;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        .request-form-group {
+            margin-bottom: 20px;
+        }
+
+        .request-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #3b2027;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .request-form-group input,
+        .request-form-group select,
+        .request-form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
+            border-radius: 11px;
+            background: white;
+            color: #333;
+            font-family: inherit;
+            font-size: 15px;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        .request-form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .request-form-group input:focus,
+        .request-form-group select:focus,
+        .request-form-group textarea:focus {
+            border-color: #a91432;
+            box-shadow: 0 0 0 4px rgba(169, 20, 50, 0.08);
+        }
+
+        .request-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .request-blood-hint {
+            margin-top: 6px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        #requestBloodButton {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #8c1028, #b51d3b);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 10px 24px rgba(140, 16, 40, 0.20);
+        }
+
+        #requestBloodButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(140, 16, 40, 0.28);
+        }
+
+        #requestBloodButton:active {
+            transform: translateY(0);
+        }
+
+        #requestMessageStatus {
+            margin-top: 18px;
+            padding: 13px 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* PROCESS */
+        .request-process {
+            margin-top: 70px;
+        }
+
+        .request-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .request-heading span {
+            color: #a91432;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .request-heading h2 {
+            margin: 8px 0 10px;
+            color: #4f0818;
+            font-size: 35px;
+        }
+
+        .request-heading p {
+            max-width: 650px;
+            margin: auto;
+            color: #777;
+            line-height: 1.7;
+        }
+
+        .request-process-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .request-process-card {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 18px;
+            padding: 28px;
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .request-process-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.09);
+        }
+
+        .process-number {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 17px;
+            border-radius: 50%;
+            background: #fff0f3;
+            color: #a91432;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .request-process-card h3 {
+            margin: 0 0 8px;
+            color: #4b1d26;
+        }
+
+        .request-process-card p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* QUOTE */
+        .request-quote {
+            margin-top: 65px;
+            padding: 45px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #65091d, #a91432);
+            text-align: center;
+            color: white;
+            box-shadow: 0 18px 40px rgba(100, 9, 29, 0.16);
+        }
+
+        .request-quote .quote-mark {
+            font-size: 38px;
+            margin-bottom: 5px;
+        }
+
+        .request-quote h2 {
+            margin: 0 0 10px;
+            font-size: 30px;
+        }
+
+        .request-quote p {
+            margin: 0 auto;
+            max-width: 700px;
+            color: #ffe9ed;
+            line-height: 1.7;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .request-hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .request-hero p {
+                margin: auto;
+            }
+
+            .request-hero-visual {
+                display: none;
+            }
+
+            .request-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .request-process-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .request-hero {
+                padding: 55px 20px 80px;
+            }
+
+            .request-main {
+                padding: 0 12px 55px;
+            }
+
+            .request-info,
+            .request-form-card {
+                padding: 25px 20px;
+            }
+
+            .request-form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .request-heading h2 {
+                font-size: 28px;
+            }
+
+            .request-quote {
+                padding: 32px 20px;
+            }
+
+            .request-quote h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <nav class="navbar">
+
+            <a href="index.html" class="brand">
+                <div class="brand-drop">🩸</div>
+
+                <div>
+                    <strong>BloodLink</strong>
+                    <span>Life • Hope • Humanity</span>
+                </div>
+            </a>
+
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="donor.html">Become a Donor</a>
+                <a href="search.html">Find Donor</a>
+                <a href="request.html" class="active">Request Blood</a>
+                <a href="compatibility.html">Compatibility</a>
+                <a href="about.html">About</a>
+                <a href="login.html" class="nav-login">Login</a>
+            </div>
+
+        </nav>
+    </header>
+
+
+    <main class="request-page">
+
+        <!-- HERO -->
+        <section class="request-hero">
+
+            <div class="request-hero-content">
+
+                <div>
+
+                    <div class="request-badge">
+                        🚨 Blood Request
+                    </div>
+
+                    <h1>
+                        When Blood Is Needed,<br>
+                        <span>Every Moment Matters.</span>
+                    </h1>
+
+                    <p>
+                        Submit a blood request through BloodLink and provide
+                        the important details needed to connect your requirement
+                        with registered donors.
+                    </p>
+
+                </div>
+
+
+                <div class="request-hero-visual">
+
+                    <div class="request-heart">
+                        ❤️
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN -->
+        <section class="request-main">
+
+            <div class="request-layout">
+
+                <!-- INFORMATION -->
+                <div class="request-info">
+
+                    <div class="request-info-heading">
+
+                        <span>BloodLink Support</span>
+
+                        <h2>Request Blood</h2>
+
+                        <p>
+                            Enter accurate information so your blood requirement
+                            can be recorded correctly.
+                        </p>
+
+                    </div>
+
+
+                    <div class="request-step">
+
+                        <div class="request-info-icon">
+                            📝
+                        </div>
+
+                        <div>
+                            <h3>Provide Your Details</h3>
+
+                            <p>
+                                Enter your name, contact number and location.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="request-step">
+
+                        <div class="request-info-icon">
+                            🩸
+                        </div>
+
+                        <div>
+                            <h3>Select Blood Group</h3>
+
+                            <p>
+                                Choose the blood group required by the patient.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="request-step">
+
+                        <div class="request-info-icon">
+                            🔎
+                        </div>
+
+                        <div>
+                            <h3>Donor Matching</h3>
+
+                            <p>
+                                Your request can be used with the donor network
+                                to identify matching registered donors.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="request-step">
+
+                        <div class="request-info-icon">
+                            🤝
+                        </div>
+
+                        <div>
+                            <h3>Stay Connected</h3>
+
+                            <p>
+                                Keep your contact information accurate so
+                                communication can happen when needed.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="emergency-box">
+
+                        <strong>⚠️ Important</strong>
+
+                        <p>
+                            BloodLink is a college project and does not replace
+                            hospitals, blood banks or emergency medical services.
+                            For a medical emergency, contact the appropriate
+                            emergency or healthcare service immediately.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FORM -->
+                <div class="request-form-card">
+
+                    <div class="request-form-heading">
+
+                        <h2>Submit a Blood Request</h2>
+
+                        <p>
+                            Fill in the following information carefully.
+                        </p>
+
+                    </div>
+
+
+                    <div class="request-section">
+
+                        <div class="request-form-group">
+
+                            <label for="requesterName">
+                                Requester Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="requesterName"
+                                placeholder="Enter your full name"
+                                autocomplete="name"
+                            >
+
+                        </div>
+
+
+                        <div class="request-form-row">
+
+                            <div class="request-form-group">
+
+                                <label for="requestBlood">
+                                    Required Blood Group
+                                </label>
+
+                                <select id="requestBlood">
+
+                                    <option value="">
+                                        Select blood group
+                                    </option>
+
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+
+                                </select>
+
+                                <div class="request-blood-hint">
+                                    Select the patient's required blood group.
+                                </div>
+
+                            </div>
+
+
+                            <div class="request-form-group">
+
+                                <label for="requestCity">
+                                    City / District
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="requestCity"
+                                    placeholder="Enter city or district"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="request-form-group">
+
+                            <label for="requestPhone">
+                                Contact Number
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="requestPhone"
+                                placeholder="Enter your mobile number"
+                                autocomplete="tel"
+                            >
+
+                        </div>
+
+
+                        <div class="request-form-group">
+
+                            <label for="requestMessage">
+                                Additional Message
+                            </label>
+
+                            <textarea
+                                id="requestMessage"
+                                placeholder="Enter hospital details, urgency, required units, or other useful information"
+                            ></textarea>
+
+                        </div>
+
+
+                        <button
+                            id="requestBloodButton"
+                            type="button"
+                        >
+                            🩸 Submit Blood Request
+                        </button>
+
+
+                        <div id="requestMessageStatus"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROCESS -->
+            <section class="request-process">
+
+                <div class="request-heading">
+
+                    <span>Simple & Organized</span>
+
+                    <h2>How Blood Requests Work</h2>
+
+                    <p>
+                        BloodLink organizes the information needed to help
+                        connect blood requests with registered donors.
+                    </p>
+
+                </div>
+
+
+                <div class="request-process-grid">
+
+                    <div class="request-process-card">
+
+                        <div class="process-number">
+                            01
+                        </div>
+
+                        <h3>Submit Request</h3>
+
+                        <p>
+                            Enter your blood requirement and contact details
+                            through the request form.
+                        </p>
+
+                    </div>
+
+
+                    <div class="request-process-card">
+
+                        <div class="process-number">
+                            02
+                        </div>
+
+                        <h3>Find Matches</h3>
+
+                        <p>
+                            Registered donor information can be searched based
+                            on blood group and location.
+                        </p>
+
+                    </div>
+
+
+                    <div class="request-process-card">
+
+                        <div class="process-number">
+                            03
+                        </div>
+
+                        <h3>Connect for Help</h3>
+
+                        <p>
+                            Donor and requester information can be used to
+                            support communication between the two sides.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CTA -->
+            <section class="request-quote">
+
+                <div class="quote-mark">
+                    ❤️
+                </div>
+
+                <h2>
+                    Every Blood Request Represents a Person.
+                </h2>
+
+                <p>
+                    Behind every request is someone hoping for help.
+                    BloodLink is designed to make that connection simpler,
+                    faster and more organized.
+                </p>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="new-footer">
+
+        <div class="footer-main">
+
+            <div class="footer-brand">
+
+                <div class="brand">
+
+                    <div class="brand-drop">🩸</div>
+
+                    <div>
+                        <strong>BloodLink</strong>
+                        <span>Life • Hope • Humanity</span>
+                    </div>
+
+                </div>
+
+                <p>
+                    Connecting blood donors with people who need them.
+                </p>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Quick Links</h4>
+
+                <a href="index.html">Home</a>
+                <a href="donor.html">Become a Donor</a>
+                <a href="search.html">Find Donor</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Services</h4>
+
+                <a href="request.html">Request Blood</a>
+                <a href="compatibility.html">Compatibility</a>
+                <a href="about.html">About BloodLink</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>© 2026 BloodLink</span>
+
+            <span>
+                Blood Donor Management System
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

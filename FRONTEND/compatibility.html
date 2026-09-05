@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Blood Compatibility | BloodLink</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* =========================================================
+           BLOOD COMPATIBILITY - FULL BLOODLINK THEME
+           ========================================================= */
+
+        .compatibility-page {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 8% 12%, rgba(181, 29, 59, 0.07), transparent 28%),
+                radial-gradient(circle at 92% 25%, rgba(181, 29, 59, 0.06), transparent 30%),
+                #fafafa;
+        }
+
+        /* HERO */
+        .compatibility-hero {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #5f0718, #8d1028 50%, #b51d3b);
+            color: white;
+            padding: 75px 7% 110px;
+        }
+
+        .compatibility-hero::before {
+            content: "";
+            position: absolute;
+            width: 430px;
+            height: 430px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            right: -140px;
+            top: -190px;
+        }
+
+        .compatibility-hero::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            left: -140px;
+            bottom: -190px;
+        }
+
+        .compatibility-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1150px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1.35fr 0.85fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .compatibility-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 17px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .compatibility-hero h1 {
+            margin: 0 0 20px;
+            font-size: clamp(38px, 5vw, 62px);
+            line-height: 1.05;
+            font-weight: 800;
+        }
+
+        .compatibility-hero h1 span {
+            color: #ffd5dc;
+        }
+
+        .compatibility-hero p {
+            margin: 0;
+            max-width: 650px;
+            color: #ffeef1;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .compatibility-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .compatibility-circle {
+            width: 225px;
+            height: 225px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.09);
+            border: 1px solid rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            animation: compatibilityFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes compatibilityFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* MAIN */
+        .compatibility-main {
+            max-width: 1150px;
+            margin: -50px auto 0;
+            padding: 0 20px 80px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* CHECKER CARD */
+        .compatibility-card {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 22px;
+            padding: 40px;
+            box-shadow: 0 18px 50px rgba(70, 10, 25, 0.12);
+        }
+
+        .compatibility-heading {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .compatibility-heading span {
+            color: #a91432;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .compatibility-heading h2 {
+            margin: 8px 0 9px;
+            color: #65091d;
+            font-size: 31px;
+        }
+
+        .compatibility-heading p {
+            margin: 0 auto;
+            max-width: 680px;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        .compatibility-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .compatibility-field {
+            margin-bottom: 5px;
+        }
+
+        .compatibility-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #3b2027;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .compatibility-field select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 11px;
+            background: white;
+            color: #333;
+            font-size: 15px;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        .compatibility-field select:focus {
+            border-color: #a91432;
+            box-shadow: 0 0 0 4px rgba(169, 20, 50, 0.08);
+        }
+
+        .blood-field-note {
+            margin-top: 6px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .compatibility-button-area {
+            grid-column: 1 / -1;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        #checkCompatibilityButton {
+            border: none;
+            border-radius: 12px;
+            padding: 16px 35px;
+            min-width: 230px;
+            background: linear-gradient(135deg, #8c1028, #b51d3b);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 10px 24px rgba(140, 16, 40, 0.20);
+        }
+
+        #checkCompatibilityButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(140, 16, 40, 0.28);
+        }
+
+        #checkCompatibilityButton:active {
+            transform: translateY(0);
+        }
+
+        /* RESULT */
+        .compatibility-result-area {
+            margin-top: 28px;
+        }
+
+        #compatibilityResult {
+            min-height: 55px;
+            border-radius: 14px;
+            padding: 18px;
+            box-sizing: border-box;
+            background: #fff8f9;
+            border: 1px solid #f0dfe3;
+            color: #5f2633;
+            text-align: center;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* BLOOD GROUPS */
+        .blood-groups-section {
+            margin-top: 70px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .section-heading span {
+            color: #a91432;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .section-heading h2 {
+            margin: 8px 0 10px;
+            color: #4f0818;
+            font-size: 35px;
+        }
+
+        .section-heading p {
+            margin: auto;
+            max-width: 680px;
+            color: #777;
+            line-height: 1.7;
+        }
+
+        .blood-groups-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .blood-group-card {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 17px;
+            padding: 24px 18px;
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .blood-group-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.09);
+        }
+
+        .blood-type {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: #fff0f3;
+            color: #a91432;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .blood-group-card h3 {
+            margin: 0 0 7px;
+            color: #4b1d26;
+        }
+
+        .blood-group-card p {
+            margin: 0;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* INFORMATION */
+        .compatibility-info {
+            margin-top: 65px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .compatibility-info-card {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 18px;
+            padding: 28px;
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .compatibility-info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 32px rgba(70, 10, 25, 0.08);
+        }
+
+        .compatibility-info-icon {
+            width: 54px;
+            height: 54px;
+            margin: 0 auto 16px;
+            border-radius: 15px;
+            background: #fff0f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .compatibility-info-card h3 {
+            margin: 0 0 9px;
+            color: #4b1d26;
+        }
+
+        .compatibility-info-card p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* NOTE */
+        .compatibility-note {
+            margin-top: 60px;
+            padding: 22px 25px;
+            border-radius: 14px;
+            background: #fff5f6;
+            border: 1px solid #f0d5da;
+            border-left: 4px solid #a91432;
+            color: #70434d;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .compatibility-note strong {
+            color: #7b0d25;
+        }
+
+        /* CTA */
+        .compatibility-cta {
+            margin-top: 65px;
+            padding: 45px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #65091d, #a91432);
+            text-align: center;
+            color: white;
+            box-shadow: 0 18px 40px rgba(100, 9, 29, 0.16);
+        }
+
+        .compatibility-cta h2 {
+            margin: 0 0 10px;
+            font-size: 31px;
+        }
+
+        .compatibility-cta p {
+            margin: 0 auto;
+            max-width: 680px;
+            color: #ffe9ed;
+            line-height: 1.7;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .compatibility-hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .compatibility-hero p {
+                margin: auto;
+            }
+
+            .compatibility-visual {
+                display: none;
+            }
+
+            .compatibility-form {
+                grid-template-columns: 1fr;
+            }
+
+            .compatibility-button-area {
+                grid-column: auto;
+            }
+
+            .blood-groups-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .compatibility-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .compatibility-hero {
+                padding: 55px 20px 80px;
+            }
+
+            .compatibility-main {
+                padding: 0 12px 55px;
+            }
+
+            .compatibility-card {
+                padding: 25px 20px;
+            }
+
+            .blood-groups-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .section-heading h2 {
+                font-size: 28px;
+            }
+
+            .compatibility-cta {
+                padding: 32px 20px;
+            }
+
+            .compatibility-cta h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <nav class="navbar">
+
+            <a href="index.html" class="brand">
+                <div class="brand-drop">🩸</div>
+
+                <div>
+                    <strong>BloodLink</strong>
+                    <span>Life • Hope • Humanity</span>
+                </div>
+            </a>
+
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="donor.html">Become a Donor</a>
+                <a href="search.html">Find Donor</a>
+                <a href="request.html">Request Blood</a>
+                <a href="compatibility.html" class="active">Compatibility</a>
+                <a href="about.html">About</a>
+                <a href="login.html" class="nav-login">Login</a>
+            </div>
+
+        </nav>
+    </header>
+
+
+    <main class="compatibility-page">
+
+        <!-- HERO -->
+        <section class="compatibility-hero">
+
+            <div class="compatibility-hero-content">
+
+                <div>
+
+                    <div class="compatibility-badge">
+                        🧬 Blood Group Compatibility
+                    </div>
+
+                    <h1>
+                        Know Your Blood<br>
+                        <span>Compatibility.</span>
+                    </h1>
+
+                    <p>
+                        Use the BloodLink compatibility checker to understand
+                        whether a donor blood group can be matched with a
+                        receiver blood group.
+                    </p>
+
+                </div>
+
+
+                <div class="compatibility-visual">
+
+                    <div class="compatibility-circle">
+                        🩸
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN -->
+        <section class="compatibility-main">
+
+            <!-- CHECKER -->
+            <div class="compatibility-card">
+
+                <div class="compatibility-heading">
+
+                    <span>BloodLink Compatibility Tool</span>
+
+                    <h2>Check Blood Compatibility</h2>
+
+                    <p>
+                        Select the donor and receiver blood groups below
+                        to check the compatibility result.
+                    </p>
+
+                </div>
+
+
+                <div class="compatibility-form">
+
+                    <div class="compatibility-field">
+
+                        <label for="donorBloodGroup">
+                            Donor Blood Group
+                        </label>
+
+                        <select id="donorBloodGroup">
+
+                            <option value="">
+                                Select donor blood group
+                            </option>
+
+                            <option value="O-">O-</option>
+                            <option value="O+">O+</option>
+                            <option value="A-">A-</option>
+                            <option value="A+">A+</option>
+                            <option value="B-">B-</option>
+                            <option value="B+">B+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="AB+">AB+</option>
+
+                        </select>
+
+                        <div class="blood-field-note">
+                            Select the blood group of the donor.
+                        </div>
+
+                    </div>
+
+
+                    <div class="compatibility-field">
+
+                        <label for="receiverBloodGroup">
+                            Receiver Blood Group
+                        </label>
+
+                        <select id="receiverBloodGroup">
+
+                            <option value="">
+                                Select receiver blood group
+                            </option>
+
+                            <option value="O-">O-</option>
+                            <option value="O+">O+</option>
+                            <option value="A-">A-</option>
+                            <option value="A+">A+</option>
+                            <option value="B-">B-</option>
+                            <option value="B+">B+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="AB+">AB+</option>
+
+                        </select>
+
+                        <div class="blood-field-note">
+                            Select the blood group of the receiver.
+                        </div>
+
+                    </div>
+
+
+                    <div class="compatibility-button-area">
+
+                        <button
+                            id="checkCompatibilityButton"
+                            type="button"
+                        >
+                            🩸 Check Compatibility
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="compatibility-result-area">
+
+                    <div id="compatibilityResult">
+                        Select both blood groups and check compatibility.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BLOOD GROUPS -->
+            <section class="blood-groups-section">
+
+                <div class="section-heading">
+
+                    <span>Eight Main Blood Groups</span>
+
+                    <h2>Know the Blood Types</h2>
+
+                    <p>
+                        Blood groups are classified according to the
+                        ABO and Rh blood group systems.
+                    </p>
+
+                </div>
+
+
+                <div class="blood-groups-grid">
+
+                    <div class="blood-group-card">
+
+                        <div class="blood-type">O+</div>
+
+                        <h3>O Positive</h3>
+
+                        <p>
+                            One of the most common blood groups.
+                        </p>
+
+                    </div>
+
+
+                    <div class="blood-group-card">
+
+                        <div class="blood-type">O−</div>
+
+                        <h3>O Negative</h3>
+
+                        <p>
+                            Commonly known as the universal red-cell donor.
+                        </p>
+
+                    </div>
+
+
+                    <div class="blood-group-card">
+
+                        <div class="blood-type">A+</div>
+
+                        <h3>A Positive</h3>
+
+                        <p>
+                            A common blood group found in many populations.
+                        </p>
+
+                    </div>
+
+
+                    <div class="blood-group-card">
+
+                        <div class="blood-type">A−</div>
+
+                        <h3>A Negative</h3>
+
+                        <p>
+                            A less common Rh-negative blood group.
+                        </p>
+
+                    </div>
+
+
+                    <div class="blood-group-card">
+
+                        <div class="blood-type">B+</div>
+
+                        <h3>B Positive</h3>
+
+                        <p>
+                            A blood group with B antigen and Rh factor.
+                        </p>
+
+                    </div>
+
+
+                    <div class="blood-group-card">
+
+                        <div class="blood-type">B−</div>
+
+                        <h3>B Negative</h3>
+
+                        <p>
+                            A less common Rh-negative blood group.
+                        </p>
+
+                    </div>
+
+
+                    <div class="blood-group-card">
+
+                        <div class="blood-type">AB+</div>
+
+                        <h3>AB Positive</h3>
+
+                        <p>
+                            Known as the universal red-cell recipient.
+                        </p>
+
+                    </div>
+
+
+                    <div class="blood-group-card">
+
+                        <div class="blood-type">AB−</div>
+
+                        <h3>AB Negative</h3>
+
+                        <p>
+                            One of the less common blood groups.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- INFORMATION -->
+            <section class="compatibility-info">
+
+                <div class="compatibility-info-card">
+
+                    <div class="compatibility-info-icon">
+                        🧬
+                    </div>
+
+                    <h3>ABO System</h3>
+
+                    <p>
+                        The ABO system classifies blood into A, B, AB
+                        and O groups.
+                    </p>
+
+                </div>
+
+
+                <div class="compatibility-info-card">
+
+                    <div class="compatibility-info-icon">
+                        ➕
+                    </div>
+
+                    <h3>Rh Factor</h3>
+
+                    <p>
+                        The positive or negative symbol represents the
+                        Rh factor of the blood group.
+                    </p>
+
+                </div>
+
+
+                <div class="compatibility-info-card">
+
+                    <div class="compatibility-info-icon">
+                        ❤️
+                    </div>
+
+                    <h3>Why It Matters</h3>
+
+                    <p>
+                        Blood compatibility is important when determining
+                        suitable blood for transfusion.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- NOTE -->
+            <div class="compatibility-note">
+
+                <strong>⚠️ Important:</strong>
+                This compatibility checker is provided for educational and
+                project demonstration purposes. Actual blood transfusion
+                decisions must always be made by qualified healthcare
+                professionals and blood banks using proper testing and
+                medical procedures.
+
+            </div>
+
+
+            <!-- CTA -->
+            <section class="compatibility-cta">
+
+                <h2>
+                    The Right Match Can Make a Difference.
+                </h2>
+
+                <p>
+                    BloodLink combines donor registration, donor search,
+                    blood requests and compatibility information in one
+                    simple blood management system.
+                </p>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="new-footer">
+
+        <div class="footer-main">
+
+            <div class="footer-brand">
+
+                <div class="brand">
+
+                    <div class="brand-drop">🩸</div>
+
+                    <div>
+                        <strong>BloodLink</strong>
+                        <span>Life • Hope • Humanity</span>
+                    </div>
+
+                </div>
+
+                <p>
+                    Connecting blood donors with people who need them.
+                </p>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Quick Links</h4>
+
+                <a href="index.html">Home</a>
+                <a href="donor.html">Become a Donor</a>
+                <a href="search.html">Find Donor</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Services</h4>
+
+                <a href="request.html">Request Blood</a>
+                <a href="compatibility.html">Compatibility</a>
+                <a href="about.html">About BloodLink</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>© 2026 BloodLink</span>
+
+            <span>
+                Blood Donor Management System
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
