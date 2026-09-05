@@ -4,7 +4,7 @@
 // BACKEND + JSON STORAGE
 // =========================================================
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://bloodlink-x2h7.onrender.com/api";
 
 const LOGGED_IN_USER_KEY = "bloodlink_logged_in_user";
 
