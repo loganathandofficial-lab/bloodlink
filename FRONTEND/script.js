@@ -2,8 +2,7 @@
 // BLOODLINK FRONTEND JAVASCRIPT
 // Local Node.js backend + JSON storage
 // =========================================================
-
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://bloodlink-x2h7.onrender.com/api";
 const LOGGED_IN_USER_KEY = "bloodlink_logged_in_user";
 const DONOR_ID_KEY = "bloodlink_donor_id";
 
