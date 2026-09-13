@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BloodLink Founder Login</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .founder-login-card {
+            width: 100%;
+            max-width: 430px;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+            box-sizing: border-box;
+        }
+
+        .founder-logo {
+            text-align: center;
+            font-size: 52px;
+            margin-bottom: 10px;
+        }
+
+        .founder-login-card h1 {
+            text-align: center;
+            margin: 0;
+            color: #8b0015;
+            font-size: 28px;
+        }
+
+        .founder-subtitle {
+            text-align: center;
+            color: #666;
+            margin: 10px 0 28px;
+        }
+
+        .founder-login-card label {
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 7px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .founder-login-card input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .founder-login-card input:focus {
+            border-color: #9b001b;
+        }
+
+        .founder-login-button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #9b001b;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .founder-login-button:hover {
+            background: #720013;
+        }
+
+        .founder-login-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .founder-message {
+            margin-top: 16px;
+            text-align: center;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .back-home {
+            display: block;
+            margin-top: 22px;
+            text-align: center;
+            color: #9b001b;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="founder-login-card">
+
+    <div class="founder-logo">
+        🩸
+    </div>
+
+    <h1>
+        Founder Login
+    </h1>
+
+    <div class="founder-subtitle">
+        BloodLink Administration
+    </div>
+
+    <form id="founderLoginForm">
+
+        <label for="founderUsername">
+            Founder Username
+        </label>
+
+        <input
+            type="text"
+            id="founderUsername"
+            placeholder="Enter founder username"
+            autocomplete="username"
+            required
+        >
+
+        <label for="founderPassword">
+            Founder Password
+        </label>
+
+        <input
+            type="password"
+            id="founderPassword"
+            placeholder="Enter founder password"
+            autocomplete="current-password"
+            required
+        >
+
+        <button
+            type="submit"
+            id="founderLoginButton"
+            class="founder-login-button"
+        >
+            🔐 Enter Admin Panel
+        </button>
+
+        <div
+            id="founderMessage"
+            class="founder-message"
+        ></div>
+
+    </form>
+
+    <a
+        href="index.html"
+        class="back-home"
+    >
+        ← Back to BloodLink
+    </a>
+
+</div>
+
+<script>
+
+const API_URL =
+    "http://localhost:5000/api";
+
+const founderLoginForm =
+    document.getElementById(
+        "founderLoginForm"
+    );
+
+const founderUsername =
+    document.getElementById(
+        "founderUsername"
+    );
+
+const founderPassword =
+    document.getElementById(
+        "founderPassword"
+    );
+
+const founderLoginButton =
+    document.getElementById(
+        "founderLoginButton"
+    );
+
+const founderMessage =
+    document.getElementById(
+        "founderMessage"
+    );
+
+founderLoginForm.addEventListener(
+    "submit",
+    async function (event) {
+
+        event.preventDefault();
+
+        founderMessage.textContent =
+            "Checking founder login...";
+
+        founderMessage.style.color =
+            "#555";
+
+        founderLoginButton.disabled =
+            true;
+
+        const username =
+            founderUsername.value.trim();
+
+        const password =
+            founderPassword.value;
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/founder-login`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            username:
+                                username,
+                            password:
+                                password
+                        })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok || !data.success) {
+
+                founderMessage.textContent =
+                    data.message ||
+                    "Invalid founder login.";
+
+                founderMessage.style.color =
+                    "#b00020";
+
+                founderLoginButton.disabled =
+                    false;
+
+                return;
+            }
+
+            localStorage.setItem(
+                "bloodlink_founder_logged_in",
+                "true"
+            );
+
+            localStorage.setItem(
+                "bloodlink_founder_token",
+                data.adminToken
+            );
+
+            founderMessage.textContent =
+                "Login successful. Opening admin panel...";
+
+            founderMessage.style.color =
+                "green";
+
+            setTimeout(function () {
+
+                window.location.href =
+                    "admin.html";
+
+            }, 500);
+
+        } catch (error) {
+
+            console.error(
+                "Founder login error:",
+                error
+            );
+
+            founderMessage.textContent =
+                "Cannot connect to BloodLink backend.";
+
+            founderMessage.style.color =
+                "#b00020";
+
+            founderLoginButton.disabled =
+                false;
+        }
+    }
+);
+
+</script>
+
+</body>
+</html>

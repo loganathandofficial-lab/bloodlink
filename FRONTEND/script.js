@@ -1,14 +1,14 @@
 // =========================================================
-// BLOODLINK
-// FRONTEND JAVASCRIPT
-// BACKEND + JSON STORAGE
+// BLOODLINK FRONTEND JAVASCRIPT
+// Local Node.js backend + JSON storage
 // =========================================================
 
-const API_URL = "https://bloodlink-x2h7.onrender.com/api";
+const API_URL = "http://localhost:5000/api";
 const LOGGED_IN_USER_KEY = "bloodlink_logged_in_user";
+const DONOR_ID_KEY = "bloodlink_donor_id";
 
 // =========================================================
-// HELPER FUNCTIONS
+// COMMON HELPERS
 // =========================================================
 
 function saveLoggedInUser(user) {
@@ -19,23 +19,31 @@ function saveLoggedInUser(user) {
 }
 
 function getLoggedInUser() {
-    const user = localStorage.getItem(
-        LOGGED_IN_USER_KEY
-    );
+    const raw =
+        localStorage.getItem(
+            LOGGED_IN_USER_KEY
+        );
 
-    if (!user) {
+    if (!raw) {
         return null;
     }
 
     try {
-        return JSON.parse(user);
+        return JSON.parse(raw);
     } catch (error) {
-        console.error("Login session error:", error);
+        console.error(
+            "Login session error:",
+            error
+        );
         return null;
     }
 }
 
-function showMessage(element, message, color) {
+function showMessage(
+    element,
+    message,
+    color
+) {
     if (!element) {
         return;
     }
@@ -44,53 +52,83 @@ function showMessage(element, message, color) {
     element.style.color = color;
 }
 
+function normalizePhone(phone) {
+    return String(phone || "")
+        .replace(/\D/g, "")
+        .trim();
+}
+
+function isValidPhone(phone) {
+    return /^[0-9]{10}$/.test(
+        normalizePhone(phone)
+    );
+}
+
 // =========================================================
 // AADHAAR CAMERA SCANNER
 // DEMO DOCUMENT SCANNING ONLY
 // =========================================================
 
-let aadhaarCameraStream = null;
+let cameraStream = null;
 
-const aadhaarCameraButton =
-    document.getElementById("startAadhaarCamera");
+const cameraStartButton =
+    document.getElementById(
+        "startAadhaarCamera"
+    );
 
-const chooseAadhaarFileButton =
-    document.getElementById("chooseAadhaarFile");
+const cameraStopButton =
+    document.getElementById(
+        "stopAadhaarCamera"
+    );
 
-const aadhaarDocumentInput =
-    document.getElementById("aadhaarDocument");
+const cameraCaptureButton =
+    document.getElementById(
+        "captureAadhaarButton"
+    );
 
-const aadhaarCameraBox =
-    document.getElementById("aadhaarCameraBox");
+const chooseFileButton =
+    document.getElementById(
+        "chooseAadhaarFile"
+    );
 
-const aadhaarVideo =
-    document.getElementById("aadhaarCamera");
+const aadhaarInput =
+    document.getElementById(
+        "aadhaarDocument"
+    );
 
-const aadhaarCanvas =
-    document.getElementById("aadhaarCanvas");
+const cameraBox =
+    document.getElementById(
+        "aadhaarCameraBox"
+    );
 
-const captureAadhaarButton =
-    document.getElementById("captureAadhaarButton");
+const cameraVideo =
+    document.getElementById(
+        "aadhaarCamera"
+    );
 
-const stopAadhaarCameraButton =
-    document.getElementById("stopAadhaarCamera");
+const cameraCanvas =
+    document.getElementById(
+        "aadhaarCanvas"
+    );
 
-const aadhaarSelectedFile =
-    document.getElementById("aadhaarSelectedFile");
+const selectedFileLabel =
+    document.getElementById(
+        "aadhaarSelectedFile"
+    );
 
-const ageVerificationMessage =
+const verificationMessage =
     document.getElementById(
         "ageVerificationMessage"
     );
 
-async function startAadhaarCamera() {
+async function startCamera() {
     if (
         !navigator.mediaDevices ||
         !navigator.mediaDevices.getUserMedia
     ) {
         showMessage(
-            ageVerificationMessage,
-            "Camera access is not supported by this browser.",
+            verificationMessage,
+            "Camera is not supported by this browser.",
             "#d00037"
         );
 
@@ -98,10 +136,9 @@ async function startAadhaarCamera() {
     }
 
     try {
+        stopCamera();
 
-        stopAadhaarCamera();
-
-        aadhaarCameraStream =
+        cameraStream =
             await navigator.mediaDevices.getUserMedia({
                 video: {
                     facingMode: {
@@ -117,340 +154,601 @@ async function startAadhaarCamera() {
                 audio: false
             });
 
-        if (aadhaarVideo) {
+        if (cameraVideo) {
+            cameraVideo.srcObject =
+                cameraStream;
 
-            aadhaarVideo.srcObject =
-                aadhaarCameraStream;
+            cameraVideo.muted = true;
 
-            aadhaarVideo.muted = true;
-
-            await aadhaarVideo.play();
-
-            if (aadhaarCameraBox) {
-                aadhaarCameraBox.hidden = false;
-            }
-
-            showMessage(
-                ageVerificationMessage,
-                "📷 Camera ready. Place the Aadhaar card clearly inside the camera frame.",
-                "#8a5a00"
-            );
+            await cameraVideo.play();
         }
 
-    } catch (error) {
+        if (cameraBox) {
+            cameraBox.hidden = false;
+        }
 
+        showMessage(
+            verificationMessage,
+            "📷 Camera ready. Place the Aadhaar document clearly inside the frame.",
+            "#8a5a00"
+        );
+
+    } catch (error) {
         console.error(
             "Camera error:",
             error
         );
 
         showMessage(
-            ageVerificationMessage,
-            "✕ Camera access was denied or unavailable. Please allow camera permission and try again.",
+            verificationMessage,
+            "✕ Camera permission was denied or the camera is unavailable.",
             "#d00037"
         );
     }
 }
 
-function stopAadhaarCamera() {
+function stopCamera() {
+    if (cameraStream) {
 
-    if (aadhaarCameraStream) {
-
-        aadhaarCameraStream
+        cameraStream
             .getTracks()
             .forEach(function (track) {
                 track.stop();
             });
 
-        aadhaarCameraStream = null;
+        cameraStream = null;
     }
 
-    if (aadhaarVideo) {
-        aadhaarVideo.srcObject = null;
+    if (cameraVideo) {
+        cameraVideo.srcObject = null;
     }
 
-    if (aadhaarCameraBox) {
-        aadhaarCameraBox.hidden = true;
+    if (cameraBox) {
+        cameraBox.hidden = true;
     }
 }
 
-function cameraImageToFile() {
+function captureCameraFile() {
+    return new Promise(
+        function (resolve, reject) {
 
-    if (
-        !aadhaarVideo ||
-        !aadhaarCanvas
-    ) {
-        return null;
-    }
+            if (
+                !cameraVideo ||
+                !cameraCanvas
+            ) {
+                reject(
+                    new Error(
+                        "Camera is not available."
+                    )
+                );
 
-    const width =
-        aadhaarVideo.videoWidth;
+                return;
+            }
 
-    const height =
-        aadhaarVideo.videoHeight;
+            const width =
+                cameraVideo.videoWidth;
 
-    if (!width || !height) {
-        return null;
-    }
+            const height =
+                cameraVideo.videoHeight;
 
-    aadhaarCanvas.width = width;
-    aadhaarCanvas.height = height;
+            if (!width || !height) {
+                reject(
+                    new Error(
+                        "Camera is not ready."
+                    )
+                );
 
-    const context =
-        aadhaarCanvas.getContext("2d");
+                return;
+            }
 
-    context.drawImage(
-        aadhaarVideo,
-        0,
-        0,
-        width,
-        height
+            cameraCanvas.width = width;
+            cameraCanvas.height = height;
+
+            const context =
+                cameraCanvas.getContext(
+                    "2d"
+                );
+
+            context.drawImage(
+                cameraVideo,
+                0,
+                0,
+                width,
+                height
+            );
+
+            cameraCanvas.toBlob(
+                function (blob) {
+
+                    if (!blob) {
+                        reject(
+                            new Error(
+                                "Unable to capture image."
+                            )
+                        );
+
+                        return;
+                    }
+
+                    const file =
+                        new File(
+                            [blob],
+                            `aadhaar-camera-${Date.now()}.jpg`,
+                            {
+                                type:
+                                    "image/jpeg"
+                            }
+                        );
+
+                    resolve(file);
+                },
+                "image/jpeg",
+                0.95
+            );
+        }
     );
-
-    return new Promise(function (
-        resolve,
-        reject
-    ) {
-
-        aadhaarCanvas.toBlob(
-            function (blob) {
-
-                if (!blob) {
-                    reject(
-                        new Error(
-                            "Unable to capture image."
-                        )
-                    );
-
-                    return;
-                }
-
-                const timestamp =
-                    Date.now();
-
-                const file =
-                    new File(
-                        [blob],
-                        `aadhaar-scan-${timestamp}.jpg`,
-                        {
-                            type: "image/jpeg"
-                        }
-                    );
-
-                resolve(file);
-            },
-            "image/jpeg",
-            0.95
-        );
-    });
 }
 
-async function captureAadhaarDocument() {
-
-    if (!aadhaarVideo) {
-        return;
-    }
-
-    if (
-        !aadhaarVideo.videoWidth ||
-        !aadhaarVideo.videoHeight
-    ) {
-
-        showMessage(
-            ageVerificationMessage,
-            "Please wait for the camera to start.",
-            "#d00037"
-        );
-
-        return;
-    }
-
-    if (!aadhaarDocumentInput) {
-        return;
-    }
-
+async function captureAndAttachAadhaar() {
     try {
 
-        if (captureAadhaarButton) {
-            captureAadhaarButton.disabled = true;
-            captureAadhaarButton.textContent =
+        if (cameraCaptureButton) {
+            cameraCaptureButton.disabled =
+                true;
+
+            cameraCaptureButton.textContent =
                 "Capturing...";
         }
 
         const file =
-            await cameraImageToFile();
+            await captureCameraFile();
 
-        if (!file) {
-
-            showMessage(
-                ageVerificationMessage,
-                "✕ Unable to capture the Aadhaar image.",
-                "#d00037"
+        if (!aadhaarInput) {
+            throw new Error(
+                "Aadhaar input not found."
             );
-
-            return;
         }
 
-        const dataTransfer =
+        const transfer =
             new DataTransfer();
 
-        dataTransfer.items.add(file);
+        transfer.items.add(file);
 
-        aadhaarDocumentInput.files =
-            dataTransfer.files;
+        aadhaarInput.files =
+            transfer.files;
 
-        if (aadhaarSelectedFile) {
-            aadhaarSelectedFile.textContent =
+        if (selectedFileLabel) {
+            selectedFileLabel.textContent =
                 `✓ Aadhaar image captured: ${file.name}`;
         }
 
-        stopAadhaarCamera();
+        stopCamera();
 
         showMessage(
-            ageVerificationMessage,
-            "✓ Aadhaar image captured successfully. Click Verify ID & Create Account to continue.",
+            verificationMessage,
+            "✓ Aadhaar image captured successfully. Click Verify ID & Create Account.",
             "#087f5b"
         );
 
     } catch (error) {
 
         console.error(
-            "Aadhaar capture error:",
+            "Capture error:",
             error
         );
 
         showMessage(
-            ageVerificationMessage,
-            "✕ Unable to capture the document.",
+            verificationMessage,
+            "✕ Unable to capture the Aadhaar image.",
             "#d00037"
         );
 
     } finally {
 
-        if (captureAadhaarButton) {
-            captureAadhaarButton.disabled = false;
-            captureAadhaarButton.textContent =
+        if (cameraCaptureButton) {
+            cameraCaptureButton.disabled =
+                false;
+
+            cameraCaptureButton.textContent =
                 "📸 Capture & Scan";
         }
     }
 }
 
-if (aadhaarCameraButton) {
+async function loadExternalScript(
+    src,
+    globalName
+) {
+    if (window[globalName]) {
+        return;
+    }
 
-    aadhaarCameraButton.addEventListener(
-        "click",
-        startAadhaarCamera
+    await new Promise(
+        function (resolve, reject) {
+
+            const existing =
+                document.querySelector(
+                    `script[src="${src}"]`
+                );
+
+            if (existing) {
+
+                if (window[globalName]) {
+                    resolve();
+                    return;
+                }
+
+                existing.addEventListener(
+                    "load",
+                    resolve,
+                    {
+                        once: true
+                    }
+                );
+
+                existing.addEventListener(
+                    "error",
+                    reject,
+                    {
+                        once: true
+                    }
+                );
+
+                return;
+            }
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+            script.src = src;
+
+            script.onload = resolve;
+            script.onerror = reject;
+
+            document.head.appendChild(
+                script
+            );
+        }
     );
 }
 
-if (chooseAadhaarFileButton) {
+async function loadOCRLibrary() {
+    await loadExternalScript(
+        "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js",
+        "Tesseract"
+    );
+}
 
-    chooseAadhaarFileButton.addEventListener(
+function parseDateText(text) {
+    const match =
+        String(text || "").match(
+            /\b(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})\b/
+        );
+
+    if (!match) {
+        return null;
+    }
+
+    const day =
+        Number(match[1]);
+
+    const month =
+        Number(match[2]);
+
+    const year =
+        Number(match[3]);
+
+    if (
+        year < 1900 ||
+        year > new Date().getFullYear() ||
+        month < 1 ||
+        month > 12 ||
+        day < 1 ||
+        day > 31
+    ) {
+        return null;
+    }
+
+    const date =
+        new Date(
+            year,
+            month - 1,
+            day
+        );
+
+    if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+    ) {
+        return null;
+    }
+
+    return date;
+}
+
+function findDOB(text) {
+
+    const normalized =
+        String(text || "")
+            .replace(/[|]/g, "I")
+            .replace(/\s+/g, " ")
+            .trim();
+
+    const labeled =
+        normalized.match(
+            /(?:date\s*of\s*birth|dob|d\.o\.b\.?)\s*[:\-]?\s*(\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{4})/i
+        );
+
+    if (labeled) {
+
+        const date =
+            parseDateText(
+                labeled[1]
+            );
+
+        if (date) {
+            return date;
+        }
+    }
+
+    const allDates =
+        normalized.match(
+            /\b\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{4}\b/g
+        ) || [];
+
+    for (
+        const dateText of allDates
+    ) {
+
+        const date =
+            parseDateText(
+                dateText
+            );
+
+        if (date) {
+            return date;
+        }
+    }
+
+    return null;
+}
+
+function calculateAge(dob) {
+
+    const today =
+        new Date();
+
+    let age =
+        today.getFullYear() -
+        dob.getFullYear();
+
+    if (
+        today.getMonth() <
+            dob.getMonth() ||
+        (
+            today.getMonth() ===
+                dob.getMonth() &&
+            today.getDate() <
+                dob.getDate()
+        )
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+function looksLikeAadhaar(text) {
+
+    const normalized =
+        String(text || "")
+            .toLowerCase();
+
+    const indicators = [
+        "aadhaar",
+        "aadhar",
+        "uidai",
+        "unique identification",
+        "government of india",
+        "my aadhaar",
+        "mera aadhaar"
+    ];
+
+    const foundCount =
+        indicators.filter(
+            function (item) {
+                return normalized.includes(
+                    item
+                );
+            }
+        ).length;
+
+    const aadhaarNumberPattern =
+        /\b\d{4}\s?\d{4}\s?\d{4}\b/
+            .test(text);
+
+    return (
+        foundCount >= 2 ||
+        (
+            (
+                normalized.includes(
+                    "aadhaar"
+                ) ||
+                normalized.includes(
+                    "aadhar"
+                ) ||
+                normalized.includes(
+                    "uidai"
+                )
+            ) &&
+            aadhaarNumberPattern
+        )
+    );
+}
+
+async function scanImageFile(file) {
+
+    await loadOCRLibrary();
+
+    if (!window.Tesseract) {
+        throw new Error(
+            "OCR library could not be loaded."
+        );
+    }
+
+    const result =
+        await window.Tesseract.recognize(
+            file,
+            "eng",
+            {
+                logger:
+                    function (info) {
+
+                        if (
+                            info.status ===
+                                "recognizing text" &&
+                            typeof info.progress ===
+                                "number"
+                        ) {
+
+                            const percent =
+                                Math.round(
+                                    info.progress *
+                                        100
+                                );
+
+                            showMessage(
+                                verificationMessage,
+                                `🔍 Scanning Aadhaar... ${percent}%`,
+                                "#8a5a00"
+                            );
+                        }
+                    }
+            }
+        );
+
+    return (
+        result.data.text || ""
+    );
+}
+
+async function scanSelectedAadhaar() {
+
+    if (
+        !aadhaarInput ||
+        !aadhaarInput.files ||
+        aadhaarInput.files.length === 0
+    ) {
+        throw new Error(
+            "Please scan or select an Aadhaar document."
+        );
+    }
+
+    const file =
+        aadhaarInput.files[0];
+
+    if (
+        file.type ===
+        "application/pdf"
+    ) {
+
+        throw new Error(
+            "For the camera scanner, please scan an Aadhaar image. PDF OCR can be added separately."
+        );
+    }
+
+    return scanImageFile(file);
+}
+
+// =========================================================
+// CAMERA EVENTS
+// =========================================================
+
+if (cameraStartButton) {
+    cameraStartButton.addEventListener(
+        "click",
+        startCamera
+    );
+}
+
+if (cameraStopButton) {
+    cameraStopButton.addEventListener(
+        "click",
+        stopCamera
+    );
+}
+
+if (cameraCaptureButton) {
+    cameraCaptureButton.addEventListener(
+        "click",
+        captureAndAttachAadhaar
+    );
+}
+
+if (chooseFileButton) {
+    chooseFileButton.addEventListener(
         "click",
         function () {
 
-            if (aadhaarDocumentInput) {
-                aadhaarDocumentInput.click();
+            if (aadhaarInput) {
+                aadhaarInput.click();
             }
         }
     );
 }
 
-if (captureAadhaarButton) {
+if (aadhaarInput) {
 
-    captureAadhaarButton.addEventListener(
-        "click",
-        captureAadhaarDocument
-    );
-}
-
-if (stopAadhaarCameraButton) {
-
-    stopAadhaarCameraButton.addEventListener(
-        "click",
-        stopAadhaarCamera
-    );
-}
-
-if (aadhaarDocumentInput) {
-
-    aadhaarDocumentInput.addEventListener(
+    aadhaarInput.addEventListener(
         "change",
         function () {
 
             if (
-                !aadhaarDocumentInput.files ||
-                !aadhaarDocumentInput.files.length
+                !aadhaarInput.files ||
+                !aadhaarInput.files.length
             ) {
                 return;
             }
 
             const file =
-                aadhaarDocumentInput.files[0];
+                aadhaarInput.files[0];
 
-            const allowedMimeTypes = [
+            const allowedTypes = [
                 "application/pdf",
                 "image/jpeg",
                 "image/png",
-                "image/jpg",
                 "image/webp"
             ];
 
-            const allowedExtensions = [
-                ".pdf",
-                ".jpg",
-                ".jpeg",
-                ".png",
-                ".webp"
-            ];
-
-            const fileName =
-                file.name.toLowerCase();
-
-            const extensionAllowed =
-                allowedExtensions.some(
-                    function (extension) {
-                        return fileName.endsWith(
-                            extension
-                        );
-                    }
-                );
-
-            const typeAllowed =
-                allowedMimeTypes.includes(
-                    file.type
-                );
-
             if (
-                !extensionAllowed ||
-                !typeAllowed
+                !allowedTypes.includes(
+                    file.type
+                )
             ) {
 
-                aadhaarDocumentInput.value =
+                aadhaarInput.value =
                     "";
 
-                if (aadhaarSelectedFile) {
-                    aadhaarSelectedFile.textContent =
-                        "";
-                }
-
                 showMessage(
-                    ageVerificationMessage,
-                    "✕ Please select an Aadhaar PDF or image file.",
+                    verificationMessage,
+                    "✕ Please select a PDF, JPG, JPEG, PNG or WEBP file.",
                     "#d00037"
                 );
 
                 return;
             }
 
-            if (aadhaarSelectedFile) {
-                aadhaarSelectedFile.textContent =
+            if (selectedFileLabel) {
+                selectedFileLabel.textContent =
                     `Selected: ${file.name}`;
             }
 
             showMessage(
-                ageVerificationMessage,
-                "✓ Aadhaar document selected. Click Verify ID & Create Account.",
+                verificationMessage,
+                "✓ Aadhaar document selected.",
                 "#087f5b"
             );
         }
@@ -459,7 +757,7 @@ if (aadhaarDocumentInput) {
 
 window.addEventListener(
     "beforeunload",
-    stopAadhaarCamera
+    stopCamera
 );
 
 // =========================================================
@@ -500,6 +798,18 @@ if (signupButton) {
                     )
                     .value;
 
+            const phoneElement =
+                document.getElementById(
+                    "signupPhone"
+                );
+
+            const phone =
+                phoneElement
+                    ? normalizePhone(
+                        phoneElement.value
+                    )
+                    : "";
+
             const documentInput =
                 document.getElementById(
                     "aadhaarDocument"
@@ -518,26 +828,40 @@ if (signupButton) {
             if (
                 !name ||
                 !email ||
-                !password
+                !password ||
+                !phone
             ) {
 
                 showMessage(
                     message,
-                    "Please fill in your name, email and password.",
+                    "Please fill in your name, mobile number, email and password.",
                     "#d00037"
                 );
 
                 return;
             }
 
-            const emailPattern =
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!emailPattern.test(email)) {
+            if (
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                    .test(email)
+            ) {
 
                 showMessage(
                     message,
                     "Please enter a valid email address.",
+                    "#d00037"
+                );
+
+                return;
+            }
+
+            if (
+                !isValidPhone(phone)
+            ) {
+
+                showMessage(
+                    message,
+                    "Please enter a valid 10-digit mobile number.",
                     "#d00037"
                 );
 
@@ -558,7 +882,7 @@ if (signupButton) {
             if (
                 !documentInput ||
                 !documentInput.files ||
-                documentInput.files.length === 0
+                !documentInput.files.length
             ) {
 
                 showMessage(
@@ -573,91 +897,81 @@ if (signupButton) {
             const file =
                 documentInput.files[0];
 
-            const allowedMimeTypes = [
-                "application/pdf",
-                "image/jpeg",
-                "image/png",
-                "image/jpg",
-                "image/webp"
-            ];
-
-            const allowedExtensions = [
-                ".pdf",
-                ".jpg",
-                ".jpeg",
-                ".png",
-                ".webp"
-            ];
-
-            const fileName =
-                file.name.toLowerCase();
-
-            const typeAllowed =
-                allowedMimeTypes.includes(
-                    file.type
-                );
-
-            const extensionAllowed =
-                allowedExtensions.some(
-                    function (extension) {
-                        return fileName.endsWith(
-                            extension
-                        );
-                    }
-                );
-
             if (
-                !typeAllowed ||
-                !extensionAllowed
+                file.size >
+                5 * 1024 * 1024
             ) {
-
-                documentInput.value = "";
 
                 showMessage(
                     ageMessage,
-                    "✕ Only PDF, JPG, JPEG, PNG or WEBP documents are supported.",
+                    "Aadhaar document must be smaller than 5 MB.",
                     "#d00037"
                 );
 
                 return;
             }
 
-            const maximumFileSize =
-                5 * 1024 * 1024;
+            signupButton.disabled =
+                true;
 
-            if (
-                file.size > maximumFileSize
-            ) {
-
-                showMessage(
-                    ageMessage,
-                    "Document must be smaller than 5 MB.",
-                    "#d00037"
-                );
-
-                return;
-            }
-
-            /*
-             * IMPORTANT:
-             * The camera capture is now connected.
-             *
-             * This frontend does NOT perform real UIDAI authentication.
-             * A real UIDAI verification system must be performed through
-             * an authorized UIDAI-supported verification process.
-             */
-
-            showMessage(
-                ageMessage,
-                "✓ Document captured successfully. Verification service required for real Aadhaar authentication.",
-                "#087f5b"
-            );
-
-            signupButton.disabled = true;
             signupButton.textContent =
-                "Creating Account...";
+                "Scanning Aadhaar...";
 
             try {
+
+                const ocrText =
+                    await scanSelectedAadhaar();
+
+                if (
+                    !looksLikeAadhaar(
+                        ocrText
+                    )
+                ) {
+
+                    showMessage(
+                        ageMessage,
+                        "✕ This document does not appear to be an Aadhaar document.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+                const dob =
+                    findDOB(
+                        ocrText
+                    );
+
+                if (!dob) {
+
+                    showMessage(
+                        ageMessage,
+                        "✕ Date of Birth could not be detected. Please use a clear Aadhaar image.",
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+                const age =
+                    calculateAge(dob);
+
+                if (age < 18) {
+
+                    showMessage(
+                        ageMessage,
+                        `✕ Age verification failed. Detected age: ${age}. You must be 18 or older.`,
+                        "#d00037"
+                    );
+
+                    return;
+                }
+
+                showMessage(
+                    ageMessage,
+                    `✓ Aadhaar demo scan completed. Detected age: ${age}. Eligibility passed.`,
+                    "#087f5b"
+                );
 
                 const response =
                     await fetch(
@@ -670,31 +984,35 @@ if (signupButton) {
                                     "application/json"
                             },
 
-                            body: JSON.stringify({
-                                name:
-                                    name,
-                                email:
-                                    email,
-                                password:
-                                    password,
-                                documentUploaded:
-                                    true,
-                                ageVerified:
-                                    true,
-                                verificationStatus:
-                                    "ID Verified"
-                            })
+                            body:
+                                JSON.stringify({
+
+                                    name:
+                                        name,
+
+                                    email:
+                                        email,
+
+                                    password:
+                                        password,
+
+                                    phone:
+                                        phone,
+
+                                    documentUploaded:
+                                        true,
+
+                                    ageVerified:
+                                        true,
+
+                                    verificationStatus:
+                                        "ID Verified"
+                                })
                         }
                     );
 
-                let data = {};
-
-                try {
-                    data =
-                        await response.json();
-                } catch (error) {
-                    data = {};
-                }
+                const data =
+                    await response.json();
 
                 if (!response.ok) {
 
@@ -726,23 +1044,30 @@ if (signupButton) {
                     "signupPassword"
                 ).value = "";
 
-                documentInput.value = "";
+                if (phoneElement) {
+                    phoneElement.value =
+                        "";
+                }
 
-                if (aadhaarSelectedFile) {
-                    aadhaarSelectedFile.textContent =
+                documentInput.value =
+                    "";
+
+                if (selectedFileLabel) {
+                    selectedFileLabel.textContent =
                         "";
                 }
 
             } catch (error) {
 
                 console.error(
-                    "Signup error:",
+                    "Signup / Aadhaar scan error:",
                     error
                 );
 
                 showMessage(
-                    message,
-                    "Unable to connect to BloodLink backend.",
+                    ageMessage,
+                    error.message ||
+                        "Unable to scan the Aadhaar document.",
                     "#d00037"
                 );
 
@@ -807,7 +1132,9 @@ if (loginButton) {
                 return;
             }
 
-            loginButton.disabled = true;
+            loginButton.disabled =
+                true;
+
             loginButton.textContent =
                 "Logging in...";
 
@@ -824,12 +1151,13 @@ if (loginButton) {
                                     "application/json"
                             },
 
-                            body: JSON.stringify({
-                                email:
-                                    email,
-                                password:
-                                    password
-                            })
+                            body:
+                                JSON.stringify({
+                                    email:
+                                        email,
+                                    password:
+                                        password
+                                })
                         }
                     );
 
@@ -855,16 +1183,14 @@ if (loginButton) {
                 showMessage(
                     message,
                     data.message ||
-                        "Login successful.",
+                        "Login successful!",
                     "#087f5b"
                 );
 
                 setTimeout(
                     function () {
-
                         window.location.href =
                             "index.html";
-
                     },
                     1000
                 );
@@ -904,10 +1230,10 @@ if (
     )
 ) {
 
-    const loggedInUser =
+    const user =
         getLoggedInUser();
 
-    if (!loggedInUser) {
+    if (!user) {
 
         alert(
             "Please login first to register as a blood donor."
@@ -916,6 +1242,144 @@ if (
         window.location.href =
             "login.html";
     }
+}
+
+// =========================================================
+// DONOR PAGE INITIALIZATION
+// =========================================================
+
+function initializeDonorPage() {
+
+    const user =
+        getLoggedInUser();
+
+    const donorNameInput =
+        document.getElementById(
+            "donorName"
+        );
+
+    const donorPhoneInput =
+        document.getElementById(
+            "donorPhone"
+        );
+
+    const donorAgeMessage =
+        document.getElementById(
+            "donorAgeMessage"
+        );
+
+    const donorIdCard =
+        document.getElementById(
+            "donorIdCard"
+        );
+
+    const donorIdValue =
+        document.getElementById(
+            "donorIdValue"
+        );
+
+    if (!user) {
+        return;
+    }
+
+    // -----------------------------------------
+    // NAME
+    // -----------------------------------------
+
+    if (donorNameInput) {
+
+        donorNameInput.value =
+            user.name || "";
+
+        donorNameInput.readOnly =
+            true;
+    }
+
+    // -----------------------------------------
+    // REGISTERED MOBILE
+    // -----------------------------------------
+
+    const registeredPhone =
+        normalizePhone(
+            user.phone
+        );
+
+    if (donorPhoneInput) {
+
+        donorPhoneInput.value =
+            registeredPhone;
+
+        donorPhoneInput.readOnly =
+            true;
+
+        donorPhoneInput.disabled =
+            false;
+    }
+
+    // -----------------------------------------
+    // VERIFICATION STATUS
+    // -----------------------------------------
+
+    if (donorAgeMessage) {
+
+        if (
+            user.ageVerified === true &&
+            user.documentUploaded === true
+        ) {
+
+            donorAgeMessage.textContent =
+                "✓ Age/ID verification completed. You can register as a donor.";
+
+            donorAgeMessage.style.color =
+                "#087f5b";
+
+        } else {
+
+            donorAgeMessage.textContent =
+                "✕ Age/ID verification is required.";
+
+            donorAgeMessage.style.color =
+                "#d00037";
+        }
+    }
+
+    // -----------------------------------------
+    // PREVIOUS DONOR ID
+    // -----------------------------------------
+
+    const storedDonorId =
+        localStorage.getItem(
+            DONOR_ID_KEY
+        );
+
+    if (
+        storedDonorId &&
+        donorIdCard &&
+        donorIdValue
+    ) {
+
+        donorIdValue.textContent =
+            storedDonorId;
+
+        donorIdCard.style.display =
+            "block";
+    }
+}
+
+if (
+    window.location.pathname.endsWith(
+        "donor.html"
+    )
+) {
+
+    initializeDonorPage();
+
+    // Extra initialization in case the page
+    // is loaded before all elements are ready.
+    setTimeout(
+        initializeDonorPage,
+        100
+    );
 }
 
 // =========================================================
@@ -929,59 +1393,29 @@ const donorRegisterButton =
 
 if (donorRegisterButton) {
 
-    const loggedInUser =
-        getLoggedInUser();
-
-    if (loggedInUser) {
-
-        const donorNameInput =
-            document.getElementById(
-                "donorName"
-            );
-
-        const donorAgeMessage =
-            document.getElementById(
-                "donorAgeMessage"
-            );
-
-        if (donorNameInput) {
-
-            donorNameInput.value =
-                loggedInUser.name || "";
-        }
-
-        if (donorAgeMessage) {
-
-            if (
-                loggedInUser.ageVerified &&
-                loggedInUser.documentUploaded
-            ) {
-
-                donorAgeMessage.textContent =
-                    "✓ Your ID verification is completed. You can register as a donor.";
-
-                donorAgeMessage.style.color =
-                    "#087f5b";
-
-            } else {
-
-                donorAgeMessage.textContent =
-                    "✕ ID verification is required.";
-
-                donorAgeMessage.style.color =
-                    "#d00037";
-            }
-        }
-    }
-
     donorRegisterButton.addEventListener(
         "click",
         async function () {
 
-            const user =
+            const currentUser =
                 getLoggedInUser();
 
-            if (!user) {
+            const message =
+                document.getElementById(
+                    "donorMessage"
+                );
+
+            const donorNameInput =
+                document.getElementById(
+                    "donorName"
+                );
+
+            const donorPhoneInput =
+                document.getElementById(
+                    "donorPhone"
+                );
+
+            if (!currentUser) {
 
                 alert(
                     "Please login first."
@@ -994,18 +1428,15 @@ if (donorRegisterButton) {
             }
 
             if (
-                !user.ageVerified ||
-                !user.documentUploaded
+                currentUser.ageVerified !==
+                    true ||
+                currentUser.documentUploaded !==
+                    true
             ) {
-
-                const message =
-                    document.getElementById(
-                        "donorMessage"
-                    );
 
                 showMessage(
                     message,
-                    "You must complete ID verification before donor registration.",
+                    "You must complete age/ID verification before donor registration.",
                     "#d00037"
                 );
 
@@ -1013,12 +1444,9 @@ if (donorRegisterButton) {
             }
 
             const name =
-                document
-                    .getElementById(
-                        "donorName"
-                    )
-                    .value
-                    .trim();
+                donorNameInput
+                    ? donorNameInput.value.trim()
+                    : "";
 
             const blood =
                 document.getElementById(
@@ -1033,18 +1461,21 @@ if (donorRegisterButton) {
                     .value
                     .trim();
 
+            // ALWAYS use the mobile number
+            // stored in the logged-in account.
             const phone =
-                document
-                    .getElementById(
-                        "donorPhone"
-                    )
-                    .value
-                    .trim();
-
-            const message =
-                document.getElementById(
-                    "donorMessage"
+                normalizePhone(
+                    currentUser.phone
                 );
+
+            if (
+                donorPhoneInput &&
+                donorPhoneInput.value !==
+                    phone
+            ) {
+                donorPhoneInput.value =
+                    phone;
+            }
 
             if (
                 !name ||
@@ -1055,21 +1486,20 @@ if (donorRegisterButton) {
 
                 showMessage(
                     message,
-                    "Please fill in all donor details.",
+                    "Your name, blood group, city and registered mobile number are required.",
                     "#d00037"
                 );
 
                 return;
             }
 
-            const phonePattern =
-                /^[0-9]{10}$/;
-
-            if (!phonePattern.test(phone)) {
+            if (
+                !isValidPhone(phone)
+            ) {
 
                 showMessage(
                     message,
-                    "Please enter a valid 10-digit mobile number.",
+                    "Your registered mobile number is invalid.",
                     "#d00037"
                 );
 
@@ -1095,22 +1525,24 @@ if (donorRegisterButton) {
                                     "application/json"
                             },
 
-                            body: JSON.stringify({
-                                userId:
-                                    user.id,
+                            body:
+                                JSON.stringify({
 
-                                name:
-                                    name,
+                                    userId:
+                                        currentUser.id,
 
-                                blood:
-                                    blood,
+                                    name:
+                                        name,
 
-                                city:
-                                    city,
+                                    blood:
+                                        blood,
 
-                                phone:
-                                    phone
-                            })
+                                    city:
+                                        city,
+
+                                    phone:
+                                        phone
+                                })
                         }
                     );
 
@@ -1129,11 +1561,52 @@ if (donorRegisterButton) {
                     return;
                 }
 
+                const donor =
+                    data.donor || {};
+
+                const donorId =
+                    donor.donorId ||
+                    "Not available";
+
+                // Save donor ID locally.
+                localStorage.setItem(
+                    DONOR_ID_KEY,
+                    donorId
+                );
+
+                const donorIdCard =
+                    document.getElementById(
+                        "donorIdCard"
+                    );
+
+                const donorIdValue =
+                    document.getElementById(
+                        "donorIdValue"
+                    );
+
+                if (donorIdValue) {
+                    donorIdValue.textContent =
+                        donorId;
+                }
+
+                if (donorIdCard) {
+                    donorIdCard.style.display =
+                        "block";
+                }
+
                 showMessage(
                     message,
-                    "Donor registration successful! ❤️",
+                    `✅ Donor registration successful! Your unique Donor ID is ${donorId}.`,
                     "#087f5b"
                 );
+
+                if (donorPhoneInput) {
+                    donorPhoneInput.value =
+                        phone;
+
+                    donorPhoneInput.readOnly =
+                        true;
+                }
 
                 document.getElementById(
                     "donorBlood"
@@ -1141,10 +1614,6 @@ if (donorRegisterButton) {
 
                 document.getElementById(
                     "donorCity"
-                ).value = "";
-
-                document.getElementById(
-                    "donorPhone"
                 ).value = "";
 
             } catch (error) {
@@ -1166,7 +1635,7 @@ if (donorRegisterButton) {
                     false;
 
                 donorRegisterButton.textContent =
-                    "Register as Donor";
+                    "🩸 Register as Blood Donor";
             }
         }
     );
@@ -1210,7 +1679,8 @@ if (searchDonorButton) {
                     "searchMessage"
                 );
 
-            results.innerHTML = "";
+            results.innerHTML =
+                "";
 
             searchDonorButton.disabled =
                 true;
@@ -1224,7 +1694,6 @@ if (searchDonorButton) {
                     new URLSearchParams();
 
                 if (blood) {
-
                     params.append(
                         "blood",
                         blood
@@ -1232,7 +1701,6 @@ if (searchDonorButton) {
                 }
 
                 if (city) {
-
                     params.append(
                         "city",
                         city
@@ -1259,12 +1727,10 @@ if (searchDonorButton) {
                     return;
                 }
 
-                const matchingDonors =
+                const donors =
                     data.donors || [];
 
-                if (
-                    matchingDonors.length === 0
-                ) {
+                if (donors.length === 0) {
 
                     showMessage(
                         message,
@@ -1277,11 +1743,11 @@ if (searchDonorButton) {
 
                 showMessage(
                     message,
-                    `${matchingDonors.length} donor(s) found.`,
+                    `${donors.length} donor(s) found.`,
                     "#087f5b"
                 );
 
-                matchingDonors.forEach(
+                donors.forEach(
                     function (donor) {
 
                         const card =
@@ -1365,7 +1831,7 @@ if (searchDonorButton) {
 }
 
 // =========================================================
-// SMS BLOOD REQUEST
+// SMS REQUEST
 // =========================================================
 
 async function sendBloodRequestSMS(
@@ -1399,8 +1865,12 @@ async function sendBloodRequestSMS(
                 function (item) {
 
                     return (
-                        String(item.id) ===
-                        String(donorId)
+                        String(
+                            item.id
+                        ) ===
+                        String(
+                            donorId
+                        )
                     );
                 }
             );
@@ -1434,9 +1904,7 @@ async function sendBloodRequestSMS(
         const requests =
             requestData.requests || [];
 
-        if (
-            requests.length === 0
-        ) {
+        if (requests.length === 0) {
 
             alert(
                 "Please create a blood request first."
@@ -1450,17 +1918,17 @@ async function sendBloodRequestSMS(
                 requests.length - 1
             ];
 
-        const bloodGroup =
+        const blood =
             request.blood ||
             request.bloodGroup ||
             "";
 
-        const smsMessage =
+        const text =
 `BloodLink Blood Request
 
 Patient: ${request.requesterName}
 
-Blood Group: ${bloodGroup}
+Blood Group: ${blood}
 
 Location: ${request.city}
 
@@ -1477,7 +1945,7 @@ Thank you.`;
 
         window.location.href =
             `sms:${donor.phone}?body=${encodeURIComponent(
-                smsMessage
+                text
             )}`;
 
     } catch (error) {
@@ -1530,12 +1998,13 @@ if (requestBloodButton) {
                     .trim();
 
             const phone =
-                document
-                    .getElementById(
-                        "requestPhone"
-                    )
-                    .value
-                    .trim();
+                normalizePhone(
+                    document
+                        .getElementById(
+                            "requestPhone"
+                        )
+                        .value
+                );
 
             const requestMessage =
                 document
@@ -1566,11 +2035,8 @@ if (requestBloodButton) {
                 return;
             }
 
-            const phonePattern =
-                /^[0-9]{10}$/;
-
             if (
-                !phonePattern.test(phone)
+                !isValidPhone(phone)
             ) {
 
                 showMessage(
@@ -1601,26 +2067,27 @@ if (requestBloodButton) {
                                     "application/json"
                             },
 
-                            body: JSON.stringify({
+                            body:
+                                JSON.stringify({
 
-                                requesterName:
-                                    requesterName,
+                                    requesterName:
+                                        requesterName,
 
-                                blood:
-                                    blood,
+                                    blood:
+                                        blood,
 
-                                bloodGroup:
-                                    blood,
+                                    bloodGroup:
+                                        blood,
 
-                                city:
-                                    city,
+                                    city:
+                                        city,
 
-                                phone:
-                                    phone,
+                                    phone:
+                                        phone,
 
-                                message:
-                                    requestMessage
-                            })
+                                    message:
+                                        requestMessage
+                                })
                         }
                     );
 
@@ -1819,11 +2286,11 @@ if (compatibilityButton) {
 }
 
 // =========================================================
-// CONSOLE INFORMATION
+// CONSOLE
 // =========================================================
 
 console.log(
-    "BloodLink frontend connected to backend."
+    "BloodLink frontend connected to LOCAL backend."
 );
 
 console.log(
@@ -1832,5 +2299,9 @@ console.log(
 );
 
 console.log(
-    "Aadhaar camera scanner loaded."
+    "BloodLink Aadhaar camera scanner loaded."
+);
+
+console.log(
+    "BloodLink donor registration loaded."
 );
