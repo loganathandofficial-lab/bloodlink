@@ -1,21 +1,12 @@
-// =========================================================
-// BLOODLINK BACKEND SERVER
-// Node.js + Express + JSON Storage
-// =========================================================
-
 const express = require("express");
 const cors = require("cors");
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const crypto = require("crypto");
 
 const app = express();
 
 const PORT = process.env.PORT || 5000;
-
-// =========================================================
-// FOUNDER ADMIN AUTHENTICATION
-// =========================================================
 
 const FOUNDER_USERNAME =
     process.env.BLOODLINK_FOUNDER_USERNAME || "founder";
@@ -113,7 +104,6 @@ function readJSON(file) {
             : [];
 
     } catch (error) {
-
         console.error(
             "Error reading JSON file:",
             error
@@ -122,6 +112,7 @@ function readJSON(file) {
         return [];
     }
 }
+
 
 function writeJSON(file, data) {
     try {
@@ -138,7 +129,6 @@ function writeJSON(file, data) {
         return true;
 
     } catch (error) {
-
         console.error(
             "Error writing JSON file:",
             error
@@ -148,11 +138,13 @@ function writeJSON(file, data) {
     }
 }
 
+
 function normalizePhone(phone) {
     return String(phone || "")
         .replace(/\D/g, "")
         .trim();
 }
+
 
 function isValidPhone(phone) {
     return /^[0-9]{10}$/.test(
@@ -160,13 +152,133 @@ function isValidPhone(phone) {
     );
 }
 
+
+// =========================================================
+// AGE FUNCTIONS
+// =========================================================
+
+function calculateAge(dateOfBirth) {
+
+    if (!dateOfBirth) {
+        return null;
+    }
+
+    const birthDate =
+        new Date(
+            `${dateOfBirth}T00:00:00`
+        );
+
+    if (
+        Number.isNaN(
+            birthDate.getTime()
+        )
+    ) {
+        return null;
+    }
+
+    const today =
+        new Date();
+
+    if (
+        birthDate > today
+    ) {
+        return null;
+    }
+
+    let age =
+        today.getFullYear() -
+        birthDate.getFullYear();
+
+    const monthDifference =
+        today.getMonth() -
+        birthDate.getMonth();
+
+    if (
+        monthDifference < 0 ||
+        (
+            monthDifference === 0 &&
+            today.getDate() <
+            birthDate.getDate()
+        )
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+
+function isEligibleAge(age) {
+
+    return (
+        Number.isInteger(age) &&
+        age >= 18 &&
+        age <= 65
+    );
+}
+
+
+// =========================================================
+// UNIQUE DONOR ID
+// =========================================================
+
+function generateDonorId(donors) {
+
+    let highestNumber = 10000;
+
+    donors.forEach(
+        function (donor) {
+
+            const donorId =
+                String(
+                    donor.donorId || ""
+                );
+
+            const match =
+                donorId.match(
+                    /^BL-DON-(\d+)$/
+                );
+
+            if (match) {
+
+                const number =
+                    Number(match[1]);
+
+                if (
+                    Number.isFinite(number) &&
+                    number > highestNumber
+                ) {
+                    highestNumber = number;
+                }
+            }
+        }
+    );
+
+    return `BL-DON-${highestNumber + 1}`;
+}
+
+
+// =========================================================
+// FOUNDER TOKEN
+// =========================================================
+
 function generateAdminToken() {
+
     return crypto
         .randomBytes(32)
         .toString("hex");
 }
 
-function requireFounderAdmin(req, res, next) {
+
+// =========================================================
+// FOUNDER ACCESS MIDDLEWARE
+// =========================================================
+
+function requireFounderAdmin(
+    req,
+    res,
+    next
+) {
 
     const token =
         req.headers["x-admin-token"];
@@ -179,7 +291,9 @@ function requireFounderAdmin(req, res, next) {
         return res
             .status(403)
             .json({
+
                 success: false,
+
                 message:
                     "Founder admin access is required."
             });
@@ -188,53 +302,21 @@ function requireFounderAdmin(req, res, next) {
     next();
 }
 
-// =========================================================
-// UNIQUE DONOR ID
-// =========================================================
-
-function generateDonorId(donors) {
-
-    let highestNumber = 10000;
-
-    donors.forEach(function (donor) {
-
-        const donorId =
-            String(
-                donor.donorId || ""
-            );
-
-        const match =
-            donorId.match(
-                /^BL-DON-(\d+)$/
-            );
-
-        if (match) {
-
-            const number =
-                Number(match[1]);
-
-            if (
-                Number.isFinite(number) &&
-                number > highestNumber
-            ) {
-                highestNumber = number;
-            }
-        }
-    });
-
-    return `BL-DON-${highestNumber + 1}`;
-}
 
 // =========================================================
 // HOME
 // =========================================================
 
-app.get("/", (req, res) => {
+app.get(
+    "/",
+    (req, res) => {
 
-    res.send(
-        "BloodLink Backend is running!"
-    );
-});
+        res.send(
+            "BloodLink Backend is running!"
+        );
+    }
+);
+
 
 // =========================================================
 // API TEST
@@ -245,15 +327,18 @@ app.get(
     (req, res) => {
 
         res.json({
+
             success: true,
+
             message:
                 "BloodLink API is working!"
         });
     }
 );
 
+
 // =========================================================
-// FOUNDER ADMIN LOGIN
+// FOUNDER LOGIN
 // =========================================================
 
 app.post(
@@ -275,7 +360,9 @@ app.post(
                 return res
                     .status(400)
                     .json({
+
                         success: false,
+
                         message:
                             "Founder username and password are required."
                     });
@@ -283,15 +370,17 @@ app.post(
 
             if (
                 String(username).trim() !==
-                    FOUNDER_USERNAME ||
+                FOUNDER_USERNAME ||
                 String(password) !==
-                    FOUNDER_PASSWORD
+                FOUNDER_PASSWORD
             ) {
 
                 return res
                     .status(401)
                     .json({
+
                         success: false,
+
                         message:
                             "Invalid founder login."
                     });
@@ -335,6 +424,7 @@ app.post(
     }
 );
 
+
 // =========================================================
 // SIGNUP
 // =========================================================
@@ -350,16 +440,21 @@ app.post(
                 email,
                 password,
                 phone,
-                documentUploaded,
-                ageVerified,
-                verificationStatus
+                dob,
+                age,
+                ageVerified
             } = req.body;
+
+            // -------------------------------------------------
+            // BASIC VALIDATION
+            // -------------------------------------------------
 
             if (
                 !name ||
                 !email ||
                 !password ||
-                !phone
+                !phone ||
+                !dob
             ) {
 
                 return res
@@ -369,7 +464,7 @@ app.post(
                         success: false,
 
                         message:
-                            "Name, email, password and mobile number are required."
+                            "Name, email, password, mobile number and date of birth are required."
                     });
             }
 
@@ -384,7 +479,18 @@ app.post(
             const cleanPhone =
                 normalizePhone(phone);
 
-            if (!isValidPhone(cleanPhone)) {
+            const cleanDob =
+                String(dob).trim();
+
+            // -------------------------------------------------
+            // MOBILE VALIDATION
+            // -------------------------------------------------
+
+            if (
+                !isValidPhone(
+                    cleanPhone
+                )
+            ) {
 
                 return res
                     .status(400)
@@ -396,6 +502,10 @@ app.post(
                             "Please enter a valid 10-digit mobile number."
                     });
             }
+
+            // -------------------------------------------------
+            // PASSWORD VALIDATION
+            // -------------------------------------------------
 
             if (
                 String(password).length < 6
@@ -412,8 +522,107 @@ app.post(
                     });
             }
 
+            // -------------------------------------------------
+            // CALCULATE AGE AGAIN ON BACKEND
+            // -------------------------------------------------
+
+            const calculatedAge =
+                calculateAge(
+                    cleanDob
+                );
+
+            if (
+                calculatedAge === null
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+
+                        success: false,
+
+                        message:
+                            "Please enter a valid date of birth."
+                    });
+            }
+
+            // -------------------------------------------------
+            // AGE ELIGIBILITY
+            // -------------------------------------------------
+
+            if (
+                !isEligibleAge(
+                    calculatedAge
+                )
+            ) {
+
+                let ageMessage;
+
+                if (
+                    calculatedAge < 18
+                ) {
+
+                    ageMessage =
+                        "You must be at least 18 years old to register.";
+
+                } else {
+
+                    ageMessage =
+                        "The maximum donor age is 65 years.";
+                }
+
+                return res
+                    .status(403)
+                    .json({
+
+                        success: false,
+
+                        message:
+                            ageMessage,
+
+                        age:
+                            calculatedAge,
+
+                        ageVerified:
+                            false
+                    });
+            }
+
+            // -------------------------------------------------
+            // CLIENT AGE CHECK MUST ALSO BE TRUE
+            // -------------------------------------------------
+
+            if (
+                ageVerified !== true
+            ) {
+
+                return res
+                    .status(403)
+                    .json({
+
+                        success: false,
+
+                        message:
+                            "Please complete age eligibility verification.",
+
+                        age:
+                            calculatedAge,
+
+                        ageVerified:
+                            false
+                    });
+            }
+
+            // -------------------------------------------------
+            // READ USERS
+            // -------------------------------------------------
+
             const users =
                 readJSON(usersFile);
+
+            // -------------------------------------------------
+            // CHECK EXISTING EMAIL
+            // -------------------------------------------------
 
             const existingUser =
                 users.find(
@@ -421,10 +630,12 @@ app.post(
                         user.email &&
                         user.email
                             .toLowerCase() ===
-                            cleanEmail
+                        cleanEmail
                 );
 
-            if (existingUser) {
+            if (
+                existingUser
+            ) {
 
                 return res
                     .status(409)
@@ -437,15 +648,22 @@ app.post(
                     });
             }
 
+            // -------------------------------------------------
+            // CHECK EXISTING MOBILE
+            // -------------------------------------------------
+
             const existingPhone =
                 users.find(
                     user =>
                         normalizePhone(
                             user.phone
-                        ) === cleanPhone
+                        ) ===
+                        cleanPhone
                 );
 
-            if (existingPhone) {
+            if (
+                existingPhone
+            ) {
 
                 return res
                     .status(409)
@@ -457,6 +675,10 @@ app.post(
                             "An account with this mobile number already exists."
                     });
             }
+
+            // -------------------------------------------------
+            // CREATE USER
+            // -------------------------------------------------
 
             const newUser = {
 
@@ -475,19 +697,17 @@ app.post(
                 phone:
                     cleanPhone,
 
-                documentUploaded:
-                    documentUploaded === true,
+                dob:
+                    cleanDob,
+
+                age:
+                    calculatedAge,
 
                 ageVerified:
-                    ageVerified === true,
+                    true,
 
                 verificationStatus:
-                    verificationStatus ||
-                    (
-                        documentUploaded === true
-                            ? "ID Verified"
-                            : "Not Verified"
-                    ),
+                    "Age Verified",
 
                 createdAt:
                     new Date().toISOString()
@@ -496,6 +716,10 @@ app.post(
             users.push(
                 newUser
             );
+
+            // -------------------------------------------------
+            // SAVE USER
+            // -------------------------------------------------
 
             const saved =
                 writeJSON(
@@ -521,6 +745,10 @@ app.post(
                 newUser.email
             );
 
+            // -------------------------------------------------
+            // RESPONSE
+            // -------------------------------------------------
+
             return res
                 .status(201)
                 .json({
@@ -544,8 +772,11 @@ app.post(
                         phone:
                             newUser.phone,
 
-                        documentUploaded:
-                            newUser.documentUploaded,
+                        dob:
+                            newUser.dob,
+
+                        age:
+                            newUser.age,
 
                         ageVerified:
                             newUser.ageVerified,
@@ -574,6 +805,7 @@ app.post(
         }
     }
 );
+
 
 // =========================================================
 // LOGIN
@@ -620,7 +852,7 @@ app.post(
                         item.email &&
                         item.email
                             .toLowerCase() ===
-                            cleanEmail
+                        cleanEmail
                 );
 
             if (!user) {
@@ -657,6 +889,24 @@ app.post(
                 cleanEmail
             );
 
+            // -------------------------------------------------
+            // GET / RECALCULATE AGE
+            // -------------------------------------------------
+
+            let userAge =
+                Number.isInteger(
+                    user.age
+                )
+                    ? user.age
+                    : calculateAge(
+                        user.dob
+                    );
+
+            const userAgeVerified =
+                isEligibleAge(
+                    userAge
+                );
+
             return res.json({
 
                 success: true,
@@ -678,15 +928,22 @@ app.post(
                     phone:
                         user.phone || "",
 
-                    documentUploaded:
-                        user.documentUploaded === true,
+                    dob:
+                        user.dob || "",
+
+                    age:
+                        userAge,
 
                     ageVerified:
-                        user.ageVerified === true,
+                        userAgeVerified,
 
                     verificationStatus:
                         user.verificationStatus ||
-                        "Not Verified"
+                        (
+                            userAgeVerified
+                                ? "Age Verified"
+                                : "Not Verified"
+                        )
                 }
             });
 
@@ -710,12 +967,14 @@ app.post(
     }
 );
 
+
 // =========================================================
-// GET ALL USERS
+// GET ALL USERS - FOUNDER ONLY
 // =========================================================
 
 app.get(
     "/api/users",
+    requireFounderAdmin,
     (req, res) => {
 
         try {
@@ -739,14 +998,18 @@ app.get(
                         phone:
                             user.phone || "",
 
-                        documentUploaded:
-                            user.documentUploaded,
+                        dob:
+                            user.dob || "",
+
+                        age:
+                            user.age ?? "",
 
                         ageVerified:
-                            user.ageVerified,
+                            user.ageVerified === true,
 
                         verificationStatus:
-                            user.verificationStatus,
+                            user.verificationStatus ||
+                            "Not Verified",
 
                         createdAt:
                             user.createdAt
@@ -780,6 +1043,7 @@ app.get(
         }
     }
 );
+
 
 // =========================================================
 // GET SINGLE USER
@@ -816,6 +1080,13 @@ app.get(
                     });
             }
 
+            const userAge =
+                Number.isInteger(user.age)
+                    ? user.age
+                    : calculateAge(
+                        user.dob
+                    );
+
             return res.json({
 
                 success: true,
@@ -834,14 +1105,20 @@ app.get(
                     phone:
                         user.phone || "",
 
-                    documentUploaded:
-                        user.documentUploaded,
+                    dob:
+                        user.dob || "",
+
+                    age:
+                        userAge,
 
                     ageVerified:
-                        user.ageVerified,
+                        isEligibleAge(
+                            userAge
+                        ),
 
                     verificationStatus:
-                        user.verificationStatus
+                        user.verificationStatus ||
+                        "Not Verified"
                 }
             });
 
@@ -865,6 +1142,7 @@ app.get(
     }
 );
 
+
 // =========================================================
 // DONOR REGISTRATION
 // =========================================================
@@ -883,6 +1161,10 @@ app.post(
                 phone
             } = req.body;
 
+            // -------------------------------------------------
+            // BASIC VALIDATION
+            // -------------------------------------------------
+
             if (
                 !userId ||
                 !name ||
@@ -900,6 +1182,10 @@ app.post(
                             "User, name, blood group and city are required."
                     });
             }
+
+            // -------------------------------------------------
+            // FIND USER
+            // -------------------------------------------------
 
             const users =
                 readJSON(usersFile);
@@ -924,9 +1210,27 @@ app.post(
                     });
             }
 
+            // -------------------------------------------------
+            // CALCULATE USER AGE FROM SAVED DOB
+            // -------------------------------------------------
+
+            const userAge =
+                Number.isInteger(
+                    user.age
+                )
+                    ? user.age
+                    : calculateAge(
+                        user.dob
+                    );
+
+            // -------------------------------------------------
+            // AGE ELIGIBILITY CHECK
+            // -------------------------------------------------
+
             if (
-                user.ageVerified !== true ||
-                user.documentUploaded !== true
+                !isEligibleAge(
+                    userAge
+                )
             ) {
 
                 return res
@@ -936,9 +1240,49 @@ app.post(
                         success: false,
 
                         message:
-                            "User ID verification is required before donor registration."
+                            "You are not eligible to register as a blood donor. Donor age must be between 18 and 65 years.",
+
+                        age:
+                            userAge,
+
+                        ageVerified:
+                            false
                     });
             }
+
+            // -------------------------------------------------
+            // UPDATE USER AGE VERIFICATION
+            // -------------------------------------------------
+
+            const userIndex =
+                users.findIndex(
+                    item =>
+                        String(item.id) ===
+                        String(userId)
+                );
+
+            if (
+                userIndex !== -1
+            ) {
+
+                users[userIndex].age =
+                    userAge;
+
+                users[userIndex].ageVerified =
+                    true;
+
+                users[userIndex].verificationStatus =
+                    "Age Verified";
+
+                writeJSON(
+                    usersFile,
+                    users
+                );
+            }
+
+            // -------------------------------------------------
+            // REGISTERED MOBILE
+            // -------------------------------------------------
 
             const registeredPhone =
                 normalizePhone(
@@ -962,10 +1306,14 @@ app.post(
                     });
             }
 
+            // -------------------------------------------------
+            // DO NOT ALLOW DIFFERENT MOBILE
+            // -------------------------------------------------
+
             if (
                 phone &&
                 normalizePhone(phone) !==
-                    registeredPhone
+                registeredPhone
             ) {
 
                 return res
@@ -979,8 +1327,16 @@ app.post(
                     });
             }
 
+            // -------------------------------------------------
+            // READ DONORS
+            // -------------------------------------------------
+
             const donors =
                 readJSON(donorsFile);
+
+            // -------------------------------------------------
+            // PREVENT DUPLICATE DONOR
+            // -------------------------------------------------
 
             const existingDonor =
                 donors.find(
@@ -991,7 +1347,9 @@ app.post(
                         String(userId)
                 );
 
-            if (existingDonor) {
+            if (
+                existingDonor
+            ) {
 
                 return res
                     .status(409)
@@ -1007,10 +1365,18 @@ app.post(
                     });
             }
 
+            // -------------------------------------------------
+            // GENERATE DONOR ID
+            // -------------------------------------------------
+
             const donorId =
                 generateDonorId(
                     donors
                 );
+
+            // -------------------------------------------------
+            // CREATE DONOR
+            // -------------------------------------------------
 
             const newDonor = {
 
@@ -1035,6 +1401,9 @@ app.post(
                 phone:
                     registeredPhone,
 
+                age:
+                    userAge,
+
                 createdAt:
                     new Date().toISOString()
             };
@@ -1042,6 +1411,10 @@ app.post(
             donors.push(
                 newDonor
             );
+
+            // -------------------------------------------------
+            // SAVE DONOR
+            // -------------------------------------------------
 
             const saved =
                 writeJSON(
@@ -1067,6 +1440,10 @@ app.post(
                 newDonor.donorId,
                 newDonor.name
             );
+
+            // -------------------------------------------------
+            // CONFIRMATION RESPONSE
+            // -------------------------------------------------
 
             return res
                 .status(201)
@@ -1116,6 +1493,7 @@ app.post(
     }
 );
 
+
 // =========================================================
 // GET ALL DONORS
 // =========================================================
@@ -1156,6 +1534,7 @@ app.get(
         }
     }
 );
+
 
 // =========================================================
 // GET SINGLE DONOR
@@ -1228,9 +1607,9 @@ app.get(
     }
 );
 
+
 // =========================================================
 // SEARCH DONORS
-// BLOOD GROUP + OPTIONAL LOCATION
 // =========================================================
 
 app.get(
@@ -1318,6 +1697,7 @@ app.get(
     }
 );
 
+
 // =========================================================
 // BLOOD REQUEST
 // =========================================================
@@ -1338,7 +1718,9 @@ app.post(
             } = req.body;
 
             const finalBlood =
-                blood || bloodGroup || "";
+                blood ||
+                bloodGroup ||
+                "";
 
             if (
                 !requesterName ||
@@ -1359,9 +1741,15 @@ app.post(
             }
 
             const cleanPhone =
-                normalizePhone(phone);
+                normalizePhone(
+                    phone
+                );
 
-            if (!isValidPhone(cleanPhone)) {
+            if (
+                !isValidPhone(
+                    cleanPhone
+                )
+            ) {
 
                 return res
                     .status(400)
@@ -1375,7 +1763,9 @@ app.post(
             }
 
             const requests =
-                readJSON(requestsFile);
+                readJSON(
+                    requestsFile
+                );
 
             const newRequest = {
 
@@ -1478,6 +1868,7 @@ app.post(
     }
 );
 
+
 // =========================================================
 // GET BLOOD REQUESTS
 // =========================================================
@@ -1521,6 +1912,7 @@ app.get(
     }
 );
 
+
 // =========================================================
 // DELETE USER - FOUNDER ONLY
 // =========================================================
@@ -1538,7 +1930,9 @@ app.delete(
                 );
 
             const users =
-                readJSON(usersFile);
+                readJSON(
+                    usersFile
+                );
 
             const originalLength =
                 users.length;
@@ -1618,6 +2012,7 @@ app.delete(
     }
 );
 
+
 // =========================================================
 // DELETE DONOR - FOUNDER ONLY
 // =========================================================
@@ -1635,7 +2030,9 @@ app.delete(
                 );
 
             const donors =
-                readJSON(donorsFile);
+                readJSON(
+                    donorsFile
+                );
 
             const originalLength =
                 donors.length;
@@ -1719,6 +2116,7 @@ app.delete(
     }
 );
 
+
 // =========================================================
 // DELETE BLOOD REQUEST - FOUNDER ONLY
 // =========================================================
@@ -1736,7 +2134,9 @@ app.delete(
                 );
 
             const requests =
-                readJSON(requestsFile);
+                readJSON(
+                    requestsFile
+                );
 
             const originalLength =
                 requests.length;
@@ -1817,8 +2217,9 @@ app.delete(
     }
 );
 
+
 // =========================================================
-// FOUNDER ADMIN LOGOUT
+// FOUNDER LOGOUT
 // =========================================================
 
 app.post(
@@ -1842,6 +2243,7 @@ app.post(
     }
 );
 
+
 // =========================================================
 // 404 ROUTE
 // =========================================================
@@ -1861,12 +2263,18 @@ app.use(
     }
 );
 
+
 // =========================================================
 // ERROR HANDLER
 // =========================================================
 
 app.use(
-    (error, req, res, next) => {
+    (
+        error,
+        req,
+        res,
+        next
+    ) => {
 
         console.error(
             "Server error:",
@@ -1884,6 +2292,7 @@ app.use(
             });
     }
 );
+
 
 // =========================================================
 // START SERVER
@@ -1919,6 +2328,10 @@ app.listen(
 
         console.log(
             "Founder admin authentication enabled."
+        );
+
+        console.log(
+            "DOB age eligibility enabled."
         );
 
         console.log(
