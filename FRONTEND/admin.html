@@ -7,228 +7,261 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Admin | BloodLink</title>
+    <title>Admin Panel | BloodLink</title>
 
     <link rel="stylesheet" href="style.css">
-
-    <script>
-        // =====================================================
-        // FOUNDER-ONLY PAGE PROTECTION
-        // =====================================================
-
-        const founderLoggedIn =
-            localStorage.getItem(
-                "bloodlink_founder_logged_in"
-            );
-
-        const founderToken =
-            localStorage.getItem(
-                "bloodlink_founder_token"
-            );
-
-        if (
-            founderLoggedIn !== "true" ||
-            !founderToken
-        ) {
-            window.location.replace(
-                "admin-login.html"
-            );
-        }
-    </script>
 
     <style>
         .admin-page {
             min-height: 100vh;
-            padding: 65px 20px 90px;
-            background: #fffafa;
+            background: #fafafa;
+            padding-bottom: 70px;
         }
 
-        .admin-container {
-            width: min(1180px, 94%);
-            margin: auto;
-        }
-
-        .admin-hero {
-            padding: 35px;
-            border-radius: 22px;
+        .admin-header {
+            background: linear-gradient(135deg, #62091b, #98112d);
             color: white;
-            background:
-                linear-gradient(
-                    135deg,
-                    #4a0010,
-                    #8b001f
-                );
-            box-shadow:
-                0 18px 45px rgba(60,0,15,0.12);
+            padding: 55px 20px;
         }
 
-        .admin-hero small {
-            color: #ffb8c3;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        .admin-header-inner {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            align-items: center;
         }
 
-        .admin-hero h1 {
-            margin-top: 8px;
-            font-size: clamp(32px, 5vw, 48px);
+        .admin-header h1 {
+            margin: 0 0 8px;
+            font-size: 38px;
         }
 
-        .admin-hero p {
-            margin-top: 10px;
-            max-width: 700px;
-            color: #ead1d6;
-            font-size: 13px;
-            line-height: 1.7;
+        .admin-header p {
+            margin: 0;
+            color: #ffe8ed;
+            line-height: 1.6;
         }
 
         .admin-actions {
             display: flex;
+            gap: 10px;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 22px;
         }
 
-        .founder-logout-button {
-            border: 1px solid rgba(255,255,255,0.35);
+        .admin-action-btn {
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
             padding: 11px 16px;
             border-radius: 9px;
-            background: rgba(255,255,255,0.12);
-            color: white;
-            font-size: 11px;
-            font-weight: 800;
             cursor: pointer;
+            font-weight: 700;
         }
 
-        .founder-logout-button:hover {
-            background: rgba(255,255,255,0.20);
+        .admin-action-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .admin-content {
+            max-width: 1200px;
+            margin: -25px auto 0;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .admin-status {
+            display: none;
+            margin-bottom: 20px;
+            padding: 13px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .admin-status.success {
+            display: block;
+            background: #eaf8ef;
+            color: #176b35;
+            border: 1px solid #bde5c9;
+        }
+
+        .admin-status.error {
+            display: block;
+            background: #fff0f2;
+            color: #9c1731;
+            border: 1px solid #f2c3cc;
+        }
+
+        .admin-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #efdde2;
+            border-radius: 17px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(60,10,25,0.06);
+        }
+
+        .summary-label {
+            display: block;
+            color: #777;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .summary-number {
+            display: block;
+            color: #65091d;
+            font-size: 32px;
+            font-weight: 800;
         }
 
         .admin-section {
-            margin-top: 25px;
-            padding: 28px;
-            border-radius: 18px;
             background: white;
-            border: 1px solid #f0dfe2;
-            box-shadow:
-                0 15px 45px rgba(60,0,15,0.05);
+            border: 1px solid #efdde2;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(60,10,25,0.05);
         }
 
         .admin-section-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 15px;
-            margin-bottom: 20px;
+            padding: 22px 24px;
+            border-bottom: 1px solid #f2e7e9;
         }
 
         .admin-section-header h2 {
-            color: #65091d;
+            margin: 0;
+            color: #570819;
             font-size: 22px;
         }
 
         .admin-count {
-            display: inline-block;
-            margin-right: 8px;
-            padding: 7px 11px;
-            border-radius: 20px;
-            background: #fff0f2;
-            color: #8b001f;
-            font-size: 11px;
+            background: #fff0f3;
+            color: #8c1028;
+            padding: 6px 10px;
+            border-radius: 50px;
+            font-size: 12px;
             font-weight: 800;
         }
 
         .admin-table-wrap {
+            width: 100%;
             overflow-x: auto;
         }
 
         .admin-table {
             width: 100%;
-            min-width: 760px;
             border-collapse: collapse;
+            min-width: 780px;
         }
 
         .admin-table th {
             text-align: left;
-            padding: 12px;
-            background: #fff5f6;
-            color: #6d1326;
-            font-size: 11px;
-            border-bottom:
-                1px solid #efdce0;
+            background: #fff8f9;
+            color: #651022;
+            padding: 13px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid #f1e2e5;
         }
 
         .admin-table td {
-            padding: 13px 12px;
-            color: #6f6267;
-            font-size: 11px;
-            border-bottom:
-                1px solid #f3e7e9;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f3ebed;
+            color: #5d5d5d;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-delete-btn {
+            border: none;
+            background: #fff0f2;
+            color: #a3132e;
+            padding: 8px 11px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .admin-delete-btn:hover {
+            background: #ffe0e5;
         }
 
         .admin-empty {
-            padding: 25px;
+            padding: 30px 20px;
             text-align: center;
-            color: #8a7b80;
-            font-size: 12px;
+            color: #888;
+            font-size: 14px;
         }
 
-        .delete-button {
-            border: none;
-            padding: 8px 11px;
-            border-radius: 8px;
-            background: #8b001f;
-            color: white;
-            font-size: 10px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .delete-button:hover {
-            background: #650017;
-        }
-
-        .refresh-button {
-            border: 1px solid #e8cbd1;
-            padding: 9px 13px;
-            border-radius: 8px;
-            background: #fff5f6;
-            color: #78001c;
-            font-size: 10px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .admin-status {
-            margin-top: 20px;
-            min-height: 20px;
+        .admin-loading {
+            padding: 30px 20px;
             text-align: center;
+            color: #888;
+        }
+
+        .admin-blood {
+            display: inline-block;
+            min-width: 38px;
+            text-align: center;
+            background: #fff0f2;
+            color: #8f1027;
+            padding: 5px 8px;
+            border-radius: 7px;
+            font-weight: 800;
+        }
+
+        .admin-token-note {
+            max-width: 1200px;
+            margin: 18px auto 0;
+            padding: 0 20px;
+            color: #888;
             font-size: 12px;
-            font-weight: 700;
+            text-align: center;
         }
 
-        .admin-warning {
-            margin-top: 25px;
-            padding: 16px;
-            border-left: 4px solid #a00025;
-            border-radius: 10px;
-            background: #fff5f6;
-            color: #70555c;
-            font-size: 11px;
-            line-height: 1.6;
+        @media (max-width: 850px) {
+            .admin-header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .admin-summary {
+                grid-template-columns: 1fr;
+            }
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 600px) {
+            .admin-header {
+                padding: 40px 20px;
+            }
 
-            .admin-hero,
-            .admin-section {
-                padding: 22px 18px;
+            .admin-header h1 {
+                font-size: 30px;
+            }
+
+            .admin-content {
+                padding: 0 12px;
             }
 
             .admin-section-header {
-                align-items: flex-start;
-                flex-direction: column;
+                padding: 18px;
             }
         }
     </style>
@@ -237,12 +270,10 @@
 <body>
 
 <header class="main-header">
+
     <nav class="navbar">
 
-        <a
-            href="index.html"
-            class="brand"
-        >
+        <a href="index.html" class="brand">
 
             <div class="brand-drop">
                 🩸
@@ -250,9 +281,7 @@
 
             <div>
                 <strong>BloodLink</strong>
-                <span>
-                    Life • Hope • Humanity
-                </span>
+                <span>Life • Hope • Humanity</span>
             </div>
 
         </a>
@@ -283,50 +312,62 @@
                 About
             </a>
 
+            <a href="login.html" class="nav-login">
+                Login
+            </a>
+
         </div>
+
     </nav>
+
 </header>
 
 
 <main class="admin-page">
 
-    <div class="admin-container">
+    <section class="admin-header">
 
-        <!-- =====================================================
-             ADMIN HEADER
-             ===================================================== -->
+        <div class="admin-header-inner">
 
-        <section class="admin-hero">
+            <div>
 
-            <small>
-                BloodLink Founder Administration
-            </small>
+                <h1>
+                    BloodLink Admin Panel
+                </h1>
 
-            <h1>
-                Founder Dashboard
-            </h1>
+                <p>
+                    Manage registered users, donors and blood requests.
+                </p>
 
-            <p>
-                This dashboard is available only to the
-                BloodLink Founder. View and manage users,
-                donors and blood requests stored on the
-                local device.
-            </p>
+            </div>
+
 
             <div class="admin-actions">
 
                 <button
                     type="button"
-                    class="founder-logout-button"
-                    onclick="founderLogout()"
+                    class="admin-action-btn"
+                    id="refreshButton"
                 >
-                    🔐 Founder Logout
+                    ↻ Refresh
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-action-btn"
+                    id="logoutButton"
+                >
+                    Logout
                 </button>
 
             </div>
 
-        </section>
+        </div>
 
+    </section>
+
+
+    <div class="admin-content">
 
         <div
             id="adminStatus"
@@ -334,36 +375,72 @@
         ></div>
 
 
-        <!-- =====================================================
-             USERS
-             ===================================================== -->
+        <section class="admin-summary">
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+                    Registered Users
+                </span>
+
+                <span
+                    class="summary-number"
+                    id="summaryUsers"
+                >
+                    0
+                </span>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+                    Registered Donors
+                </span>
+
+                <span
+                    class="summary-number"
+                    id="summaryDonors"
+                >
+                    0
+                </span>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+                    Blood Requests
+                </span>
+
+                <span
+                    class="summary-number"
+                    id="summaryRequests"
+                >
+                    0
+                </span>
+
+            </div>
+
+        </section>
+
 
         <section class="admin-section">
 
             <div class="admin-section-header">
 
                 <h2>
-                    👤 Registered Users
+                    Registered Users
                 </h2>
 
-                <div>
-
-                    <span
-                        id="usersCount"
-                        class="admin-count"
-                    >
-                        0
-                    </span>
-
-                    <button
-                        type="button"
-                        class="refresh-button"
-                        onclick="loadAdminData()"
-                    >
-                        ↻ Refresh
-                    </button>
-
-                </div>
+                <span
+                    class="admin-count"
+                    id="usersCount"
+                >
+                    0 Users
+                </span>
 
             </div>
 
@@ -375,67 +452,48 @@
                     <thead>
 
                         <tr>
-
-                            <th>
-                                Name
-                            </th>
-
-                            <th>
-                                Email
-                            </th>
-
-                            <th>
-                                Mobile
-                            </th>
-
-                            <th>
-                                Verification
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
-
+                            <th>Name</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                            <th>DOB</th>
+                            <th>Age</th>
+                            <th>Action</th>
                         </tr>
 
                     </thead>
 
-                    <tbody
-                        id="usersTableBody"
-                    ></tbody>
+                    <tbody id="usersTableBody">
+
+                    </tbody>
 
                 </table>
 
+            </div>
 
-                <div
-                    id="usersEmpty"
-                    class="admin-empty"
-                >
-                    No users found.
-                </div>
 
+            <div
+                id="usersEmpty"
+                class="admin-empty"
+            >
+                No registered users found.
             </div>
 
         </section>
 
-
-        <!-- =====================================================
-             DONORS
-             ===================================================== -->
 
         <section class="admin-section">
 
             <div class="admin-section-header">
 
                 <h2>
-                    🩸 Registered Donors
+                    Registered Donors
                 </h2>
 
                 <span
+                    class="admin-count"
                     id="donorsCount"
-                    class="admin-count"
                 >
-                    0
+                    0 Donors
                 </span>
 
             </div>
@@ -448,72 +506,49 @@
                     <thead>
 
                         <tr>
-
-                            <th>
-                                Donor ID
-                            </th>
-
-                            <th>
-                                Name
-                            </th>
-
-                            <th>
-                                Blood Group
-                            </th>
-
-                            <th>
-                                Mobile
-                            </th>
-
-                            <th>
-                                City
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
-
+                            <th>Donor ID</th>
+                            <th>Name</th>
+                            <th>Blood</th>
+                            <th>City</th>
+                            <th>Mobile</th>
+                            <th>Age</th>
+                            <th>Action</th>
                         </tr>
 
                     </thead>
 
+                    <tbody id="donorsTableBody">
 
-                    <tbody
-                        id="donorsTableBody"
-                    ></tbody>
+                    </tbody>
 
                 </table>
 
+            </div>
 
-                <div
-                    id="donorsEmpty"
-                    class="admin-empty"
-                >
-                    No donors found.
-                </div>
 
+            <div
+                id="donorsEmpty"
+                class="admin-empty"
+            >
+                No registered donors found.
             </div>
 
         </section>
 
-
-        <!-- =====================================================
-             BLOOD REQUESTS
-             ===================================================== -->
 
         <section class="admin-section">
 
             <div class="admin-section-header">
 
                 <h2>
-                    📝 Blood Requests
+                    Blood Requests
                 </h2>
 
                 <span
-                    id="requestsCount"
                     class="admin-count"
+                    id="requestsCount"
                 >
-                    0
+                    0 Requests
                 </span>
 
             </div>
@@ -526,865 +561,930 @@
                     <thead>
 
                         <tr>
-
-                            <th>
-                                Patient
-                            </th>
-
-                            <th>
-                                Blood Group
-                            </th>
-
-                            <th>
-                                Mobile
-                            </th>
-
-                            <th>
-                                Location
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
-
+                            <th>Requester</th>
+                            <th>Mobile</th>
+                            <th>Blood</th>
+                            <th>City</th>
+                            <th>Information</th>
+                            <th>Date</th>
+                            <th>Action</th>
                         </tr>
 
                     </thead>
 
+                    <tbody id="requestsTableBody">
 
-                    <tbody
-                        id="requestsTableBody"
-                    ></tbody>
+                    </tbody>
 
                 </table>
 
+            </div>
 
-                <div
-                    id="requestsEmpty"
-                    class="admin-empty"
-                >
-                    No blood requests found.
-                </div>
 
+            <div
+                id="requestsEmpty"
+                class="admin-empty"
+            >
+                No blood requests found.
             </div>
 
         </section>
 
+    </div>
 
-        <!-- =====================================================
-             WARNING
-             ===================================================== -->
 
-        <div class="admin-warning">
-
-            <strong>
-                Founder access:
-            </strong>
-
-            Only the BloodLink Founder can access this
-            administration page and delete individual
-            users, donors and blood requests.
-
-        </div>
-
+    <div class="admin-token-note">
+        BloodLink Founder Administration
     </div>
 
 </main>
 
 
+<footer class="new-footer">
+
+    <div class="footer-main">
+
+        <div class="footer-brand">
+
+            <div class="brand">
+
+                <div class="brand-drop">
+                    🩸
+                </div>
+
+                <div>
+                    <strong>BloodLink</strong>
+                    <span>Life • Hope • Humanity</span>
+                </div>
+
+            </div>
+
+            <p>
+                Connecting blood donors with people who need them.
+            </p>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>
+                Quick Links
+            </h4>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="donor.html">
+                Become a Donor
+            </a>
+
+            <a href="search.html">
+                Find Donor
+            </a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>
+                Services
+            </h4>
+
+            <a href="request.html">
+                Request Blood
+            </a>
+
+            <a href="compatibility.html">
+                Compatibility
+            </a>
+
+            <a href="about.html">
+                About BloodLink
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <span>
+            © 2026 BloodLink
+        </span>
+
+        <span>
+            Blood Donor Management System
+        </span>
+
+    </div>
+
+</footer>
+
+
+<script src="account.js"></script>
+
 <script>
-const API_URL = "https://bloodlink-x2h7.onrender.com/api";
+    const ADMIN_API_URL =
+        "https://bloodlink-x2h7.onrender.com/api";
 
-// =========================================================
-// GET FOUNDER TOKEN
-// =========================================================
-
-function getFounderToken() {
-
-    return localStorage.getItem(
-        "bloodlink_founder_token"
-    );
-}
-
-
-// =========================================================
-// STATUS
-// =========================================================
-
-function setAdminStatus(
-    message,
-    color
-) {
-
-    const element =
-        document.getElementById(
-            "adminStatus"
-        );
-
-    if (!element) {
-        return;
-    }
-
-    element.textContent =
-        message;
-
-    element.style.color =
-        color;
-}
-
-
-// =========================================================
-// SAFE HTML
-// =========================================================
-
-function escapeHTML(value) {
-
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-}
-
-
-// =========================================================
-// API REQUEST
-// =========================================================
-
-async function apiRequest(
-    url,
-    options = {}
-) {
 
     const token =
-        getFounderToken();
+        localStorage.getItem("bloodlink_founder_token");
 
-    const requestOptions = {
-        ...options,
 
-        headers: {
-            ...(options.headers || {}),
-            "Content-Type":
-                "application/json",
-            "x-admin-token":
-                token || ""
-        }
-    };
+    if (!token) {
 
-    const response =
-        await fetch(
-            url,
-            requestOptions
-        );
+        window.location.replace("admin-login.html");
 
-    let data = {};
-
-    try {
-
-        data =
-            await response.json();
-
-    } catch (error) {
-
-        data = {};
     }
 
 
-    if (
-        response.status === 403 ||
-        response.status === 401
-    ) {
+    const statusBox =
+        document.getElementById("adminStatus");
 
-        localStorage.removeItem(
-            "bloodlink_founder_logged_in"
-        );
+    const refreshButton =
+        document.getElementById("refreshButton");
 
-        localStorage.removeItem(
-            "bloodlink_founder_token"
-        );
+    const logoutButton =
+        document.getElementById("logoutButton");
 
-        window.location.replace(
-            "admin-login.html"
-        );
 
-        throw new Error(
-            "Founder admin session expired."
-        );
+    const usersTableBody =
+        document.getElementById("usersTableBody");
+
+    const donorsTableBody =
+        document.getElementById("donorsTableBody");
+
+    const requestsTableBody =
+        document.getElementById("requestsTableBody");
+
+
+    const usersCount =
+        document.getElementById("usersCount");
+
+    const donorsCount =
+        document.getElementById("donorsCount");
+
+    const requestsCount =
+        document.getElementById("requestsCount");
+
+
+    const usersEmpty =
+        document.getElementById("usersEmpty");
+
+    const donorsEmpty =
+        document.getElementById("donorsEmpty");
+
+    const requestsEmpty =
+        document.getElementById("requestsEmpty");
+
+
+    const summaryUsers =
+        document.getElementById("summaryUsers");
+
+    const summaryDonors =
+        document.getElementById("summaryDonors");
+
+    const summaryRequests =
+        document.getElementById("summaryRequests");
+
+
+    function escapeHTML(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
     }
 
 
-    if (!response.ok) {
+    function showStatus(text, type = "success") {
 
-        throw new Error(
-            data.message ||
-            "Request failed."
-        );
+        statusBox.textContent = text;
+
+        statusBox.className =
+            "admin-status " + type;
+
     }
 
 
-    return data;
-}
+    function clearStatus() {
 
+        statusBox.textContent = "";
 
-// =========================================================
-// FOUNDER LOGOUT
-// =========================================================
+        statusBox.className =
+            "admin-status";
 
-async function founderLogout() {
-
-    const confirmed =
-        window.confirm(
-            "Are you sure you want to logout from Founder Admin?"
-        );
-
-    if (!confirmed) {
-        return;
     }
 
-    try {
 
-        await fetch(
-            `${ADMIN_API_URL}/founder-logout`,
+    function adminHeaders() {
+
+        return {
+            "Content-Type": "application/json",
+            "x-admin-token": token
+        };
+
+    }
+
+
+    async function adminFetch(path, options = {}) {
+
+        const response = await fetch(
+            `${ADMIN_API_URL}${path}`,
             {
-                method: "POST",
-
+                ...options,
                 headers: {
-                    "Content-Type":
-                        "application/json",
-
-                    "x-admin-token":
-                        getFounderToken() || ""
+                    ...adminHeaders(),
+                    ...(options.headers || {})
                 }
             }
         );
 
-    } catch (error) {
 
-        console.error(
-            "Founder logout error:",
-            error
-        );
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+
+            localStorage.removeItem(
+                "bloodlink_founder_token"
+            );
+
+            window.location.replace(
+                "admin-login.html"
+            );
+
+            throw new Error(
+                "Admin session expired."
+            );
+
+        }
+
+
+        const data =
+            await response.json().catch(() => ({}));
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Admin request failed."
+            );
+
+        }
+
+
+        return data;
+
     }
 
 
-    localStorage.removeItem(
-        "bloodlink_founder_logged_in"
-    );
+    function formatDate(value) {
 
-    localStorage.removeItem(
-        "bloodlink_founder_token"
-    );
+        if (!value) {
+            return "—";
+        }
 
-    window.location.replace(
-        "admin-login.html"
-    );
-}
+        const date =
+            new Date(value);
 
+        if (Number.isNaN(date.getTime())) {
+            return escapeHTML(value);
+        }
 
-// =========================================================
-// RENDER USERS
-// =========================================================
+        return date.toLocaleDateString();
 
-function renderUsers(users) {
-
-    const body =
-        document.getElementById(
-            "usersTableBody"
-        );
-
-    const empty =
-        document.getElementById(
-            "usersEmpty"
-        );
-
-    const count =
-        document.getElementById(
-            "usersCount"
-        );
-
-    body.innerHTML = "";
-
-    count.textContent =
-        users.length;
-
-    empty.style.display =
-        users.length
-            ? "none"
-            : "block";
+    }
 
 
-    users.forEach(
-        function (user) {
+    function renderUsers(users) {
+
+        usersTableBody.innerHTML = "";
+
+        usersCount.textContent =
+            `${users.length} User${users.length === 1 ? "" : "s"}`;
+
+        summaryUsers.textContent =
+            users.length;
+
+
+        if (!users.length) {
+
+            usersEmpty.style.display =
+                "block";
+
+            return;
+        }
+
+
+        usersEmpty.style.display =
+            "none";
+
+
+        users.forEach(function (user) {
 
             const row =
-                document.createElement(
-                    "tr"
-                );
+                document.createElement("tr");
+
 
             row.innerHTML = `
-
                 <td>
-                    ${escapeHTML(
-                        user.name
-                    )}
+                    ${escapeHTML(user.name || "—")}
                 </td>
 
                 <td>
-                    ${escapeHTML(
-                        user.email
-                    )}
+                    ${escapeHTML(user.phone || "—")}
                 </td>
 
                 <td>
-                    ${escapeHTML(
-                        user.phone || "-"
-                    )}
+                    ${escapeHTML(user.email || "—")}
                 </td>
 
                 <td>
-                    ${escapeHTML(
-                        user.verificationStatus ||
-                        "Not Verified"
-                    )}
+                    ${escapeHTML(user.dob || "—")}
                 </td>
 
                 <td>
+                    ${escapeHTML(user.age ?? "—")}
+                </td>
 
+                <td>
                     <button
+                        class="admin-delete-btn"
                         type="button"
-                        class="delete-button"
-                        onclick="
-                            deleteUser(
-                                '${encodeURIComponent(
-                                    user.id
-                                )}'
-                            )
-                        "
+                        data-delete-user="${escapeHTML(user.id || "")}"
                     >
-                        🗑 Delete
+                        Delete
                     </button>
-
                 </td>
-
             `;
 
-            body.appendChild(
-                row
-            );
+
+            usersTableBody.appendChild(row);
+
+        });
+
+    }
+
+
+    function renderDonors(donors) {
+
+        donorsTableBody.innerHTML = "";
+
+        donorsCount.textContent =
+            `${donors.length} Donor${donors.length === 1 ? "" : "s"}`;
+
+        summaryDonors.textContent =
+            donors.length;
+
+
+        if (!donors.length) {
+
+            donorsEmpty.style.display =
+                "block";
+
+            return;
         }
-    );
-}
 
 
-// =========================================================
-// RENDER DONORS
-// =========================================================
-
-function renderDonors(donors) {
-
-    const body =
-        document.getElementById(
-            "donorsTableBody"
-        );
-
-    const empty =
-        document.getElementById(
-            "donorsEmpty"
-        );
-
-    const count =
-        document.getElementById(
-            "donorsCount"
-        );
-
-    body.innerHTML = "";
-
-    count.textContent =
-        donors.length;
-
-    empty.style.display =
-        donors.length
-            ? "none"
-            : "block";
+        donorsEmpty.style.display =
+            "none";
 
 
-    donors.forEach(
-        function (donor) {
+        donors.forEach(function (donor) {
+
+            const blood =
+                donor.blood ||
+                donor.bloodGroup ||
+                "—";
+
+
+            const phone =
+                donor.phone ||
+                "—";
+
 
             const row =
-                document.createElement(
-                    "tr"
-                );
+                document.createElement("tr");
 
-            const identifier =
-                donor.donorId ||
-                donor.id;
 
             row.innerHTML = `
-
                 <td>
-                    <strong>
-                        ${escapeHTML(
-                            donor.donorId ||
-                            "-"
-                        )}
-                    </strong>
+                    ${escapeHTML(donor.donorId || donor.id || "—")}
                 </td>
 
                 <td>
-                    ${escapeHTML(
-                        donor.name
-                    )}
+                    ${escapeHTML(donor.name || "—")}
                 </td>
 
                 <td>
-                    ${escapeHTML(
-                        donor.blood
-                    )}
+                    <span class="admin-blood">
+                        ${escapeHTML(blood)}
+                    </span>
                 </td>
 
                 <td>
-                    ${escapeHTML(
-                        donor.phone
-                    )}
+                    ${escapeHTML(donor.city || "—")}
                 </td>
 
                 <td>
-                    ${escapeHTML(
-                        donor.city
-                    )}
+                    ${escapeHTML(phone)}
                 </td>
 
                 <td>
+                    ${escapeHTML(donor.age ?? "—")}
+                </td>
 
+                <td>
                     <button
+                        class="admin-delete-btn"
                         type="button"
-                        class="delete-button"
-                        onclick="
-                            deleteDonor(
-                                '${encodeURIComponent(
-                                    identifier
-                                )}'
-                            )
-                        "
+                        data-delete-donor="${escapeHTML(donor.id || "")}"
                     >
-                        🗑 Delete
+                        Delete
                     </button>
-
                 </td>
-
             `;
 
-            body.appendChild(
-                row
-            );
+
+            donorsTableBody.appendChild(row);
+
+        });
+
+    }
+
+
+    function renderRequests(requests) {
+
+        requestsTableBody.innerHTML = "";
+
+        requestsCount.textContent =
+            `${requests.length} Request${requests.length === 1 ? "" : "s"}`;
+
+        summaryRequests.textContent =
+            requests.length;
+
+
+        if (!requests.length) {
+
+            requestsEmpty.style.display =
+                "block";
+
+            return;
         }
-    );
-}
 
 
-// =========================================================
-// RENDER REQUESTS
-// =========================================================
-
-function renderRequests(
-    requests
-) {
-
-    const body =
-        document.getElementById(
-            "requestsTableBody"
-        );
-
-    const empty =
-        document.getElementById(
-            "requestsEmpty"
-        );
-
-    const count =
-        document.getElementById(
-            "requestsCount"
-        );
-
-    body.innerHTML = "";
-
-    count.textContent =
-        requests.length;
-
-    empty.style.display =
-        requests.length
-            ? "none"
-            : "block";
+        requestsEmpty.style.display =
+            "none";
 
 
-    requests.forEach(
-        function (request) {
+        requests.forEach(function (request) {
+
+            const blood =
+                request.blood ||
+                request.bloodGroup ||
+                "—";
+
+
+            const information =
+                request.message ||
+                request.info ||
+                request.additionalInfo ||
+                "—";
+
 
             const row =
-                document.createElement(
-                    "tr"
-                );
+                document.createElement("tr");
+
 
             row.innerHTML = `
+                <td>
+                    ${escapeHTML(request.name || request.requesterName || "—")}
+                </td>
 
                 <td>
-                    ${escapeHTML(
-                        request.requesterName
-                    )}
+                    ${escapeHTML(request.phone || "—")}
+                </td>
+
+                <td>
+                    <span class="admin-blood">
+                        ${escapeHTML(blood)}
+                    </span>
+                </td>
+
+                <td>
+                    ${escapeHTML(request.city || "—")}
+                </td>
+
+                <td>
+                    ${escapeHTML(information)}
                 </td>
 
                 <td>
                     ${escapeHTML(
-                        request.blood ||
-                        request.bloodGroup
+                        formatDate(
+                            request.createdAt ||
+                            request.date
+                        )
                     )}
                 </td>
 
                 <td>
-                    ${escapeHTML(
-                        request.phone
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHTML(
-                        request.city
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHTML(
-                        request.status ||
-                        "Active"
-                    )}
-                </td>
-
-                <td>
-
                     <button
+                        class="admin-delete-btn"
                         type="button"
-                        class="delete-button"
-                        onclick="
-                            deleteRequest(
-                                '${encodeURIComponent(
-                                    request.id
-                                )}'
-                            )
-                        "
+                        data-delete-request="${escapeHTML(request.id || "")}"
                     >
-                        🗑 Delete
+                        Delete
                     </button>
-
                 </td>
-
             `;
 
-            body.appendChild(
-                row
+
+            requestsTableBody.appendChild(row);
+
+        });
+
+    }
+
+
+    async function loadDashboard() {
+
+        clearStatus();
+
+        refreshButton.disabled = true;
+
+        refreshButton.textContent =
+            "Loading...";
+
+
+        usersTableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="admin-loading">
+                    Loading users...
+                </td>
+            </tr>
+        `;
+
+
+        donorsTableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="admin-loading">
+                    Loading donors...
+                </td>
+            </tr>
+        `;
+
+
+        requestsTableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="admin-loading">
+                    Loading requests...
+                </td>
+            </tr>
+        `;
+
+
+        try {
+
+            const data =
+                await adminFetch("/admin/dashboard");
+
+
+            const users =
+                Array.isArray(data.users)
+                    ? data.users
+                    : [];
+
+
+            const donors =
+                Array.isArray(data.donors)
+                    ? data.donors
+                    : [];
+
+
+            const requests =
+                Array.isArray(data.requests)
+                    ? data.requests
+                    : [];
+
+
+            renderUsers(users);
+
+            renderDonors(donors);
+
+            renderRequests(requests);
+
+            showStatus(
+                "Dashboard loaded successfully.",
+                "success"
             );
+
+
+        } catch (error) {
+
+            usersTableBody.innerHTML = "";
+
+            donorsTableBody.innerHTML = "";
+
+            requestsTableBody.innerHTML = "";
+
+            usersEmpty.style.display = "block";
+            donorsEmpty.style.display = "block";
+            requestsEmpty.style.display = "block";
+
+            showStatus(
+                error.message ||
+                "Unable to load admin dashboard.",
+                "error"
+            );
+
+        } finally {
+
+            refreshButton.disabled = false;
+
+            refreshButton.textContent =
+                "↻ Refresh";
+
+        }
+
+    }
+
+
+    async function deleteUser(id) {
+
+        if (!id) {
+            return;
+        }
+
+
+        const confirmed =
+            window.confirm(
+                "Delete this user account? This action cannot be undone."
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            await adminFetch(
+                `/admin/users/${encodeURIComponent(id)}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+            showStatus(
+                "User deleted successfully.",
+                "success"
+            );
+
+
+            await loadDashboard();
+
+
+        } catch (error) {
+
+            showStatus(
+                error.message ||
+                "Unable to delete user.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    async function deleteDonor(id) {
+
+        if (!id) {
+            return;
+        }
+
+
+        const confirmed =
+            window.confirm(
+                "Delete this donor? This action cannot be undone."
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            await adminFetch(
+                `/admin/donors/${encodeURIComponent(id)}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+            showStatus(
+                "Donor deleted successfully.",
+                "success"
+            );
+
+
+            await loadDashboard();
+
+
+        } catch (error) {
+
+            showStatus(
+                error.message ||
+                "Unable to delete donor.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    async function deleteRequest(id) {
+
+        if (!id) {
+            return;
+        }
+
+
+        const confirmed =
+            window.confirm(
+                "Delete this blood request? This action cannot be undone."
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            await adminFetch(
+                `/admin/requests/${encodeURIComponent(id)}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+            showStatus(
+                "Blood request deleted successfully.",
+                "success"
+            );
+
+
+            await loadDashboard();
+
+
+        } catch (error) {
+
+            showStatus(
+                error.message ||
+                "Unable to delete blood request.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    usersTableBody.addEventListener(
+        "click",
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    "[data-delete-user]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            deleteUser(
+                button.dataset.deleteUser
+            );
+
         }
     );
-}
 
 
-// =========================================================
-// LOAD ALL DATA
-// =========================================================
+    donorsTableBody.addEventListener(
+        "click",
+        function (event) {
 
-async function loadAdminData() {
-
-    if (!getFounderToken()) {
-
-        window.location.replace(
-            "admin-login.html"
-        );
-
-        return;
-    }
+            const button =
+                event.target.closest(
+                    "[data-delete-donor]"
+                );
 
 
-    setAdminStatus(
-        "Loading BloodLink data...",
-        "#8a5a00"
+            if (!button) {
+                return;
+            }
+
+
+            deleteDonor(
+                button.dataset.deleteDonor
+            );
+
+        }
     );
 
 
-    try {
+    requestsTableBody.addEventListener(
+        "click",
+        function (event) {
 
-        const results =
-            await Promise.all([
-
-                apiRequest(
-                    `${ADMIN_API_URL}/users`
-                ),
-
-                apiRequest(
-                    `${ADMIN_API_URL}/donors`
-                ),
-
-                apiRequest(
-                    `${ADMIN_API_URL}/requests`
-                )
-
-            ]);
+            const button =
+                event.target.closest(
+                    "[data-delete-request]"
+                );
 
 
-        const usersData =
-            results[0];
-
-        const donorsData =
-            results[1];
-
-        const requestsData =
-            results[2];
-
-
-        renderUsers(
-            usersData.users || []
-        );
-
-        renderDonors(
-            donorsData.donors || []
-        );
-
-        renderRequests(
-            requestsData.requests || []
-        );
-
-
-        setAdminStatus(
-            "✓ BloodLink data loaded successfully.",
-            "#087f5b"
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Admin data error:",
-            error
-        );
-
-        setAdminStatus(
-            error.message ||
-            "Unable to load local BloodLink data.",
-            "#d00037"
-        );
-    }
-}
-
-
-// =========================================================
-// DELETE USER
-// =========================================================
-
-async function deleteUser(
-    encodedId
-) {
-
-    const id =
-        decodeURIComponent(
-            encodedId
-        );
-
-
-    const confirmed =
-        window.confirm(
-            "Are you sure you want to delete this user?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    try {
-
-        await apiRequest(
-            `${ADMIN_API_URL}/users/${encodeURIComponent(id)}`,
-            {
-                method: "DELETE"
+            if (!button) {
+                return;
             }
-        );
 
 
-        setAdminStatus(
-            "✓ User deleted successfully.",
-            "#087f5b"
-        );
+            deleteRequest(
+                button.dataset.deleteRequest
+            );
+
+        }
+    );
 
 
-        await loadAdminData();
-
-    } catch (error) {
-
-        console.error(
-            "Delete user error:",
-            error
-        );
-
-        setAdminStatus(
-            error.message ||
-            "Unable to delete user.",
-            "#d00037"
-        );
-    }
-}
+    refreshButton.addEventListener(
+        "click",
+        function () {
+            loadDashboard();
+        }
+    );
 
 
-// =========================================================
-// DELETE DONOR
-// =========================================================
+    logoutButton.addEventListener(
+        "click",
+        async function () {
 
-async function deleteDonor(
-    encodedId
-) {
+            logoutButton.disabled = true;
 
-    const id =
-        decodeURIComponent(
-            encodedId
-        );
+            try {
 
+                await fetch(
+                    `${ADMIN_API_URL}/founder-logout`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-admin-token": token
+                        }
+                    }
+                );
 
-    const confirmed =
-        window.confirm(
-            "Are you sure you want to delete this donor?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    try {
-
-        await apiRequest(
-            `${ADMIN_API_URL}/donors/${encodeURIComponent(id)}`,
-            {
-                method: "DELETE"
+            } catch (error) {
+                // Continue logout even when the server is unreachable.
             }
-        );
 
 
-        setAdminStatus(
-            "✓ Donor deleted successfully.",
-            "#087f5b"
-        );
+            localStorage.removeItem(
+                "bloodlink_founder_token"
+            );
 
 
-        await loadAdminData();
+            window.location.replace(
+                "admin-login.html"
+            );
 
-    } catch (error) {
-
-        console.error(
-            "Delete donor error:",
-            error
-        );
-
-        setAdminStatus(
-            error.message ||
-            "Unable to delete donor.",
-            "#d00037"
-        );
-    }
-}
+        }
+    );
 
 
-// =========================================================
-// DELETE REQUEST
-// =========================================================
-
-async function deleteRequest(
-    encodedId
-) {
-
-    const id =
-        decodeURIComponent(
-            encodedId
-        );
-
-
-    const confirmed =
-        window.confirm(
-            "Are you sure you want to delete this blood request?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    try {
-
-        await apiRequest(
-            `${ADMIN_API_URL}/requests/${encodeURIComponent(id)}`,
-            {
-                method: "DELETE"
-            }
-        );
-
-
-        setAdminStatus(
-            "✓ Blood request deleted successfully.",
-            "#087f5b"
-        );
-
-
-        await loadAdminData();
-
-    } catch (error) {
-
-        console.error(
-            "Delete request error:",
-            error
-        );
-
-        setAdminStatus(
-            error.message ||
-            "Unable to delete blood request.",
-            "#d00037"
-        );
-    }
-}
-
-
-// =========================================================
-// PAGE LOAD
-// =========================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        loadAdminData();
-
-    }
-);
-
+    loadDashboard();
 </script>
 
 </body>

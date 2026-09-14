@@ -1,28 +1,37 @@
 // =========================================================
-// BLOODLINK ACCOUNT / LOGOUT
+// BLOODLINK ACCOUNT MANAGEMENT
 // =========================================================
 
 (function () {
-    "use strict";
 
-    const LOGGED_IN_USER_KEY =
+    const USER_STORAGE_KEY =
         "bloodlink_logged_in_user";
 
-    function getLoggedInUser() {
-        const raw =
-            localStorage.getItem(
-                LOGGED_IN_USER_KEY
-            );
+    const FOUNDER_TOKEN_KEY =
+        "bloodlink_founder_token";
 
-        if (!raw) {
-            return null;
-        }
+
+    function getLoggedInUser() {
 
         try {
-            return JSON.parse(raw);
+
+            const storedUser =
+                localStorage.getItem(
+                    USER_STORAGE_KEY
+                );
+
+            if (!storedUser) {
+                return null;
+            }
+
+            return JSON.parse(
+                storedUser
+            );
+
         } catch (error) {
+
             console.error(
-                "Unable to read login session:",
+                "Unable to read logged-in user:",
                 error
             );
 
@@ -30,292 +39,222 @@
         }
     }
 
-    function logoutUser() {
-        localStorage.removeItem(
-            LOGGED_IN_USER_KEY
+
+    function saveLoggedInUser(user) {
+
+        if (!user) {
+            localStorage.removeItem(
+                USER_STORAGE_KEY
+            );
+
+            return;
+        }
+
+        localStorage.setItem(
+            USER_STORAGE_KEY,
+            JSON.stringify(user)
         );
+    }
+
+
+    function logoutUser() {
 
         localStorage.removeItem(
-            "bloodlink_donor_id"
+            USER_STORAGE_KEY
         );
 
         window.location.href =
             "login.html";
     }
 
-    function createAccountMenu() {
+
+    function getFounderToken() {
+
+        return localStorage.getItem(
+            FOUNDER_TOKEN_KEY
+        );
+    }
+
+
+    function saveFounderToken(token) {
+
+        if (token) {
+
+            localStorage.setItem(
+                FOUNDER_TOKEN_KEY,
+                token
+            );
+
+        } else {
+
+            localStorage.removeItem(
+                FOUNDER_TOKEN_KEY
+            );
+        }
+    }
+
+
+    function logoutFounder() {
+
+        localStorage.removeItem(
+            FOUNDER_TOKEN_KEY
+        );
+
+        window.location.href =
+            "admin-login.html";
+    }
+
+
+    function updateAccountUI() {
 
         const user =
             getLoggedInUser();
 
-        const navMenu =
-            document.querySelector(
-                ".nav-menu"
+        const loginLinks =
+            document.querySelectorAll(
+                ".nav-login"
             );
 
-        if (!navMenu) {
-            return;
-        }
+        loginLinks.forEach(
+            function (link) {
 
-        const existingAccount =
-            document.getElementById(
-                "bloodlinkAccountMenu"
-            );
+                if (!link) {
+                    return;
+                }
 
-        if (existingAccount) {
-            existingAccount.remove();
-        }
+                if (user) {
 
-        const existingLogin =
-            navMenu.querySelector(
-                'a[href="login.html"]'
-            );
+                    link.textContent =
+                        "Logout";
 
-        if (!user) {
-            return;
-        }
+                    link.href =
+                        "#";
 
-        if (existingLogin) {
-            existingLogin.style.display =
-                "none";
-        }
+                    link.onclick =
+                        function (event) {
 
-        const wrapper =
-            document.createElement("div");
+                            event.preventDefault();
 
-        wrapper.id =
-            "bloodlinkAccountMenu";
+                            logoutUser();
+                        };
 
-        wrapper.style.position =
-            "relative";
+                } else {
 
-        wrapper.style.display =
-            "inline-block";
+                    link.textContent =
+                        "Login";
 
-        const accountButton =
-            document.createElement("button");
+                    link.href =
+                        "login.html";
 
-        accountButton.type =
-            "button";
-
-        accountButton.textContent =
-            `👤 ${user.name || "Account"} ▾`;
-
-        accountButton.style.border =
-            "none";
-
-        accountButton.style.background =
-            "#fff0f3";
-
-        accountButton.style.color =
-            "#65091d";
-
-        accountButton.style.padding =
-            "10px 14px";
-
-        accountButton.style.borderRadius =
-            "10px";
-
-        accountButton.style.fontWeight =
-            "700";
-
-        accountButton.style.cursor =
-            "pointer";
-
-        const dropdown =
-            document.createElement("div");
-
-        dropdown.style.display =
-            "none";
-
-        dropdown.style.position =
-            "absolute";
-
-        dropdown.style.right =
-            "0";
-
-        dropdown.style.top =
-            "calc(100% + 8px)";
-
-        dropdown.style.minWidth =
-            "190px";
-
-        dropdown.style.background =
-            "#ffffff";
-
-        dropdown.style.border =
-            "1px solid #ead9de";
-
-        dropdown.style.borderRadius =
-            "12px";
-
-        dropdown.style.padding =
-            "8px";
-
-        dropdown.style.boxShadow =
-            "0 12px 30px rgba(0,0,0,0.12)";
-
-        dropdown.style.zIndex =
-            "9999";
-
-        const profileText =
-            document.createElement("div");
-
-        profileText.style.padding =
-            "10px";
-
-        profileText.style.fontSize =
-            "13px";
-
-        profileText.style.color =
-            "#6f555d";
-
-        profileText.innerHTML =
-            `
-            <strong style="color:#65091d;">
-                ${user.name || "User"}
-            </strong>
-            <br>
-            ${user.email || ""}
-            ${
-                user.phone
-                    ? `<br>${user.phone}`
-                    : ""
-            }
-            `;
-
-        const logoutButton =
-            document.createElement("button");
-
-        logoutButton.type =
-            "button";
-
-        logoutButton.textContent =
-            "🚪 Logout";
-
-        logoutButton.style.width =
-            "100%";
-
-        logoutButton.style.border =
-            "none";
-
-        logoutButton.style.borderRadius =
-            "9px";
-
-        logoutButton.style.padding =
-            "10px";
-
-        logoutButton.style.background =
-            "#8d1028";
-
-        logoutButton.style.color =
-            "#ffffff";
-
-        logoutButton.style.fontWeight =
-            "700";
-
-        logoutButton.style.cursor =
-            "pointer";
-
-        logoutButton.addEventListener(
-            "click",
-            function () {
-
-                const confirmed =
-                    window.confirm(
-                        "Are you sure you want to logout?"
-                    );
-
-                if (confirmed) {
-                    logoutUser();
+                    link.onclick =
+                        null;
                 }
             }
         );
 
-        accountButton.addEventListener(
-            "click",
-            function (event) {
 
-                event.stopPropagation();
+        const accountName =
+            document.getElementById(
+                "accountName"
+            );
 
-                dropdown.style.display =
-                    dropdown.style.display ===
-                    "block"
-                        ? "none"
-                        : "block";
-            }
-        );
+        if (
+            accountName &&
+            user
+        ) {
 
-        dropdown.appendChild(
-            profileText
-        );
+            accountName.textContent =
+                user.name || "";
+        }
 
-        dropdown.appendChild(
-            logoutButton
-        );
 
-        wrapper.appendChild(
-            accountButton
-        );
+        const accountPhone =
+            document.getElementById(
+                "accountPhone"
+            );
 
-        wrapper.appendChild(
-            dropdown
-        );
+        if (
+            accountPhone &&
+            user
+        ) {
 
-        navMenu.appendChild(
-            wrapper
-        );
-
-        document.addEventListener(
-            "click",
-            function () {
-                dropdown.style.display =
-                    "none";
-            }
-        );
+            accountPhone.textContent =
+                user.phone || "";
+        }
     }
 
-    function protectDonorPage() {
 
-        const isDonorPage =
-            window.location.pathname
-                .toLowerCase()
-                .endsWith(
-                    "donor.html"
-                );
-
-        if (!isDonorPage) {
-            return;
-        }
+    function requireLogin() {
 
         const user =
             getLoggedInUser();
 
         if (!user) {
 
-            window.alert(
-                "Please login first to register as a blood donor."
-            );
-
             window.location.href =
                 "login.html";
+
+            return null;
         }
+
+        return user;
     }
+
+
+    function requireFounderLogin() {
+
+        const token =
+            getFounderToken();
+
+        if (!token) {
+
+            window.location.href =
+                "admin-login.html";
+
+            return null;
+        }
+
+        return token;
+    }
+
+
+    window.BloodLinkAccount = {
+
+        getLoggedInUser:
+            getLoggedInUser,
+
+        saveLoggedInUser:
+            saveLoggedInUser,
+
+        logoutUser:
+            logoutUser,
+
+        getFounderToken:
+            getFounderToken,
+
+        saveFounderToken:
+            saveFounderToken,
+
+        logoutFounder:
+            logoutFounder,
+
+        updateAccountUI:
+            updateAccountUI,
+
+        requireLogin:
+            requireLogin,
+
+        requireFounderLogin:
+            requireFounderLogin
+    };
+
 
     document.addEventListener(
         "DOMContentLoaded",
         function () {
 
-            protectDonorPage();
-
-            createAccountMenu();
+            updateAccountUI();
         }
     );
-
-    window.bloodlinkLogout =
-        logoutUser;
-
-    window.bloodlinkGetUser =
-        getLoggedInUser;
 
 })();

@@ -2,96 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>About BloodLink | Blood Donor Management System</title>
+    <title>About BloodLink</title>
 
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* =========================================================
-           BLOODLINK ABOUT PAGE
-           FULL MEDICAL THEME
-           ========================================================= */
-
         .about-page {
             min-height: 100vh;
             background:
-                radial-gradient(circle at 8% 15%, rgba(181, 29, 59, 0.06), transparent 28%),
-                radial-gradient(circle at 92% 70%, rgba(181, 29, 59, 0.05), transparent 30%),
+                radial-gradient(circle at 10% 10%, rgba(190,20,45,0.08), transparent 30%),
+                radial-gradient(circle at 90% 20%, rgba(190,20,45,0.06), transparent 28%),
                 #fafafa;
         }
 
-        /* HERO */
-
         .about-hero {
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, #5f0718, #8d1028 55%, #b51d3b);
+            background: linear-gradient(
+                135deg,
+                #5f0718,
+                #8d1028,
+                #b51d3b
+            );
             color: white;
-            padding: 75px 7% 110px;
-        }
-
-        .about-hero::before {
-            content: "";
-            position: absolute;
-            width: 450px;
-            height: 450px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            right: -170px;
-            top: -230px;
-        }
-
-        .about-hero::after {
-            content: "";
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.04);
-            left: -150px;
-            bottom: -220px;
+            padding: 75px 20px 105px;
         }
 
         .about-hero-content {
-            position: relative;
-            z-index: 2;
             max-width: 1150px;
             margin: auto;
             display: grid;
-            grid-template-columns: 1.25fr 0.75fr;
+            grid-template-columns: 1.3fr 0.7fr;
             gap: 50px;
             align-items: center;
         }
 
         .about-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 17px;
+            display: inline-block;
+            padding: 9px 16px;
             border-radius: 50px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.22);
             font-size: 13px;
             font-weight: 700;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .about-hero h1 {
-            margin: 0 0 20px;
-            font-size: clamp(40px, 5vw, 62px);
+            margin: 0 0 18px;
+            font-size: clamp(40px, 5vw, 63px);
             line-height: 1.05;
-            font-weight: 800;
         }
 
         .about-hero h1 span {
-            color: #ffd5dc;
+            color: #ffd7de;
         }
 
         .about-hero p {
-            margin: 0;
             max-width: 680px;
+            margin: 0;
             color: #ffeef1;
             font-size: 18px;
             line-height: 1.7;
@@ -100,394 +72,166 @@
         .about-visual {
             display: flex;
             justify-content: center;
-            align-items: center;
         }
 
-        .about-heart {
+        .about-circle {
             width: 230px;
             height: 230px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.09);
-            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 95px;
-            box-shadow: 0 25px 55px rgba(0,0,0,0.16);
-            animation: aboutFloat 3s ease-in-out infinite;
+            font-size: 90px;
         }
-
-        @keyframes aboutFloat {
-            0%, 100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        /* MAIN */
 
         .about-main {
             max-width: 1150px;
-            margin: -50px auto 0;
+            margin: -45px auto 0;
             padding: 0 20px 80px;
             position: relative;
             z-index: 5;
         }
 
-        /* INTRO */
-
-        .about-intro-section {
+        .about-card {
             background: white;
             border: 1px solid #f0dfe3;
             border-radius: 22px;
-            padding: 42px;
-            box-shadow: 0 18px 50px rgba(70, 10, 25, 0.10);
+            padding: 40px;
+            box-shadow: 0 18px 50px rgba(70,10,25,0.10);
         }
 
-        .about-intro-grid {
-            display: grid;
-            grid-template-columns: 0.8fr 1.2fr;
-            gap: 40px;
-            align-items: center;
+        .about-card h2 {
+            margin: 0 0 12px;
+            color: #65091d;
+            font-size: 31px;
         }
 
-        .about-intro-visual {
-            min-height: 260px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #fff0f3, #fff8f9);
-            border: 1px solid #f0d5da;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .about-intro-visual::before {
-            content: "";
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: rgba(169, 20, 50, 0.06);
-        }
-
-        .about-intro-drop {
-            position: relative;
-            z-index: 2;
-            font-size: 105px;
-        }
-
-        .about-label {
-            color: #a91432;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .about-intro-card h2 {
-            margin: 8px 0 15px;
-            color: #52091a;
-            font-size: 34px;
-        }
-
-        .about-intro-card p {
-            margin: 0 0 14px;
-            color: #6f6266;
+        .about-card p {
+            color: #666;
             line-height: 1.8;
+            margin: 0 0 15px;
         }
 
-        /* SECTION HEADINGS */
+        .about-section {
+            margin-top: 65px;
+        }
 
-        .about-section-heading {
+        .about-heading {
             text-align: center;
-            margin: 70px 0 32px;
+            margin-bottom: 30px;
         }
 
-        .about-section-heading span {
+        .about-heading span {
             color: #a91432;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        .about-section-heading h2 {
-            margin: 8px 0 10px;
-            color: #52091a;
+        .about-heading h2 {
+            margin: 8px 0;
+            color: #4f0818;
             font-size: 34px;
         }
 
-        .about-section-heading p {
+        .about-heading p {
+            max-width: 680px;
             margin: auto;
-            max-width: 700px;
             color: #777;
-            line-height: 1.7;
-        }
-
-        /* MISSION */
-
-        .about-mission-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px;
-        }
-
-        .mission-card {
-            background: white;
-            border: 1px solid #f0dfe3;
-            border-radius: 19px;
-            padding: 32px;
-            transition: 0.25s;
-        }
-
-        .mission-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.08);
-        }
-
-        .mission-icon {
-            width: 58px;
-            height: 58px;
-            border-radius: 16px;
-            background: #fff0f3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            margin-bottom: 17px;
-        }
-
-        .mission-card h3 {
-            margin: 0 0 10px;
-            color: #4b1d26;
-            font-size: 22px;
-        }
-
-        .mission-card p {
-            margin: 0;
-            color: #777;
-            line-height: 1.7;
-            font-size: 14px;
-        }
-
-        /* PROCESS */
-
-        .about-process-section {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-        }
-
-        .process-card {
-            background: white;
-            border: 1px solid #f0dfe3;
-            border-radius: 18px;
-            padding: 26px 20px;
-            text-align: center;
-            transition: 0.25s;
-        }
-
-        .process-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.08);
-        }
-
-        .process-number {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            background: #a91432;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-        }
-
-        .process-card h3 {
-            margin: 0 0 8px;
-            color: #4b1d26;
-            font-size: 17px;
-        }
-
-        .process-card p {
-            margin: 0;
-            color: #777;
-            font-size: 13px;
             line-height: 1.6;
         }
 
-        /* FEATURES */
-
-        .about-feature-grid {
+        .about-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3,1fr);
             gap: 20px;
         }
 
-        .feature-card {
+        .about-info-card {
             background: white;
             border: 1px solid #f0dfe3;
             border-radius: 18px;
             padding: 28px;
-            transition: 0.25s;
+            text-align: center;
         }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.08);
+        .about-info-card .icon {
+            font-size: 34px;
+            margin-bottom: 9px;
         }
 
-        .feature-icon {
-            width: 55px;
-            height: 55px;
-            border-radius: 15px;
-            background: #fff0f3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 16px;
-        }
-
-        .feature-card h3 {
-            margin: 0 0 9px;
+        .about-info-card h3 {
+            margin: 0 0 8px;
             color: #4b1d26;
         }
 
-        .feature-card p {
+        .about-info-card p {
             margin: 0;
             color: #777;
             font-size: 14px;
-            line-height: 1.65;
-        }
-
-        /* TECHNOLOGY */
-
-        .technology-section {
-            margin-top: 70px;
-            background: white;
-            border: 1px solid #f0dfe3;
-            border-radius: 20px;
-            padding: 35px;
-        }
-
-        .technology-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 35px;
-            align-items: center;
-        }
-
-        .technology-content h2 {
-            margin: 8px 0 13px;
-            color: #52091a;
-            font-size: 30px;
-        }
-
-        .technology-content p {
-            margin: 0;
-            color: #777;
-            line-height: 1.7;
-        }
-
-        .technology-list {
-            display: grid;
-            gap: 12px;
-        }
-
-        .technology-item {
-            padding: 16px 18px;
-            border-radius: 12px;
-            background: #fff5f6;
-            border: 1px solid #f0d5da;
-            color: #603b44;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .technology-item strong {
-            color: #8b1029;
-        }
-
-        /* NOTE */
-
-        .about-note {
-            margin-top: 45px;
-            padding: 20px 24px;
-            border-radius: 14px;
-            background: #fff5f6;
-            border-left: 4px solid #a91432;
-            color: #70434d;
-            font-size: 13px;
             line-height: 1.6;
         }
 
-        /* CTA */
-
-        .final-cta {
-            margin-top: 60px;
-            padding: 48px 30px;
-            border-radius: 22px;
-            background: linear-gradient(135deg, #65091d, #a91432);
-            color: white;
-            text-align: center;
-            box-shadow: 0 18px 40px rgba(100, 9, 29, 0.16);
+        .about-values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
-        .final-cta h2 {
+        .about-value {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 18px;
+            padding: 26px;
+        }
+
+        .about-value h3 {
+            margin: 0 0 8px;
+            color: #65091d;
+        }
+
+        .about-value p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .about-cta {
+            margin-top: 65px;
+            background: linear-gradient(135deg,#65091d,#a91432);
+            color: white;
+            border-radius: 22px;
+            padding: 45px;
+            text-align: center;
+        }
+
+        .about-cta h2 {
             margin: 0 0 10px;
             font-size: 32px;
         }
 
-        .final-cta p {
-            margin: 0 auto;
-            max-width: 700px;
+        .about-cta p {
+            max-width: 650px;
+            margin: 0 auto 22px;
             color: #ffe9ed;
             line-height: 1.7;
         }
 
-        .final-cta-buttons {
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .final-cta-buttons a {
+        .about-cta a {
             display: inline-block;
-            padding: 13px 23px;
+            padding: 13px 21px;
+            background: white;
+            color: #7d0b23;
             border-radius: 10px;
             text-decoration: none;
             font-weight: 700;
-            transition: 0.25s;
         }
 
-        .cta-primary {
-            background: white;
-            color: #7b0d25;
-        }
-
-        .cta-secondary {
-            background: rgba(255,255,255,0.10);
-            border: 1px solid rgba(255,255,255,0.30);
-            color: white;
-        }
-
-        .final-cta-buttons a:hover {
-            transform: translateY(-2px);
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 950px) {
+        @media (max-width: 850px) {
 
             .about-hero-content {
                 grid-template-columns: 1fr;
@@ -502,74 +246,39 @@
                 display: none;
             }
 
-            .about-intro-grid {
+            .about-grid {
                 grid-template-columns: 1fr;
             }
 
-            .about-process-section {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .about-feature-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .technology-content {
+            .about-values {
                 grid-template-columns: 1fr;
             }
         }
 
-        @media (max-width: 700px) {
+        @media (max-width: 600px) {
 
             .about-hero {
-                padding: 55px 20px 85px;
+                padding: 55px 20px 80px;
             }
 
             .about-main {
                 padding: 0 12px 55px;
             }
 
-            .about-intro-section {
+            .about-card {
                 padding: 25px 20px;
             }
 
-            .about-mission-section {
-                grid-template-columns: 1fr;
+            .about-card h2 {
+                font-size: 26px;
             }
 
-            .about-process-section {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .about-feature-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .technology-section {
-                padding: 25px 20px;
-            }
-
-            .final-cta {
-                padding: 35px 20px;
-            }
-
-            .final-cta h2 {
-                font-size: 27px;
-            }
-        }
-
-        @media (max-width: 480px) {
-
-            .about-process-section {
-                grid-template-columns: 1fr;
-            }
-
-            .about-section-heading h2 {
+            .about-heading h2 {
                 font-size: 28px;
             }
 
-            .about-intro-card h2 {
-                font-size: 29px;
+            .about-cta {
+                padding: 35px 20px;
             }
         }
     </style>
@@ -577,348 +286,152 @@
 
 <body>
 
-    <!-- =========================================================
-         HEADER
-         ========================================================= -->
+<header class="main-header">
 
-    <header class="main-header">
+    <nav class="navbar">
 
-        <nav class="navbar">
+        <a href="index.html" class="brand">
 
-            <a href="index.html" class="brand">
+            <div class="brand-drop">
+                🩸
+            </div>
 
-                <div class="brand-drop">🩸</div>
+            <div>
+                <strong>BloodLink</strong>
+                <span>Life • Hope • Humanity</span>
+            </div>
 
-                <div>
-                    <strong>BloodLink</strong>
-                    <span>Life • Hope • Humanity</span>
-                </div>
+        </a>
 
+        <div class="nav-menu">
+
+            <a href="index.html">
+                Home
             </a>
 
+            <a href="donor.html">
+                Become a Donor
+            </a>
 
-            <div class="nav-menu">
+            <a href="search.html">
+                Find Donor
+            </a>
 
-                <a href="index.html">
-                    Home
-                </a>
+            <a href="request.html">
+                Request Blood
+            </a>
 
-                <a href="donor.html">
-                    Become a Donor
-                </a>
+            <a href="compatibility.html">
+                Compatibility
+            </a>
 
-                <a href="search.html">
-                    Find Donor
-                </a>
+            <a href="about.html" class="active">
+                About
+            </a>
 
-                <a href="request.html">
-                    Request Blood
-                </a>
+            <a href="login.html" class="nav-login">
+                Login
+            </a>
 
-                <a href="compatibility.html">
-                    Compatibility
-                </a>
+        </div>
 
-                <a href="about.html" class="active">
-                    About
-                </a>
+    </nav>
 
-                <a href="login.html" class="nav-login">
-                    Login
-                </a>
-
-            </div>
-
-        </nav>
-
-    </header>
+</header>
 
 
-    <!-- =========================================================
-         PAGE
-         ========================================================= -->
+<main class="about-page">
 
-    <main class="about-page">
+    <section class="about-hero">
 
-        <!-- HERO -->
+        <div class="about-hero-content">
 
-        <section class="about-hero">
+            <div>
 
-            <div class="about-hero-content">
-
-                <div>
-
-                    <div class="about-badge">
-                        ❤️ About BloodLink
-                    </div>
-
-                    <h1>
-                        Connecting Blood.<br>
-                        <span>Connecting Hope.</span>
-                    </h1>
-
-                    <p>
-                        BloodLink is a blood donor management system
-                        designed to make donor registration, donor
-                        searching, blood requests and blood group
-                        information simple and accessible.
-                    </p>
-
+                <div class="about-badge">
+                    ❤️ About BloodLink
                 </div>
 
-
-                <div class="about-visual">
-
-                    <div class="about-heart">
-                        ❤️
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- MAIN CONTENT -->
-
-        <section class="about-main">
-
-            <!-- INTRO -->
-
-            <section class="about-intro-section">
-
-                <div class="about-intro-grid">
-
-                    <div class="about-intro-visual">
-
-                        <div class="about-intro-drop">
-                            🩸
-                        </div>
-
-                    </div>
-
-
-                    <div class="about-intro-card">
-
-                        <span class="about-label">
-                            Our Project
-                        </span>
-
-                        <h2>
-                            What is BloodLink?
-                        </h2>
-
-                        <p>
-                            BloodLink is a college project created to
-                            demonstrate how technology can be used to
-                            organize blood donor information and make
-                            blood-related services easier to access.
-                        </p>
-
-                        <p>
-                            The system brings together donor registration,
-                            donor search, blood requests and blood
-                            compatibility information in one platform.
-                        </p>
-
-                        <p>
-                            Our goal is to create a simple and
-                            user-friendly experience where important
-                            blood information can be managed efficiently.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- MISSION -->
-
-            <div class="about-section-heading">
-
-                <span>
-                    Our Purpose
-                </span>
-
-                <h2>
-                    Built Around a Simple Mission
-                </h2>
+                <h1>
+                    Technology With<br>
+                    <span>Humanity.</span>
+                </h1>
 
                 <p>
-                    BloodLink focuses on making blood donor management
-                    organized, accessible and easy to understand.
+                    BloodLink is a blood donor management system
+                    designed to make donor registration, donor search
+                    and blood requests easier to manage.
                 </p>
 
             </div>
 
 
-            <section class="about-mission-section">
+            <div class="about-visual">
 
-                <div class="mission-card">
-
-                    <div class="mission-icon">
-                        🩸
-                    </div>
-
-                    <h3>
-                        Our Mission
-                    </h3>
-
-                    <p>
-                        To provide a simple digital platform that helps
-                        organize blood donor information and supports
-                        faster access to relevant donor and blood request
-                        information.
-                    </p>
-
+                <div class="about-circle">
+                    🩸
                 </div>
 
+            </div>
 
-                <div class="mission-card">
+        </div>
 
-                    <div class="mission-icon">
-                        ❤️
-                    </div>
-
-                    <h3>
-                        Our Vision
-                    </h3>
-
-                    <p>
-                        To demonstrate how a connected blood management
-                        system can bring donors, requests and useful
-                        blood information together in a single platform.
-                    </p>
-
-                </div>
-
-            </section>
+    </section>
 
 
-            <!-- HOW IT WORKS -->
+    <section class="about-main">
 
-            <div class="about-section-heading">
+        <div class="about-card">
+
+            <h2>
+                Our Mission
+            </h2>
+
+            <p>
+                BloodLink aims to provide a simple digital platform
+                where registered users can become blood donors,
+                search for donors and submit blood requests.
+            </p>
+
+            <p>
+                The system focuses on clear information,
+                straightforward navigation and faster access
+                to donor information.
+            </p>
+
+            <p>
+                Our central idea is simple:
+                connecting people when help is needed.
+            </p>
+
+        </div>
+
+
+        <section class="about-section">
+
+            <div class="about-heading">
 
                 <span>
-                    How BloodLink Works
+                    What BloodLink Provides
                 </span>
 
                 <h2>
-                    A Simple Four-Step Flow
+                    One Platform. Important Features.
                 </h2>
 
                 <p>
-                    The system is designed around a straightforward
-                    journey for users.
+                    BloodLink brings essential blood management
+                    functions together in one website.
                 </p>
 
             </div>
 
 
-            <section class="about-process-section">
+            <div class="about-grid">
 
-                <div class="process-card">
+                <div class="about-info-card">
 
-                    <div class="process-number">
-                        1
-                    </div>
-
-                    <h3>
-                        Create Account
-                    </h3>
-
-                    <p>
-                        Users create a BloodLink account using their
-                        basic information.
-                    </p>
-
-                </div>
-
-
-                <div class="process-card">
-
-                    <div class="process-number">
-                        2
-                    </div>
-
-                    <h3>
-                        Register as Donor
-                    </h3>
-
-                    <p>
-                        Eligible users can provide their blood group,
-                        location and contact information.
-                    </p>
-
-                </div>
-
-
-                <div class="process-card">
-
-                    <div class="process-number">
-                        3
-                    </div>
-
-                    <h3>
-                        Find or Request
-                    </h3>
-
-                    <p>
-                        Users can search donors or submit a blood
-                        request through the system.
-                    </p>
-
-                </div>
-
-
-                <div class="process-card">
-
-                    <div class="process-number">
-                        4
-                    </div>
-
-                    <h3>
-                        Connect
-                    </h3>
-
-                    <p>
-                        Relevant donor and request information can be
-                        viewed through the BloodLink platform.
-                    </p>
-
-                </div>
-
-            </section>
-
-
-            <!-- FEATURES -->
-
-            <div class="about-section-heading">
-
-                <span>
-                    BloodLink Features
-                </span>
-
-                <h2>
-                    Everything in One Place
-                </h2>
-
-                <p>
-                    The project combines several useful blood management
-                    functions into a single web application.
-                </p>
-
-            </div>
-
-
-            <section class="about-feature-grid">
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
+                    <div class="icon">
                         🩸
                     </div>
 
@@ -927,16 +440,16 @@
                     </h3>
 
                     <p>
-                        Registered users can provide their blood group,
-                        location and mobile number to become donors.
+                        Registered users can create donor profiles
+                        with blood group and location information.
                     </p>
 
                 </div>
 
 
-                <div class="feature-card">
+                <div class="about-info-card">
 
-                    <div class="feature-icon">
+                    <div class="icon">
                         🔎
                     </div>
 
@@ -945,17 +458,17 @@
                     </h3>
 
                     <p>
-                        Search for registered donors based on blood
+                        Users can search registered donors by blood
                         group and city or district.
                     </p>
 
                 </div>
 
 
-                <div class="feature-card">
+                <div class="about-info-card">
 
-                    <div class="feature-icon">
-                        🚨
+                    <div class="icon">
+                        🚑
                     </div>
 
                     <h3>
@@ -963,261 +476,207 @@
                     </h3>
 
                     <p>
-                        Users can submit blood requests with relevant
-                        patient and contact information.
+                        Users can submit blood requests with
+                        contact and location details.
                     </p>
 
                 </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        🧬
-                    </div>
-
-                    <h3>
-                        Compatibility
-                    </h3>
-
-                    <p>
-                        The system provides a blood group compatibility
-                        checker for educational purposes.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        🔐
-                    </div>
-
-                    <h3>
-                        Account System
-                    </h3>
-
-                    <p>
-                        Users can create accounts and log in before
-                        accessing donor registration features.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        💾
-                    </div>
-
-                    <h3>
-                        JSON Storage
-                    </h3>
-
-                    <p>
-                        The backend demonstrates data management using
-                        JSON files without requiring a SQL database.
-                    </p>
-
-                </div>
-
-            </section>
-
-
-            <!-- TECHNOLOGY -->
-
-            <section class="technology-section">
-
-                <div class="technology-content">
-
-                    <div>
-
-                        <span class="about-label">
-                            Technology
-                        </span>
-
-                        <h2>
-                            How BloodLink Is Built
-                        </h2>
-
-                        <p>
-                            BloodLink uses a simple web architecture
-                            suitable for demonstrating a complete
-                            frontend and backend blood management system.
-                        </p>
-
-                    </div>
-
-
-                    <div class="technology-list">
-
-                        <div class="technology-item">
-                            <strong>Frontend:</strong>
-                            HTML, CSS and JavaScript
-                        </div>
-
-                        <div class="technology-item">
-                            <strong>Backend:</strong>
-                            Node.js and Express
-                        </div>
-
-                        <div class="technology-item">
-                            <strong>Storage:</strong>
-                            JSON files
-                        </div>
-
-                        <div class="technology-item">
-                            <strong>Communication:</strong>
-                            REST API
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- NOTE -->
-
-            <div class="about-note">
-
-                <strong>Important:</strong>
-                BloodLink is a college project and is intended to
-                demonstrate blood donor management concepts. It should
-                not replace hospitals, blood banks, laboratory testing,
-                medical professionals or official emergency services.
 
             </div>
-
-
-            <!-- CTA -->
-
-            <section class="final-cta">
-
-                <h2>
-                    Your Blood Can Be Someone's Hope.
-                </h2>
-
-                <p>
-                    Explore BloodLink, register as a donor, find available
-                    donor information or learn more about blood compatibility.
-                </p>
-
-
-                <div class="final-cta-buttons">
-
-                    <a
-                        href="donor.html"
-                        class="cta-primary"
-                    >
-                        Become a Donor
-                    </a>
-
-                    <a
-                        href="search.html"
-                        class="cta-secondary"
-                    >
-                        Find a Donor
-                    </a>
-
-                </div>
-
-            </section>
 
         </section>
 
-    </main>
 
+        <section class="about-section">
 
-    <!-- =========================================================
-         FOOTER
-         ========================================================= -->
+            <div class="about-heading">
 
-    <footer class="new-footer">
+                <span>
+                    Our Values
+                </span>
 
-        <div class="footer-main">
-
-            <div class="footer-brand">
-
-                <div class="brand">
-
-                    <div class="brand-drop">🩸</div>
-
-                    <div>
-                        <strong>BloodLink</strong>
-                        <span>Life • Hope • Humanity</span>
-                    </div>
-
-                </div>
+                <h2>
+                    Built Around People
+                </h2>
 
                 <p>
-                    Connecting blood donors with people who need them.
+                    BloodLink is designed around simplicity,
+                    connection and responsible information management.
                 </p>
 
             </div>
 
 
-            <div class="footer-column">
+            <div class="about-values">
 
-                <h4>
-                    Quick Links
-                </h4>
+                <div class="about-value">
 
-                <a href="index.html">
-                    Home
-                </a>
+                    <h3>
+                        ❤️ Humanity
+                    </h3>
 
-                <a href="donor.html">
-                    Become a Donor
-                </a>
+                    <p>
+                        The purpose of the platform is to support
+                        people helping other people through blood donation.
+                    </p>
 
-                <a href="search.html">
-                    Find Donor
-                </a>
+                </div>
+
+
+                <div class="about-value">
+
+                    <h3>
+                        🤝 Connection
+                    </h3>
+
+                    <p>
+                        BloodLink makes donor and blood-request
+                        information easier to connect.
+                    </p>
+
+                </div>
+
+
+                <div class="about-value">
+
+                    <h3>
+                        🔒 Responsible Information
+                    </h3>
+
+                    <p>
+                        The project is designed to keep account and
+                        donor information organized within the system.
+                    </p>
+
+                </div>
+
+
+                <div class="about-value">
+
+                    <h3>
+                        ⚡ Simplicity
+                    </h3>
+
+                    <p>
+                        The interface is designed so important
+                        blood-management actions are easy to understand.
+                    </p>
+
+                </div>
 
             </div>
 
+        </section>
 
-            <div class="footer-column">
 
-                <h4>
-                    Services
-                </h4>
+        <section class="about-cta">
 
-                <a href="request.html">
-                    Request Blood
-                </a>
+            <h2>
+                Be Part of BloodLink
+            </h2>
 
-                <a href="compatibility.html">
-                    Compatibility
-                </a>
+            <p>
+                Register an account, become a donor or search for
+                available registered donors in your area.
+            </p>
 
-                <a href="about.html">
-                    About BloodLink
-                </a>
+            <a href="donor.html">
+                Become a Donor →
+            </a>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+<footer class="new-footer">
+
+    <div class="footer-main">
+
+        <div class="footer-brand">
+
+            <div class="brand">
+
+                <div class="brand-drop">
+                    🩸
+                </div>
+
+                <div>
+                    <strong>BloodLink</strong>
+                    <span>Life • Hope • Humanity</span>
+                </div>
 
             </div>
+
+            <p>
+                Connecting blood donors with people who need them.
+            </p>
 
         </div>
 
 
-        <div class="footer-bottom">
+        <div class="footer-column">
 
-            <span>
-                © 2026 BloodLink
-            </span>
+            <h4>
+                Quick Links
+            </h4>
 
-            <span>
-                Blood Donor Management System
-            </span>
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="donor.html">
+                Become a Donor
+            </a>
+
+            <a href="search.html">
+                Find Donor
+            </a>
 
         </div>
 
-    </footer>
-    <script src="account.js"></script>
+
+        <div class="footer-column">
+
+            <h4>
+                Services
+            </h4>
+
+            <a href="request.html">
+                Request Blood
+            </a>
+
+            <a href="compatibility.html">
+                Compatibility
+            </a>
+
+            <a href="about.html">
+                About BloodLink
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <span>
+            © 2026 BloodLink
+        </span>
+
+        <span>
+            Blood Donor Management System
+        </span>
+
+    </div>
+
+</footer>
+
+
+<script src="account.js"></script>
 <script src="script.js"></script>
 
 </body>

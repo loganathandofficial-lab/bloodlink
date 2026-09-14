@@ -1,41 +1,646 @@
 <!DOCTYPE html>
-<html lang="ta">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>BloodLink - Blood Donor Management System</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <title>BloodLink | Blood Donor Management System</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* =========================================================
+           HOME PAGE
+           ========================================================= */
+
+        .home-page {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 10% 15%,
+                    rgba(190,20,45,0.08),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(190,20,45,0.06),
+                    transparent 30%
+                ),
+                #fafafa;
+        }
+
+        /* =========================================================
+           HERO
+           ========================================================= */
+
+        .home-hero {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    135deg,
+                    #5f0718 0%,
+                    #8d1028 48%,
+                    #b51d3b 100%
+                );
+            color: white;
+            padding: 95px 7% 115px;
+        }
+
+        .home-hero::before {
+            content: "";
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            right: -170px;
+            top: -230px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .home-hero::after {
+            content: "";
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            left: -160px;
+            bottom: -210px;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .home-hero-content {
+            max-width: 1150px;
+            margin: auto;
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 65px;
+            align-items: center;
+        }
+
+        .home-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 17px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.24);
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .home-hero h1 {
+            margin: 0 0 20px;
+            font-size: clamp(
+                42px,
+                6vw,
+                72px
+            );
+            line-height: 1.02;
+            letter-spacing: -1.5px;
+        }
+
+        .home-hero h1 span {
+            color: #ffd7de;
+        }
+
+        .home-hero p {
+            max-width: 680px;
+            margin: 0;
+            color: #ffeef1;
+            font-size: 19px;
+            line-height: 1.75;
+        }
+
+        .home-hero-actions {
+            display: flex;
+            gap: 13px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .home-button {
+            display: inline-block;
+            padding: 14px 22px;
+            border-radius: 11px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.25s;
+        }
+
+        .home-button-primary {
+            background: white;
+            color: #7d0b23;
+        }
+
+        .home-button-secondary {
+            background: rgba(255,255,255,0.10);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .home-hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .home-drop-circle {
+            width: 270px;
+            height: 270px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 135px;
+            box-shadow:
+                0 30px 70px rgba(0,0,0,0.18);
+            animation: homeFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes homeFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        /* =========================================================
+           MAIN
+           ========================================================= */
+
+        .home-main {
+            max-width: 1150px;
+            margin: -45px auto 0;
+            padding: 0 20px 80px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* =========================================================
+           QUICK ACTIONS
+           ========================================================= */
+
+        .home-actions {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .home-action-card {
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #f0dfe3;
+            padding: 25px;
+            text-decoration: none;
+            box-shadow:
+                0 15px 40px rgba(70,10,25,0.08);
+            transition: 0.25s;
+        }
+
+        .home-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 20px 45px rgba(70,10,25,0.12);
+        }
+
+        .home-action-icon {
+            font-size: 31px;
+            margin-bottom: 12px;
+        }
+
+        .home-action-card h3 {
+            margin: 0 0 7px;
+            color: #65091d;
+            font-size: 18px;
+        }
+
+        .home-action-card p {
+            margin: 0;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        /* =========================================================
+           SECTION HEADING
+           ========================================================= */
+
+        .home-section-heading {
+            text-align: center;
+            margin: 80px auto 38px;
+        }
+
+        .home-section-heading span {
+            display: block;
+            color: #a91432;
+            font-size: 13px;
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .home-section-heading h2 {
+            margin: 0 0 10px;
+            color: #4f0818;
+            font-size: 37px;
+        }
+
+        .home-section-heading p {
+            margin: auto;
+            max-width: 680px;
+            color: #777;
+            line-height: 1.7;
+        }
+
+        /* =========================================================
+           BLOOD GROUPS
+           ========================================================= */
+
+        .blood-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .blood-card {
+            background: white;
+            border: 1px solid #f0dfe3;
+            border-radius: 17px;
+            padding: 27px 20px;
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .blood-card:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 15px 35px rgba(70,10,25,0.09);
+        }
+
+        .blood-card-group {
+            color: #a91432;
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .blood-card p {
+            margin: 0;
+            color: #777;
+            font-size: 13px;
+        }
+
+        /* =========================================================
+           WHY BLOODLINK
+           ========================================================= */
+
+        .why-home {
+            margin-top: 80px;
+            display: grid;
+            grid-template-columns:
+                0.8fr 1.2fr;
+            gap: 45px;
+            align-items: center;
+        }
+
+        .why-visual {
+            min-height: 390px;
+            border-radius: 25px;
+            background:
+                linear-gradient(
+                    145deg,
+                    #65091d,
+                    #a91432
+                );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .why-visual::before {
+            content: "";
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+        }
+
+        .why-visual-main {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        .why-visual-main .big-icon {
+            font-size: 92px;
+            margin-bottom: 10px;
+        }
+
+        .why-visual-main strong {
+            display: block;
+            font-size: 24px;
+        }
+
+        .why-visual-main small {
+            color: #ffdbe2;
+        }
+
+        .why-home-content > span {
+            color: #a91432;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .why-home-content h2 {
+            margin: 8px 0 15px;
+            color: #4f0818;
+            font-size: 40px;
+            line-height: 1.15;
+        }
+
+        .why-home-content h2 strong {
+            color: #a91432;
+        }
+
+        .why-home-content > p {
+            color: #666;
+            line-height: 1.75;
+            margin-bottom: 25px;
+        }
+
+        .why-points {
+            display: grid;
+            gap: 18px;
+        }
+
+        .why-point {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .why-number {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            border-radius: 11px;
+            background: #fff0f3;
+            color: #a91432;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .why-point h4 {
+            margin: 0 0 3px;
+            color: #4b1d26;
+            font-size: 15px;
+        }
+
+        .why-point p {
+            margin: 0;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* =========================================================
+           THIRUKKURAL
+           ========================================================= */
+
+        .kural-card {
+            margin-top: 80px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff7f8,
+                    #ffffff
+                );
+            border: 1px solid #f0dfe3;
+            border-radius: 22px;
+            padding: 42px;
+            text-align: center;
+        }
+
+        .kural-card span {
+            color: #a91432;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .kural-card h2 {
+            color: #65091d;
+            margin: 10px 0 18px;
+            font-size: 28px;
+        }
+
+        .kural-text {
+            max-width: 760px;
+            margin: auto;
+            color: #4f2832;
+            font-size: 19px;
+            line-height: 1.8;
+            font-weight: 600;
+        }
+
+        .kural-meaning {
+            margin-top: 14px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* =========================================================
+           FINAL CTA
+           ========================================================= */
+
+        .home-cta {
+            margin-top: 80px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #65091d,
+                    #a91432
+                );
+            color: white;
+            border-radius: 24px;
+            padding: 50px;
+            text-align: center;
+            box-shadow:
+                0 20px 45px rgba(100,9,29,0.18);
+        }
+
+        .home-cta-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .home-cta h2 {
+            margin: 0 0 10px;
+            font-size: 36px;
+        }
+
+        .home-cta p {
+            max-width: 650px;
+            margin: 0 auto 25px;
+            color: #ffe9ed;
+            line-height: 1.7;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+        @media (max-width: 1000px) {
+
+            .home-actions {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .blood-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 850px) {
+
+            .home-hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .home-hero p {
+                margin: auto;
+            }
+
+            .home-hero-actions {
+                justify-content: center;
+            }
+
+            .home-hero-visual {
+                display: none;
+            }
+
+            .why-home {
+                grid-template-columns: 1fr;
+            }
+
+            .why-visual {
+                min-height: 300px;
+            }
+
+            .why-home-content {
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .home-hero {
+                padding: 60px 20px 85px;
+            }
+
+            .home-main {
+                padding: 0 12px 55px;
+            }
+
+            .home-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .blood-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .home-section-heading {
+                margin-top: 60px;
+            }
+
+            .home-section-heading h2 {
+                font-size: 29px;
+            }
+
+            .why-home-content h2 {
+                font-size: 31px;
+            }
+
+            .kural-card {
+                padding: 28px 20px;
+            }
+
+            .kural-text {
+                font-size: 16px;
+            }
+
+            .home-cta {
+                padding: 35px 20px;
+            }
+
+            .home-cta h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- ================================================
-         NAVIGATION
-    ================================================= -->
+    <!-- =========================================================
+         HEADER
+         ========================================================= -->
 
     <header class="main-header">
 
         <nav class="navbar">
 
-            <a href="index.html" class="brand">
+            <a
+                href="index.html"
+                class="brand"
+            >
 
                 <div class="brand-drop">
                     🩸
                 </div>
 
                 <div>
-                    <strong>BloodLink</strong>
-                    <span>Life • Hope • Humanity</span>
+                    <strong>
+                        BloodLink
+                    </strong>
+
+                    <span>
+                        Life • Hope • Humanity
+                    </span>
                 </div>
 
             </a>
@@ -43,7 +648,10 @@
 
             <div class="nav-menu">
 
-                <a href="index.html" class="active">
+                <a
+                    href="index.html"
+                    class="active"
+                >
                     Home
                 </a>
 
@@ -67,7 +675,10 @@
                     About
                 </a>
 
-                <a href="login.html" class="nav-login">
+                <a
+                    href="login.html"
+                    class="nav-login"
+                >
                     Login
                 </a>
 
@@ -78,141 +689,280 @@
     </header>
 
 
-    <!-- ================================================
-         HERO SECTION
-    ================================================= -->
+    <main class="home-page">
 
-    <main>
+        <!-- =====================================================
+             HERO
+             ===================================================== -->
 
-        <section class="hero-section">
+        <section class="home-hero">
 
-            <div class="hero-glow glow-one"></div>
-            <div class="hero-glow glow-two"></div>
+            <div class="home-hero-content">
 
+                <div>
 
-            <div class="hero-content">
+                    <div class="home-badge">
+                        ❤️ Technology With Humanity
+                    </div>
 
-                <div class="hero-label">
-                    <span class="pulse-dot"></span>
-                    BLOODLINK • SAVE A LIFE
-                </div>
+                    <h1>
+                        Your Blood Can Be
+                        <span>Someone's Hope.</span>
+                    </h1>
 
-
-                <h1>
-
-                    Your Blood Can Be
-
-                    <span>
-                        Someone's Hope.
-                    </span>
-
-                </h1>
+                    <p>
+                        BloodLink is a simple blood donor management
+                        platform that helps connect registered donors,
+                        patients and blood requests when every second matters.
+                    </p>
 
 
-                <p class="hero-description">
+                    <div class="home-hero-actions">
 
-                    BloodLink connects blood donors with patients
-                    who need life-saving blood. One registration,
-                    one donation, one precious life.
+                        <a
+                            href="donor.html"
+                            class="home-button home-button-primary"
+                        >
+                            🩸 Become a Donor
+                        </a>
 
-                </p>
+                        <a
+                            href="search.html"
+                            class="home-button home-button-secondary"
+                        >
+                            🔎 Find a Donor
+                        </a>
 
-
-                <div class="hero-buttons">
-
-                    <a
-                        href="donor.html"
-                        class="primary-button"
-                    >
-                        🩸 Become a Donor
-                    </a>
-
-
-                    <a
-                        href="search.html"
-                        class="secondary-button"
-                    >
-                        Find a Donor →
-                    </a>
+                    </div>
 
                 </div>
 
 
-                <div class="hero-mini-stats">
+                <div class="home-hero-visual">
 
-                    <div>
-                        <strong>8</strong>
-                        <span>Blood Groups</span>
-                    </div>
-
-                    <div>
-                        <strong>24/7</strong>
-                        <span>Connection</span>
-                    </div>
-
-                    <div>
-                        <strong>1</strong>
-                        <span>Life to Save</span>
+                    <div class="home-drop-circle">
+                        🩸
                     </div>
 
                 </div>
 
             </div>
 
-
-            <!-- BLOOD DROP VISUAL -->
-
-            <div class="hero-visual">
-
-                <div class="blood-orbit orbit-one"></div>
-                <div class="blood-orbit orbit-two"></div>
+        </section>
 
 
-                <div class="blood-drop-large">
+        <!-- =====================================================
+             MAIN
+             ===================================================== -->
 
-                    <div class="drop-shine"></div>
+        <section class="home-main">
 
-                    <div class="drop-content">
+            <!-- QUICK ACTIONS -->
 
-                        <span>
+            <div class="home-actions">
+
+                <a
+                    href="donor.html"
+                    class="home-action-card"
+                >
+                    <div class="home-action-icon">
+                        🩸
+                    </div>
+
+                    <h3>
+                        Become a Donor
+                    </h3>
+
+                    <p>
+                        Register your blood group and location
+                        to help people in need.
+                    </p>
+                </a>
+
+
+                <a
+                    href="search.html"
+                    class="home-action-card"
+                >
+                    <div class="home-action-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        Find Donor
+                    </h3>
+
+                    <p>
+                        Search registered donors using blood
+                        group and city.
+                    </p>
+                </a>
+
+
+                <a
+                    href="request.html"
+                    class="home-action-card"
+                >
+                    <div class="home-action-icon">
+                        🚑
+                    </div>
+
+                    <h3>
+                        Request Blood
+                    </h3>
+
+                    <p>
+                        Submit a blood request when help
+                        is urgently needed.
+                    </p>
+                </a>
+
+
+                <a
+                    href="compatibility.html"
+                    class="home-action-card"
+                >
+                    <div class="home-action-icon">
+                        ❤️
+                    </div>
+
+                    <h3>
+                        Compatibility
+                    </h3>
+
+                    <p>
+                        Learn which blood groups can donate
+                        to and receive from each other.
+                    </p>
+                </a>
+
+            </div>
+
+
+            <!-- BLOOD GROUPS -->
+
+            <div class="home-section-heading">
+
+                <span>
+                    Blood Groups
+                </span>
+
+                <h2>
+                    Every Blood Type Matters
+                </h2>
+
+                <p>
+                    BloodLink supports the eight major blood
+                    groups used in the donor network.
+                </p>
+
+            </div>
+
+
+            <div class="blood-grid">
+
+                <div class="blood-card">
+                    <div class="blood-card-group">
+                        O+
+                    </div>
+
+                    <p>
+                        Common blood group
+                    </p>
+                </div>
+
+
+                <div class="blood-card">
+                    <div class="blood-card-group">
+                        O-
+                    </div>
+
+                    <p>
+                        Universal red-cell donor
+                    </p>
+                </div>
+
+
+                <div class="blood-card">
+                    <div class="blood-card-group">
+                        A+
+                    </div>
+
+                    <p>
+                        Widely needed group
+                    </p>
+                </div>
+
+
+                <div class="blood-card">
+                    <div class="blood-card-group">
+                        A-
+                    </div>
+
+                    <p>
+                        Important rare group
+                    </p>
+                </div>
+
+
+                <div class="blood-card">
+                    <div class="blood-card-group">
+                        B+
+                    </div>
+
+                    <p>
+                        Common blood group
+                    </p>
+                </div>
+
+
+                <div class="blood-card">
+                    <div class="blood-card-group">
+                        B-
+                    </div>
+
+                    <p>
+                        Important rare group
+                    </p>
+                </div>
+
+
+                <div class="blood-card">
+                    <div class="blood-card-group">
+                        AB+
+                    </div>
+
+                    <p>
+                        Universal plasma donor
+                    </p>
+                </div>
+
+
+                <div class="blood-card">
+                    <div class="blood-card-group">
+                        AB-
+                    </div>
+
+                    <p>
+                        One of the rarest groups
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- WHY BLOODLINK -->
+
+            <section class="why-home">
+
+                <div class="why-visual">
+
+                    <div class="why-visual-main">
+
+                        <div class="big-icon">
                             🩸
-                        </span>
+                        </div>
 
-                        <strong>
-                            GIVE
-                        </strong>
-
-                        <small>
-                            THE GIFT OF LIFE
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-                <div class="floating-card card-top">
-
-                    <span>❤️</span>
-
-                    <div>
-                        <strong>
-                            Every Drop
-                        </strong>
-
-                        <small>
-                            Matters
-                        </small>
-                    </div>
-
-                </div>
-
-
-                <div class="floating-card card-bottom">
-
-                    <span>✓</span>
-
-                    <div>
                         <strong>
                             BloodLink
                         </strong>
@@ -220,432 +970,158 @@
                         <small>
                             Connecting Lives
                         </small>
+
                     </div>
 
                 </div>
 
-            </div>
 
-        </section>
+                <div class="why-home-content">
+
+                    <span>
+                        WHY BLOODLINK?
+                    </span>
+
+                    <h2>
+                        Technology With
+                        <strong>Humanity.</strong>
+                    </h2>
+
+                    <p>
+                        BloodLink provides a simple digital platform
+                        for managing donors and blood requests.
+                        Our goal is to make it easier for people
+                        to connect when every second matters.
+                    </p>
 
 
-        <!-- ================================================
-             QUICK ACTIONS
-        ================================================= -->
+                    <div class="why-points">
 
-        <section class="quick-section">
+                        <div class="why-point">
 
-            <div class="section-title">
+                            <div class="why-number">
+                                01
+                            </div>
+
+                            <div>
+                                <h4>
+                                    Easy Registration
+                                </h4>
+
+                                <p>
+                                    Create an account and register
+                                    as a blood donor in a few steps.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="why-point">
+
+                            <div class="why-number">
+                                02
+                            </div>
+
+                            <div>
+                                <h4>
+                                    Smart Search
+                                </h4>
+
+                                <p>
+                                    Find registered donors by
+                                    blood group and location.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="why-point">
+
+                            <div class="why-number">
+                                03
+                            </div>
+
+                            <div>
+                                <h4>
+                                    Faster Connection
+                                </h4>
+
+                                <p>
+                                    Help patients and donors connect
+                                    when blood is needed.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- THIRUKKURAL -->
+
+            <section class="kural-card">
 
                 <span>
-                    BLOODLINK SERVICES
+                    THIRUKKURAL
                 </span>
 
                 <h2>
-                    How Can We Help?
+                    A Message of Humanity
+                </h2>
+
+                <div class="kural-text">
+                    “அருளில்லார்க்கு அவ்வுலகம் இல்லை
+                    பொருளில்லார்க்கு இவ்வுலகம் இல்லை”
+                </div>
+
+                <div class="kural-meaning">
+                    Compassion gives meaning to life.
+                    Blood donation is one way to turn compassion into action.
+                </div>
+
+            </section>
+
+
+            <!-- FINAL CTA -->
+
+            <section class="home-cta">
+
+                <div class="home-cta-icon">
+                    ❤️
+                </div>
+
+                <h2>
+                    Someone, Somewhere, Needs Your Blood.
                 </h2>
 
                 <p>
-                    Choose what you need and take the next step.
+                    One decision to donate can become another person's
+                    reason to hope. Become part of BloodLink today.
                 </p>
-
-            </div>
-
-
-            <div class="quick-grid">
-
 
                 <a
                     href="donor.html"
-                    class="service-card donor-card-theme"
+                    class="home-button home-button-primary"
                 >
-
-                    <div class="service-icon">
-                        🩸
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Become a Donor
-                        </h3>
-
-                        <p>
-                            Register yourself as a blood donor
-                            and help save lives.
-                        </p>
-
-                        <span class="service-link">
-                            Register Now →
-                        </span>
-
-                    </div>
-
+                    Become a Donor →
                 </a>
 
-
-                <a
-                    href="search.html"
-                    class="service-card search-card-theme"
-                >
-
-                    <div class="service-icon">
-                        🔎
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Find a Donor
-                        </h3>
-
-                        <p>
-                            Search for available donors by
-                            blood group and location.
-                        </p>
-
-                        <span class="service-link">
-                            Search Donors →
-                        </span>
-
-                    </div>
-
-                </a>
-
-
-                <a
-                    href="request.html"
-                    class="service-card request-card-theme"
-                >
-
-                    <div class="service-icon">
-                        🚑
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Request Blood
-                        </h3>
-
-                        <p>
-                            Submit an urgent blood requirement
-                            for a patient.
-                        </p>
-
-                        <span class="service-link">
-                            Request Blood →
-                        </span>
-
-                    </div>
-
-                </a>
-
-
-                <a
-                    href="compatibility.html"
-                    class="service-card compatibility-card-theme"
-                >
-
-                    <div class="service-icon">
-                        🧬
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Check Compatibility
-                        </h3>
-
-                        <p>
-                            Check blood compatibility between
-                            donor and receiver groups.
-                        </p>
-
-                        <span class="service-link">
-                            Check Now →
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================================================
-             THIRUKKURAL
-        ================================================= -->
-
-        <section class="thirukkural-section">
-
-            <div class="thirukkural-decoration">
-                ❝
-            </div>
-
-
-            <div class="thirukkural-content">
-
-                <span class="tamil-label">
-                    திருக்குறள்
-                </span>
-
-
-                <h2>
-                    “அருளில்லார்க்கு அவ்வுலகம் இல்லை;
-                    பொருளில்லார்க்கு இவ்வுலகம் இல்லாகி யாங்கு.”
-                </h2>
-
-
-                <div class="kural-line"></div>
-
-
-                <p class="kural-number">
-                    குறள் 247
-                </p>
-
-
-                <p class="kural-meaning">
-
-                    பிறரிடம் அன்பும் இரக்கமும் கொண்டிருப்பது
-                    மனித வாழ்வின் மிக உயர்ந்த பண்பாகும்.
-
-                </p>
-
-
-                <p class="kural-english">
-
-                    Compassion and kindness are essential
-                    qualities of humanity.
-
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================================================
-             BLOOD GROUPS
-        ================================================= -->
-
-        <section class="blood-groups-section">
-
-            <div class="section-title">
-
-                <span>
-                    BLOOD GROUPS
-                </span>
-
-                <h2>
-                    Every Blood Group Matters
-                </h2>
-
-                <p>
-                    A single donation can become a precious
-                    gift for someone in need.
-                </p>
-
-            </div>
-
-
-            <div class="blood-group-grid">
-
-                <div class="blood-type">
-                    <span>A</span>
-                    <small>Positive</small>
-                </div>
-
-                <div class="blood-type">
-                    <span>A−</span>
-                    <small>Negative</small>
-                </div>
-
-                <div class="blood-type">
-                    <span>B+</span>
-                    <small>Positive</small>
-                </div>
-
-                <div class="blood-type">
-                    <span>B−</span>
-                    <small>Negative</small>
-                </div>
-
-                <div class="blood-type">
-                    <span>AB+</span>
-                    <small>Positive</small>
-                </div>
-
-                <div class="blood-type">
-                    <span>AB−</span>
-                    <small>Negative</small>
-                </div>
-
-                <div class="blood-type">
-                    <span>O+</span>
-                    <small>Positive</small>
-                </div>
-
-                <div class="blood-type">
-                    <span>O−</span>
-                    <small>Negative</small>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================================================
-             WHY BLOODLINK
-        ================================================= -->
-
-        <section class="why-section">
-
-            <div class="why-visual">
-
-                <div class="medical-circle">
-
-                    <div class="medical-cross">
-                        +
-                    </div>
-
-                    <span>
-                        BLOOD
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="why-content">
-
-                <span>
-                    WHY BLOODLINK?
-                </span>
-
-                <h2>
-                    Technology With
-                    <strong>Humanity.</strong>
-                </h2>
-
-
-                <p>
-                    BloodLink provides a simple digital platform
-                    for managing blood donors and blood requests.
-                    Our goal is to make it easier for people to
-                    connect when every second matters.
-                </p>
-
-
-                <div class="why-points">
-
-                    <div>
-
-                        <span>01</span>
-
-                        <p>
-                            <strong>
-                                Easy Registration
-                            </strong>
-
-                            <br>
-
-                            Register as a donor in just a few steps.
-                        </p>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>02</span>
-
-                        <p>
-                            <strong>
-                                Smart Search
-                            </strong>
-
-                            <br>
-
-                            Find donors based on blood group
-                            and location.
-                        </p>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>03</span>
-
-                        <p>
-                            <strong>
-                                Faster Connection
-                            </strong>
-
-                            <br>
-
-                            Connect patients and donors
-                            when help is needed.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================================================
-             FINAL CTA
-        ================================================= -->
-
-        <section class="final-cta">
-
-            <div class="cta-drop">
-                🩸
-            </div>
-
-
-            <div>
-
-                <span>
-                    BE THE DIFFERENCE
-                </span>
-
-                <h2>
-                    Someone, Somewhere,
-                    Needs Your Blood.
-                </h2>
-
-                <p>
-                    Become a BloodLink donor today.
-                </p>
-
-            </div>
-
-
-            <a
-                href="donor.html"
-                class="cta-button"
-            >
-                Become a Donor →
-            </a>
+            </section>
 
         </section>
 
     </main>
 
 
-    <!-- ================================================
+    <!-- =========================================================
          FOOTER
-    ================================================= -->
+         ========================================================= -->
 
     <footer class="new-footer">
 
@@ -653,7 +1129,7 @@
 
             <div class="footer-brand">
 
-                <div class="brand footer-brand-logo">
+                <div class="brand">
 
                     <div class="brand-drop">
                         🩸
@@ -670,7 +1146,6 @@
                     </div>
 
                 </div>
-
 
                 <p>
                     Connecting blood donors with people
@@ -718,9 +1193,11 @@
                 <a href="about.html">
                     About BloodLink
                 </a>
+
                 <a href="admin-login.html">
-    🔐 Founder Login
-</a>
+                    Founder Login
+                </a>
+
             </div>
 
         </div>
@@ -742,8 +1219,7 @@
 
 
     <script src="account.js"></script>
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
-
 </html>
