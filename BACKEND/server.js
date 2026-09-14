@@ -16,8 +16,16 @@ const FOUNDER_PASSWORD =
 
 let founderAdminToken = null;
 
+// =========================================================
+// MIDDLEWARE
+// =========================================================
+
 app.use(cors());
 app.use(express.json());
+
+// =========================================================
+// DATA FILES
+// =========================================================
 
 const dataFolder = path.join(__dirname, "data");
 
@@ -42,50 +50,50 @@ if (!fs.existsSync(dataFolder)) {
     });
 }
 
-if (!fs.existsSync(usersFile)) {
-    fs.writeFileSync(
-        usersFile,
-        "[]",
-        "utf8"
-    );
+function ensureFile(file) {
+    if (!fs.existsSync(file)) {
+        fs.writeFileSync(
+            file,
+            "[]",
+            "utf8"
+        );
+    }
 }
 
-if (!fs.existsSync(donorsFile)) {
-    fs.writeFileSync(
-        donorsFile,
-        "[]",
-        "utf8"
-    );
-}
+ensureFile(usersFile);
+ensureFile(donorsFile);
+ensureFile(requestsFile);
 
-if (!fs.existsSync(requestsFile)) {
-    fs.writeFileSync(
-        requestsFile,
-        "[]",
-        "utf8"
-    );
-}
+// =========================================================
+// HELPERS
+// =========================================================
 
 function readJSON(file) {
     try {
-        const data = fs.readFileSync(
-            file,
-            "utf8"
-        );
-
-        if (!data.trim()) {
+        if (!fs.existsSync(file)) {
             return [];
         }
 
-        const parsedData = JSON.parse(data);
+        const content =
+            fs.readFileSync(
+                file,
+                "utf8"
+            );
 
-        return Array.isArray(parsedData)
-            ? parsedData
+        if (!content.trim()) {
+            return [];
+        }
+
+        const data =
+            JSON.parse(content);
+
+        return Array.isArray(data)
+            ? data
             : [];
 
     } catch (error) {
         console.error(
-            "Error reading JSON file:",
+            "JSON read error:",
             error
         );
 
@@ -109,7 +117,7 @@ function writeJSON(file, data) {
 
     } catch (error) {
         console.error(
-            "Error writing JSON file:",
+            "JSON write error:",
             error
         );
 
@@ -118,7 +126,9 @@ function writeJSON(file, data) {
 }
 
 function normalizePhone(phone) {
-    return String(phone || "")
+    return String(
+        phone || ""
+    )
         .replace(/\D/g, "")
         .trim();
 }
@@ -129,15 +139,14 @@ function isValidPhone(phone) {
     );
 }
 
-function calculateAge(dateOfBirth) {
-
-    if (!dateOfBirth) {
+function calculateAge(dob) {
+    if (!dob) {
         return null;
     }
 
     const birthDate =
         new Date(
-            `${dateOfBirth}T00:00:00`
+            `${String(dob).trim()}T00:00:00`
         );
 
     if (
@@ -148,12 +157,9 @@ function calculateAge(dateOfBirth) {
         return null;
     }
 
-    const today =
-        new Date();
+    const today = new Date();
 
-    if (
-        birthDate > today
-    ) {
+    if (birthDate > today) {
         return null;
     }
 
@@ -170,7 +176,7 @@ function calculateAge(dateOfBirth) {
         (
             monthDifference === 0 &&
             today.getDate() <
-            birthDate.getDate()
+                birthDate.getDate()
         )
     ) {
         age--;
@@ -180,7 +186,6 @@ function calculateAge(dateOfBirth) {
 }
 
 function isEligibleAge(age) {
-
     return (
         Number.isInteger(age) &&
         age >= 18 &&
@@ -189,53 +194,49 @@ function isEligibleAge(age) {
 }
 
 function generateDonorId(donors) {
+    let highest = 10000;
 
-    let highestNumber = 10000;
+    for (const donor of donors) {
+        const match =
+            String(
+                donor.donorId || ""
+            ).match(
+                /^BL-DON-(\d+)$/
+            );
 
-    donors.forEach(
-        function (donor) {
-
-            const donorId =
-                String(
-                    donor.donorId || ""
-                );
-
-            const match =
-                donorId.match(
-                    /^BL-DON-(\d+)$/
-                );
-
-            if (match) {
-
-                const number =
-                    Number(match[1]);
-
-                if (
-                    Number.isFinite(number) &&
-                    number > highestNumber
-                ) {
-                    highestNumber = number;
-                }
-            }
+        if (!match) {
+            continue;
         }
-    );
 
-    return `BL-DON-${highestNumber + 1}`;
+        const number =
+            Number(match[1]);
+
+        if (
+            Number.isFinite(number) &&
+            number > highest
+        ) {
+            highest = number;
+        }
+    }
+
+    return `BL-DON-${highest + 1}`;
 }
 
 function generateAdminToken() {
-
     return crypto
         .randomBytes(32)
         .toString("hex");
 }
+
+// =========================================================
+// FOUNDER AUTH
+// =========================================================
 
 function requireFounderAdmin(
     req,
     res,
     next
 ) {
-
     const token =
         req.headers["x-admin-token"];
 
@@ -243,7 +244,6 @@ function requireFounderAdmin(
         !founderAdminToken ||
         token !== founderAdminToken
     ) {
-
         return res
             .status(403)
             .json({
@@ -256,6 +256,10 @@ function requireFounderAdmin(
     next();
 }
 
+// =========================================================
+// HOME
+// =========================================================
+
 app.get(
     "/",
     (req, res) => {
@@ -265,10 +269,13 @@ app.get(
     }
 );
 
+// =========================================================
+// API TEST
+// =========================================================
+
 app.get(
     "/api/test",
     (req, res) => {
-
         res.json({
             success: true,
             message:
@@ -277,12 +284,14 @@ app.get(
     }
 );
 
+// =========================================================
+// FOUNDER LOGIN
+// =========================================================
+
 app.post(
     "/api/founder-login",
     (req, res) => {
-
         try {
-
             const {
                 username,
                 password
@@ -292,7 +301,6 @@ app.post(
                 !username ||
                 !password
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -304,11 +312,10 @@ app.post(
 
             if (
                 String(username).trim() !==
-                FOUNDER_USERNAME ||
+                    FOUNDER_USERNAME ||
                 String(password) !==
-                FOUNDER_PASSWORD
+                    FOUNDER_PASSWORD
             ) {
-
                 return res
                     .status(401)
                     .json({
@@ -330,7 +337,6 @@ app.post(
             });
 
         } catch (error) {
-
             console.error(
                 "Founder login error:",
                 error
@@ -347,12 +353,14 @@ app.post(
     }
 );
 
+// =========================================================
+// SIGNUP
+// =========================================================
+
 app.post(
     "/api/signup",
     (req, res) => {
-
         try {
-
             const {
                 name,
                 email,
@@ -369,7 +377,6 @@ app.post(
                 !phone ||
                 !dob
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -393,12 +400,17 @@ app.post(
             const cleanDob =
                 String(dob).trim();
 
-            if (
-                !isValidPhone(
-                    cleanPhone
-                )
-            ) {
+            if (!cleanName) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        message:
+                            "Full name is required."
+                    });
+            }
 
+            if (!isValidPhone(cleanPhone)) {
                 return res
                     .status(400)
                     .json({
@@ -409,9 +421,9 @@ app.post(
             }
 
             if (
-                String(password).length < 6
+                String(password).length <
+                6
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -422,14 +434,11 @@ app.post(
             }
 
             const calculatedAge =
-                calculateAge(
-                    cleanDob
-                );
+                calculateAge(cleanDob);
 
             if (
                 calculatedAge === null
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -444,18 +453,14 @@ app.post(
                     calculatedAge
                 )
             ) {
-
-                const ageMessage =
-                    calculatedAge < 18
-                        ? "You must be at least 18 years old to register."
-                        : "The maximum donor age is 65 years.";
-
                 return res
                     .status(403)
                     .json({
                         success: false,
                         message:
-                            ageMessage,
+                            calculatedAge < 18
+                                ? "You must be at least 18 years old to register."
+                                : "The maximum eligible age is 65 years.",
                         age:
                             calculatedAge,
                         ageVerified:
@@ -466,7 +471,6 @@ app.post(
             if (
                 ageVerified !== true
             ) {
-
                 return res
                     .status(403)
                     .json({
@@ -483,19 +487,18 @@ app.post(
             const users =
                 readJSON(usersFile);
 
-            const existingUser =
-                users.find(
+            const emailExists =
+                users.some(
                     user =>
-                        user.email &&
-                        user.email
+                        String(
+                            user.email || ""
+                        )
+                            .trim()
                             .toLowerCase() ===
                         cleanEmail
                 );
 
-            if (
-                existingUser
-            ) {
-
+            if (emailExists) {
                 return res
                     .status(409)
                     .json({
@@ -505,8 +508,8 @@ app.post(
                     });
             }
 
-            const existingPhone =
-                users.find(
+            const phoneExists =
+                users.some(
                     user =>
                         normalizePhone(
                             user.phone
@@ -514,10 +517,7 @@ app.post(
                         cleanPhone
                 );
 
-            if (
-                existingPhone
-            ) {
-
+            if (phoneExists) {
                 return res
                     .status(409)
                     .json({
@@ -528,50 +528,36 @@ app.post(
             }
 
             const newUser = {
-
                 id:
                     Date.now().toString(),
-
                 name:
                     cleanName,
-
                 email:
                     cleanEmail,
-
                 password:
                     String(password),
-
                 phone:
                     cleanPhone,
-
                 dob:
                     cleanDob,
-
                 age:
                     calculatedAge,
-
                 ageVerified:
                     true,
-
                 verificationStatus:
                     "Age Verified",
-
                 createdAt:
                     new Date().toISOString()
             };
 
-            users.push(
-                newUser
-            );
+            users.push(newUser);
 
-            const saved =
-                writeJSON(
+            if (
+                !writeJSON(
                     usersFile,
                     users
-                );
-
-            if (!saved) {
-
+                )
+            ) {
                 return res
                     .status(500)
                     .json({
@@ -601,14 +587,13 @@ app.post(
                         age:
                             newUser.age,
                         ageVerified:
-                            newUser.ageVerified,
+                            true,
                         verificationStatus:
-                            newUser.verificationStatus
+                            "Age Verified"
                     }
                 });
 
         } catch (error) {
-
             console.error(
                 "Signup error:",
                 error
@@ -625,12 +610,14 @@ app.post(
     }
 );
 
+// =========================================================
+// LOGIN
+// =========================================================
+
 app.post(
     "/api/login",
     (req, res) => {
-
         try {
-
             const {
                 email,
                 password
@@ -640,7 +627,6 @@ app.post(
                 !email ||
                 !password
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -661,14 +647,15 @@ app.post(
             const user =
                 users.find(
                     item =>
-                        item.email &&
-                        item.email
+                        String(
+                            item.email || ""
+                        )
+                            .trim()
                             .toLowerCase() ===
                         cleanEmail
                 );
 
             if (!user) {
-
                 return res
                     .status(401)
                     .json({
@@ -679,10 +666,11 @@ app.post(
             }
 
             if (
-                user.password !==
-                password
+                String(
+                    user.password || ""
+                ) !==
+                String(password)
             ) {
-
                 return res
                     .status(401)
                     .json({
@@ -701,7 +689,7 @@ app.post(
                         user.dob
                     );
 
-            const userAgeVerified =
+            const eligible =
                 isEligibleAge(
                     userAge
                 );
@@ -718,17 +706,19 @@ app.post(
                     email:
                         user.email,
                     phone:
-                        user.phone || "",
+                        normalizePhone(
+                            user.phone
+                        ),
                     dob:
                         user.dob || "",
                     age:
                         userAge,
                     ageVerified:
-                        userAgeVerified,
+                        eligible,
                     verificationStatus:
                         user.verificationStatus ||
                         (
-                            userAgeVerified
+                            eligible
                                 ? "Age Verified"
                                 : "Not Verified"
                         )
@@ -736,7 +726,6 @@ app.post(
             });
 
         } catch (error) {
-
             console.error(
                 "Login error:",
                 error
@@ -753,13 +742,15 @@ app.post(
     }
 );
 
+// =========================================================
+// GET ALL USERS
+// =========================================================
+
 app.get(
     "/api/users",
     requireFounderAdmin,
     (req, res) => {
-
         try {
-
             const users =
                 readJSON(usersFile);
 
@@ -773,18 +764,21 @@ app.get(
                         email:
                             user.email,
                         phone:
-                            user.phone || "",
+                            normalizePhone(
+                                user.phone
+                            ),
                         dob:
                             user.dob || "",
                         age:
                             user.age ?? "",
                         ageVerified:
-                            user.ageVerified === true,
+                            user.ageVerified ===
+                            true,
                         verificationStatus:
                             user.verificationStatus ||
                             "Not Verified",
                         createdAt:
-                            user.createdAt
+                            user.createdAt || ""
                     })
                 );
 
@@ -795,7 +789,6 @@ app.get(
             });
 
         } catch (error) {
-
             console.error(
                 "Get users error:",
                 error
@@ -812,12 +805,14 @@ app.get(
     }
 );
 
+// =========================================================
+// GET ONE USER
+// =========================================================
+
 app.get(
     "/api/users/:userId",
     (req, res) => {
-
         try {
-
             const users =
                 readJSON(usersFile);
 
@@ -831,7 +826,6 @@ app.get(
                 );
 
             if (!user) {
-
                 return res
                     .status(404)
                     .json({
@@ -841,8 +835,10 @@ app.get(
                     });
             }
 
-            const userAge =
-                Number.isInteger(user.age)
+            const age =
+                Number.isInteger(
+                    user.age
+                )
                     ? user.age
                     : calculateAge(
                         user.dob
@@ -858,14 +854,16 @@ app.get(
                     email:
                         user.email,
                     phone:
-                        user.phone || "",
+                        normalizePhone(
+                            user.phone
+                        ),
                     dob:
                         user.dob || "",
                     age:
-                        userAge,
+                        age,
                     ageVerified:
                         isEligibleAge(
-                            userAge
+                            age
                         ),
                     verificationStatus:
                         user.verificationStatus ||
@@ -874,7 +872,6 @@ app.get(
             });
 
         } catch (error) {
-
             console.error(
                 "Get user error:",
                 error
@@ -891,12 +888,14 @@ app.get(
     }
 );
 
+// =========================================================
+// DONOR REGISTRATION
+// =========================================================
+
 app.post(
     "/api/donors",
     (req, res) => {
-
         try {
-
             const {
                 userId,
                 name,
@@ -911,7 +910,6 @@ app.post(
                 !blood ||
                 !city
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -932,7 +930,6 @@ app.post(
                 );
 
             if (!user) {
-
                 return res
                     .status(404)
                     .json({
@@ -956,7 +953,6 @@ app.post(
                     userAge
                 )
             ) {
-
                 return res
                     .status(403)
                     .json({
@@ -970,32 +966,6 @@ app.post(
                     });
             }
 
-            const userIndex =
-                users.findIndex(
-                    item =>
-                        String(item.id) ===
-                        String(userId)
-                );
-
-            if (
-                userIndex !== -1
-            ) {
-
-                users[userIndex].age =
-                    userAge;
-
-                users[userIndex].ageVerified =
-                    true;
-
-                users[userIndex].verificationStatus =
-                    "Age Verified";
-
-                writeJSON(
-                    usersFile,
-                    users
-                );
-            }
-
             const registeredPhone =
                 normalizePhone(
                     user.phone
@@ -1006,7 +976,6 @@ app.post(
                     registeredPhone
                 )
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -1019,9 +988,8 @@ app.post(
             if (
                 phone &&
                 normalizePhone(phone) !==
-                registeredPhone
+                    registeredPhone
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -1043,10 +1011,7 @@ app.post(
                         String(userId)
                 );
 
-            if (
-                existingDonor
-            ) {
-
+            if (existingDonor) {
                 return res
                     .status(409)
                     .json({
@@ -1058,53 +1023,39 @@ app.post(
                     });
             }
 
-            const donorId =
-                generateDonorId(
-                    donors
-                );
-
             const newDonor = {
-
                 id:
                     Date.now().toString(),
-
                 donorId:
-                    donorId,
-
+                    generateDonorId(
+                        donors
+                    ),
                 userId:
                     String(userId),
-
                 name:
                     String(name).trim(),
-
                 blood:
-                    String(blood).trim(),
-
+                    String(blood)
+                        .trim()
+                        .toUpperCase(),
                 city:
                     String(city).trim(),
-
                 phone:
                     registeredPhone,
-
                 age:
                     userAge,
-
                 createdAt:
                     new Date().toISOString()
             };
 
-            donors.push(
-                newDonor
-            );
+            donors.push(newDonor);
 
-            const saved =
-                writeJSON(
+            if (
+                !writeJSON(
                     donorsFile,
                     donors
-                );
-
-            if (!saved) {
-
+                )
+            ) {
                 return res
                     .status(500)
                     .json({
@@ -1130,12 +1081,11 @@ app.post(
                         phone:
                             newDonor.phone,
                         message:
-                            `Dear ${newDonor.name}, you have successfully registered as a blood donor with BloodLink. Your Donor ID is ${newDonor.donorId}. Thank you for using the BloodLink website and helping save lives.`
+                            `Dear ${newDonor.name}, you have successfully registered as a blood donor with BloodLink. Your Donor ID is ${newDonor.donorId}.`
                     }
                 });
 
         } catch (error) {
-
             console.error(
                 "Donor registration error:",
                 error
@@ -1152,12 +1102,14 @@ app.post(
     }
 );
 
+// =========================================================
+// GET ALL DONORS
+// =========================================================
+
 app.get(
     "/api/donors",
     (req, res) => {
-
         try {
-
             const donors =
                 readJSON(donorsFile);
 
@@ -1168,7 +1120,6 @@ app.get(
             });
 
         } catch (error) {
-
             console.error(
                 "Get donors error:",
                 error
@@ -1185,86 +1136,28 @@ app.get(
     }
 );
 
-app.get(
-    "/api/donors/:donorId",
-    (req, res) => {
-
-        try {
-
-            const donors =
-                readJSON(donorsFile);
-
-            const donor =
-                donors.find(
-                    item =>
-                        String(
-                            item.donorId
-                        ) ===
-                        String(
-                            req.params.donorId
-                        ) ||
-                        String(
-                            item.id
-                        ) ===
-                        String(
-                            req.params.donorId
-                        )
-                );
-
-            if (!donor) {
-
-                return res
-                    .status(404)
-                    .json({
-                        success: false,
-                        message:
-                            "Donor not found."
-                    });
-            }
-
-            return res.json({
-                success: true,
-                donor:
-                    donor
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Get donor error:",
-                error
-            );
-
-            return res
-                .status(500)
-                .json({
-                    success: false,
-                    message:
-                        "Unable to get donor."
-                });
-        }
-    }
-);
-
 // =========================================================
 // SEARCH DONORS
+// IMPORTANT: THIS ROUTE COMES BEFORE /:donorId
 // =========================================================
 
 app.get(
     "/api/donors/search",
     (req, res) => {
-
         try {
-
             const blood =
                 String(
                     req.query.blood || ""
-                ).trim();
+                )
+                    .trim()
+                    .toLowerCase();
 
             const city =
                 String(
                     req.query.city || ""
-                ).trim();
+                )
+                    .trim()
+                    .toLowerCase();
 
             const donors =
                 readJSON(donorsFile);
@@ -1282,27 +1175,28 @@ app.get(
                                     donor.blood ||
                                     donor.bloodGroup ||
                                     ""
-                                ).trim();
+                                )
+                                    .trim()
+                                    .toLowerCase();
 
                             const donorCity =
                                 String(
                                     donor.city ||
                                     ""
-                                ).trim();
+                                )
+                                    .trim()
+                                    .toLowerCase();
 
                             const bloodMatch =
                                 !blood ||
-                                donorBlood
-                                    .toLowerCase() ===
-                                blood.toLowerCase();
+                                donorBlood ===
+                                    blood;
 
                             const cityMatch =
                                 !city ||
-                                donorCity
-                                    .toLowerCase()
-                                    .includes(
-                                        city.toLowerCase()
-                                    );
+                                donorCity.includes(
+                                    city
+                                );
 
                             return (
                                 bloodMatch &&
@@ -1329,18 +1223,39 @@ app.get(
                                     donor.phone
                                 );
 
-                            const userPhone =
-                                normalizePhone(
-                                    linkedUser
-                                        ? linkedUser.phone
-                                        : ""
-                                );
+                            const accountPhone =
+                                linkedUser
+                                    ? normalizePhone(
+                                        linkedUser.phone
+                                    )
+                                    : "";
+
+                            const finalPhone =
+                                donorPhone ||
+                                accountPhone;
 
                             return {
-                                ...donor,
+                                id:
+                                    donor.id,
+                                donorId:
+                                    donor.donorId,
+                                userId:
+                                    donor.userId,
+                                name:
+                                    donor.name,
+                                blood:
+                                    donor.blood ||
+                                    donor.bloodGroup ||
+                                    "",
+                                city:
+                                    donor.city ||
+                                    "",
                                 phone:
-                                    donorPhone ||
-                                    userPhone ||
+                                    finalPhone,
+                                age:
+                                    donor.age ?? "",
+                                createdAt:
+                                    donor.createdAt ||
                                     ""
                             };
                         }
@@ -1353,7 +1268,6 @@ app.get(
             });
 
         } catch (error) {
-
             console.error(
                 "Donor search error:",
                 error
@@ -1370,12 +1284,102 @@ app.get(
     }
 );
 
+// =========================================================
+// GET ONE DONOR
+// =========================================================
+
+app.get(
+    "/api/donors/:donorId",
+    (req, res) => {
+        try {
+            const donors =
+                readJSON(donorsFile);
+
+            const donor =
+                donors.find(
+                    item =>
+                        String(
+                            item.donorId
+                        ) ===
+                            String(
+                                req.params.donorId
+                            ) ||
+                        String(
+                            item.id
+                        ) ===
+                            String(
+                                req.params.donorId
+                            )
+                );
+
+            if (!donor) {
+                return res
+                    .status(404)
+                    .json({
+                        success: false,
+                        message:
+                            "Donor not found."
+                    });
+            }
+
+            const users =
+                readJSON(usersFile);
+
+            const linkedUser =
+                users.find(
+                    user =>
+                        String(
+                            user.id
+                        ) ===
+                        String(
+                            donor.userId
+                        )
+                );
+
+            const phone =
+                normalizePhone(
+                    donor.phone
+                ) ||
+                normalizePhone(
+                    linkedUser
+                        ? linkedUser.phone
+                        : ""
+                );
+
+            return res.json({
+                success: true,
+                donor: {
+                    ...donor,
+                    phone:
+                        phone
+                }
+            });
+
+        } catch (error) {
+            console.error(
+                "Get donor error:",
+                error
+            );
+
+            return res
+                .status(500)
+                .json({
+                    success: false,
+                    message:
+                        "Unable to get donor."
+                });
+        }
+    }
+);
+
+// =========================================================
+// BLOOD REQUEST
+// =========================================================
+
 app.post(
     "/api/requests",
     (req, res) => {
-
         try {
-
             const {
                 requesterName,
                 blood,
@@ -1396,7 +1400,6 @@ app.post(
                 !city ||
                 !phone
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -1407,16 +1410,13 @@ app.post(
             }
 
             const cleanPhone =
-                normalizePhone(
-                    phone
-                );
+                normalizePhone(phone);
 
             if (
                 !isValidPhone(
                     cleanPhone
                 )
             ) {
-
                 return res
                     .status(400)
                     .json({
@@ -1432,41 +1432,34 @@ app.post(
                 );
 
             const newRequest = {
-
                 id:
                     Date.now().toString(),
-
                 requesterName:
                     String(
                         requesterName
                     ).trim(),
-
                 blood:
                     String(
                         finalBlood
-                    ).trim(),
-
+                    )
+                        .trim()
+                        .toUpperCase(),
                 bloodGroup:
                     String(
                         finalBlood
-                    ).trim(),
-
+                    )
+                        .trim()
+                        .toUpperCase(),
                 city:
                     String(city).trim(),
-
                 phone:
                     cleanPhone,
-
                 message:
-                    message
-                        ? String(
-                            message
-                        ).trim()
-                        : "",
-
+                    String(
+                        message || ""
+                    ).trim(),
                 status:
                     "Active",
-
                 createdAt:
                     new Date().toISOString()
             };
@@ -1475,14 +1468,12 @@ app.post(
                 newRequest
             );
 
-            const saved =
-                writeJSON(
+            if (
+                !writeJSON(
                     requestsFile,
                     requests
-                );
-
-            if (!saved) {
-
+                )
+            ) {
                 return res
                     .status(500)
                     .json({
@@ -1503,7 +1494,6 @@ app.post(
                 });
 
         } catch (error) {
-
             console.error(
                 "Blood request error:",
                 error
@@ -1520,12 +1510,14 @@ app.post(
     }
 );
 
+// =========================================================
+// GET REQUESTS
+// =========================================================
+
 app.get(
     "/api/requests",
     (req, res) => {
-
         try {
-
             const requests =
                 readJSON(
                     requestsFile
@@ -1538,7 +1530,6 @@ app.get(
             });
 
         } catch (error) {
-
             console.error(
                 "Get requests error:",
                 error
@@ -1555,38 +1546,36 @@ app.get(
     }
 );
 
+// =========================================================
+// DELETE USER
+// =========================================================
+
 app.delete(
     "/api/users/:userId",
     requireFounderAdmin,
     (req, res) => {
-
         try {
-
             const userId =
                 String(
                     req.params.userId
                 );
 
             const users =
-                readJSON(
-                    usersFile
-                );
-
-            const originalLength =
-                users.length;
+                readJSON(usersFile);
 
             const updatedUsers =
                 users.filter(
                     user =>
-                        String(user.id) !==
+                        String(
+                            user.id
+                        ) !==
                         userId
                 );
 
             if (
                 updatedUsers.length ===
-                originalLength
+                users.length
             ) {
-
                 return res
                     .status(404)
                     .json({
@@ -1596,14 +1585,12 @@ app.delete(
                     });
             }
 
-            const saved =
-                writeJSON(
+            if (
+                !writeJSON(
                     usersFile,
                     updatedUsers
-                );
-
-            if (!saved) {
-
+                )
+            ) {
                 return res
                     .status(500)
                     .json({
@@ -1620,7 +1607,6 @@ app.delete(
             });
 
         } catch (error) {
-
             console.error(
                 "Delete user error:",
                 error
@@ -1637,42 +1623,40 @@ app.delete(
     }
 );
 
+// =========================================================
+// DELETE DONOR
+// =========================================================
+
 app.delete(
     "/api/donors/:donorId",
     requireFounderAdmin,
     (req, res) => {
-
         try {
-
             const donorId =
                 String(
                     req.params.donorId
                 );
 
             const donors =
-                readJSON(
-                    donorsFile
-                );
-
-            const originalLength =
-                donors.length;
+                readJSON(donorsFile);
 
             const updatedDonors =
                 donors.filter(
                     donor =>
                         String(
                             donor.donorId
-                        ) !== donorId &&
+                        ) !==
+                            donorId &&
                         String(
                             donor.id
-                        ) !== donorId
+                        ) !==
+                            donorId
                 );
 
             if (
                 updatedDonors.length ===
-                originalLength
+                donors.length
             ) {
-
                 return res
                     .status(404)
                     .json({
@@ -1682,14 +1666,12 @@ app.delete(
                     });
             }
 
-            const saved =
-                writeJSON(
+            if (
+                !writeJSON(
                     donorsFile,
                     updatedDonors
-                );
-
-            if (!saved) {
-
+                )
+            ) {
                 return res
                     .status(500)
                     .json({
@@ -1706,7 +1688,6 @@ app.delete(
             });
 
         } catch (error) {
-
             console.error(
                 "Delete donor error:",
                 error
@@ -1723,13 +1704,15 @@ app.delete(
     }
 );
 
+// =========================================================
+// DELETE REQUEST
+// =========================================================
+
 app.delete(
     "/api/requests/:requestId",
     requireFounderAdmin,
     (req, res) => {
-
         try {
-
             const requestId =
                 String(
                     req.params.requestId
@@ -1740,22 +1723,19 @@ app.delete(
                     requestsFile
                 );
 
-            const originalLength =
-                requests.length;
-
             const updatedRequests =
                 requests.filter(
                     request =>
                         String(
                             request.id
-                        ) !== requestId
+                        ) !==
+                        requestId
                 );
 
             if (
                 updatedRequests.length ===
-                originalLength
+                requests.length
             ) {
-
                 return res
                     .status(404)
                     .json({
@@ -1765,14 +1745,12 @@ app.delete(
                     });
             }
 
-            const saved =
-                writeJSON(
+            if (
+                !writeJSON(
                     requestsFile,
                     updatedRequests
-                );
-
-            if (!saved) {
-
+                )
+            ) {
                 return res
                     .status(500)
                     .json({
@@ -1789,7 +1767,6 @@ app.delete(
             });
 
         } catch (error) {
-
             console.error(
                 "Delete request error:",
                 error
@@ -1806,12 +1783,17 @@ app.delete(
     }
 );
 
+// =========================================================
+// FOUNDER LOGOUT
+// =========================================================
+
 app.post(
     "/api/founder-logout",
     requireFounderAdmin,
     (req, res) => {
 
-        founderAdminToken = null;
+        founderAdminToken =
+            null;
 
         return res.json({
             success: true,
@@ -1821,9 +1803,12 @@ app.post(
     }
 );
 
+// =========================================================
+// 404
+// =========================================================
+
 app.use(
     (req, res) => {
-
         return res
             .status(404)
             .json({
@@ -1833,6 +1818,10 @@ app.use(
             });
     }
 );
+
+// =========================================================
+// ERROR HANDLER
+// =========================================================
 
 app.use(
     (
@@ -1856,6 +1845,10 @@ app.use(
             });
     }
 );
+
+// =========================================================
+// START SERVER
+// =========================================================
 
 app.listen(
     PORT,
@@ -1882,19 +1875,15 @@ app.listen(
         );
 
         console.log(
-            `Data folder: ${dataFolder}`
+            "Founder authentication enabled."
         );
 
         console.log(
-            "Founder admin authentication enabled."
+            "Age eligibility: 18-65."
         );
 
         console.log(
-            "DOB age eligibility enabled."
-        );
-
-        console.log(
-            "Donor search phone fallback enabled."
+            "Donor phone fallback enabled."
         );
 
         console.log(
