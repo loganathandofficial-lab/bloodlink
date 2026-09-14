@@ -2,57 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Login | BloodLink</title>
 
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* =========================================================
-           BLOODLINK LOGIN PAGE
-           FULL MEDICAL THEME
-           ========================================================= */
-
         .login-page {
             min-height: 100vh;
             background:
-                radial-gradient(circle at 8% 15%, rgba(181, 29, 59, 0.07), transparent 28%),
-                radial-gradient(circle at 92% 80%, rgba(181, 29, 59, 0.06), transparent 30%),
+                radial-gradient(
+                    circle at 8% 15%,
+                    rgba(181, 29, 59, 0.07),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 92% 80%,
+                    rgba(181, 29, 59, 0.06),
+                    transparent 30%
+                ),
                 #fafafa;
             padding-bottom: 80px;
         }
 
-        /* HERO */
-
         .login-hero {
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #5f0718, #8d1028 55%, #b51d3b);
+            background:
+                linear-gradient(
+                    135deg,
+                    #5f0718,
+                    #8d1028 55%,
+                    #b51d3b
+                );
             color: white;
             padding: 65px 7% 105px;
-        }
-
-        .login-hero::before {
-            content: "";
-            position: absolute;
-            width: 430px;
-            height: 430px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            right: -160px;
-            top: -220px;
-        }
-
-        .login-hero::after {
-            content: "";
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.04);
-            left: -150px;
-            bottom: -220px;
         }
 
         .login-hero-content {
@@ -114,21 +102,9 @@
             align-items: center;
             justify-content: center;
             font-size: 95px;
-            box-shadow: 0 25px 55px rgba(0,0,0,0.16);
-            animation: loginFloat 3s ease-in-out infinite;
+            box-shadow:
+                0 25px 55px rgba(0,0,0,0.16);
         }
-
-        @keyframes loginFloat {
-            0%, 100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        /* MAIN */
 
         .login-main {
             max-width: 1150px;
@@ -137,8 +113,6 @@
             position: relative;
             z-index: 5;
         }
-
-        /* AUTH GRID */
 
         .auth-page-grid {
             display: grid;
@@ -152,7 +126,8 @@
             border: 1px solid #f0dfe3;
             border-radius: 22px;
             padding: 34px;
-            box-shadow: 0 18px 50px rgba(70, 10, 25, 0.10);
+            box-shadow:
+                0 18px 50px rgba(70, 10, 25, 0.10);
         }
 
         .auth-box.signup-box {
@@ -181,14 +156,12 @@
             font-size: 28px;
         }
 
-        .auth-box .form-description {
+        .form-description {
             margin: 0 0 25px;
             color: #777;
             line-height: 1.6;
             font-size: 14px;
         }
-
-        /* FORM */
 
         .auth-box label {
             display: block;
@@ -198,12 +171,10 @@
             font-weight: 700;
         }
 
-        .auth-box input[type="text"],
-        .auth-box input[type="email"],
-        .auth-box input[type="password"],
-        .auth-box input[type="file"] {
+        .auth-box input {
             width: 100%;
             box-sizing: border-box;
+            padding: 14px 15px;
             border: 1px solid #ddd;
             border-radius: 11px;
             background: white;
@@ -213,142 +184,57 @@
             transition: 0.25s;
         }
 
-        .auth-box input[type="text"],
-        .auth-box input[type="email"],
-        .auth-box input[type="password"] {
-            padding: 14px 15px;
-        }
-
-        .auth-box input[type="file"] {
-            padding: 12px;
-            cursor: pointer;
-        }
-
         .auth-box input:focus {
             border-color: #a91432;
-            box-shadow: 0 0 0 4px rgba(169, 20, 50, 0.08);
+            box-shadow:
+                0 0 0 4px rgba(169, 20, 50, 0.08);
         }
 
-        /* ID VERIFICATION */
-
-        .age-verification-box {
-            margin-top: 24px;
-            padding: 20px;
+        .age-box {
+            margin-top: 22px;
+            padding: 19px;
             border-radius: 15px;
             background: #fff6f7;
             border: 1px solid #f0d5da;
         }
 
-        .age-verification-box h4 {
-            margin: 0 0 8px;
+        .age-box h4 {
+            margin: 0 0 7px;
             color: #760d25;
             font-size: 16px;
         }
 
-        .age-verification-box p {
-            margin: 7px 0 13px;
+        .age-box p {
+            margin: 6px 0 14px;
             color: #73535b;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .age-verification-box label {
-            margin-top: 12px;
-        }
-
-        #ageVerificationMessage {
-            min-height: 20px;
-            margin-bottom: 0;
-            font-weight: 600;
-        }
-
-        .aadhaar-scan-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .aadhaar-scan-button,
-        .aadhaar-file-button,
-        .aadhaar-capture-button,
-        .aadhaar-stop-button {
-            border: none;
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .aadhaar-scan-button {
-            background: #8d1028;
-            color: #fff;
-        }
-
-        .aadhaar-file-button {
-            background: #f5e7ea;
-            color: #680b20;
-            border: 1px solid #e6cdd3;
-        }
-
-        .aadhaar-scan-button:hover,
-        .aadhaar-file-button:hover,
-        .aadhaar-capture-button:hover,
-        .aadhaar-stop-button:hover {
-            transform: translateY(-1px);
-        }
-
-        .aadhaar-camera-box {
-            margin-top: 14px;
-            padding: 12px;
-            border-radius: 14px;
-            background: #1e1e1e;
-        }
-
-        #aadhaarCamera {
-            display: block;
-            width: 100%;
-            max-height: 360px;
-            object-fit: cover;
-            border-radius: 10px;
-            background: #000;
-        }
-
-        .aadhaar-camera-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .aadhaar-capture-button {
-            background: #b51d3b;
-            color: #fff;
-        }
-
-        .aadhaar-stop-button {
-            background: #fff;
-            color: #5d1121;
-        }
-
-        .aadhaar-selected-file {
-            min-height: 18px;
-            margin: 10px 0 0;
-            color: #5f4450;
             font-size: 13px;
             line-height: 1.5;
         }
 
-        @media (max-width: 600px) {
-            .aadhaar-scan-actions,
-            .aadhaar-camera-controls {
-                grid-template-columns: 1fr;
-            }
+        .age-button {
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #8d1028;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
         }
 
-        /* BUTTONS */
+        .age-button:hover {
+            background: #70091d;
+        }
+
+        .age-result {
+            min-height: 22px;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
 
         #signupButton,
         #loginButton {
@@ -365,13 +251,21 @@
         }
 
         #signupButton {
-            background: linear-gradient(135deg, #8c1028, #b51d3b);
-            box-shadow: 0 10px 24px rgba(140, 16, 40, 0.18);
+            background:
+                linear-gradient(
+                    135deg,
+                    #8c1028,
+                    #b51d3b
+                );
         }
 
         #loginButton {
-            background: linear-gradient(135deg, #65091d, #95152f);
-            box-shadow: 0 10px 24px rgba(101, 9, 29, 0.18);
+            background:
+                linear-gradient(
+                    135deg,
+                    #65091d,
+                    #95152f
+                );
         }
 
         #signupButton:hover,
@@ -379,9 +273,8 @@
             transform: translateY(-2px);
         }
 
-        #signupButton:disabled,
-        #loginButton:disabled {
-            opacity: 0.65;
+        #signupButton:disabled {
+            opacity: 0.55;
             cursor: not-allowed;
             transform: none;
         }
@@ -389,25 +282,65 @@
         #signupMessage,
         #loginMessage {
             min-height: 22px;
-            margin: 16px 0 0;
+            margin-top: 15px;
             text-align: center;
             font-size: 14px;
             font-weight: 600;
             line-height: 1.5;
         }
 
-        /* LOGIN BENEFITS */
+        .switch-box {
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #777;
+            font-size: 13px;
+        }
 
-        .login-benefits {
+        .switch-button {
+            border: none;
+            background: none;
+            color: #9b001b;
+            font-weight: 800;
+            cursor: pointer;
+            padding: 0;
+            font-size: 13px;
+        }
+
+        .switch-button:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .login-note {
+            margin-top: 40px;
+            padding: 20px 24px;
+            border-radius: 14px;
+            background: #fff5f6;
+            border-left: 4px solid #a91432;
+            color: #70434d;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .login-note strong {
+            color: #7b0d25;
+        }
+
+        .benefits {
             margin-top: 55px;
         }
 
-        .login-section-heading {
+        .benefit-heading {
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .login-section-heading span {
+        .benefit-heading span {
             color: #a91432;
             font-size: 12px;
             font-weight: 800;
@@ -415,15 +348,13 @@
             text-transform: uppercase;
         }
 
-        .login-section-heading h2 {
-            margin: 8px 0 9px;
+        .benefit-heading h2 {
+            margin: 8px 0;
             color: #52091a;
             font-size: 32px;
         }
 
-        .login-section-heading p {
-            margin: auto;
-            max-width: 650px;
+        .benefit-heading p {
             color: #777;
             line-height: 1.6;
         }
@@ -440,12 +371,6 @@
             border-radius: 18px;
             padding: 26px;
             text-align: center;
-            transition: 0.25s;
-        }
-
-        .benefit-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(70, 10, 25, 0.08);
         }
 
         .benefit-icon {
@@ -463,7 +388,6 @@
         .benefit-card h3 {
             margin: 0 0 8px;
             color: #4b1d26;
-            font-size: 18px;
         }
 
         .benefit-card p {
@@ -473,33 +397,18 @@
             line-height: 1.6;
         }
 
-        /* SECURITY NOTE */
-
-        .login-note {
-            margin-top: 40px;
-            padding: 20px 24px;
-            border-radius: 14px;
-            background: #fff5f6;
-            border-left: 4px solid #a91432;
-            color: #70434d;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .login-note strong {
-            color: #7b0d25;
-        }
-
-        /* CTA */
-
         .login-cta {
             margin-top: 55px;
             padding: 42px 30px;
             border-radius: 22px;
-            background: linear-gradient(135deg, #65091d, #a91432);
+            background:
+                linear-gradient(
+                    135deg,
+                    #65091d,
+                    #a91432
+                );
             color: white;
             text-align: center;
-            box-shadow: 0 18px 40px rgba(100, 9, 29, 0.15);
         }
 
         .login-cta h2 {
@@ -514,17 +423,11 @@
             line-height: 1.7;
         }
 
-        /* RESPONSIVE */
-
         @media (max-width: 900px) {
 
             .login-hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
-            }
-
-            .login-hero p {
-                margin: auto;
             }
 
             .login-visual {
@@ -554,16 +457,8 @@
                 padding: 25px 20px;
             }
 
-            .login-section-heading h2 {
-                font-size: 27px;
-            }
-
-            .login-cta {
-                padding: 32px 20px;
-            }
-
-            .login-cta h2 {
-                font-size: 26px;
+            .login-hero h1 {
+                font-size: 40px;
             }
         }
     </style>
@@ -571,542 +466,1230 @@
 
 <body>
 
-    <!-- =========================================================
-         HEADER
-         ========================================================= -->
+<header class="main-header">
 
-    <header class="main-header">
+    <nav class="navbar">
 
-        <nav class="navbar">
+        <a
+            href="index.html"
+            class="brand"
+        >
 
-            <a href="index.html" class="brand">
+            <div class="brand-drop">
+                🩸
+            </div>
 
-                <div class="brand-drop">🩸</div>
+            <div>
+                <strong>
+                    BloodLink
+                </strong>
 
-                <div>
-                    <strong>BloodLink</strong>
-                    <span>Life • Hope • Humanity</span>
-                </div>
+                <span>
+                    Life • Hope • Humanity
+                </span>
+            </div>
 
+        </a>
+
+        <div class="nav-menu">
+
+            <a href="index.html">
+                Home
             </a>
 
+            <a href="donor.html">
+                Become a Donor
+            </a>
 
-            <div class="nav-menu">
+            <a href="search.html">
+                Find Donor
+            </a>
 
-                <a href="index.html">
-                    Home
-                </a>
+            <a href="request.html">
+                Request Blood
+            </a>
 
-                <a href="donor.html">
-                    Become a Donor
-                </a>
+            <a href="compatibility.html">
+                Compatibility
+            </a>
 
-                <a href="search.html">
-                    Find Donor
-                </a>
+            <a href="about.html">
+                About
+            </a>
 
-                <a href="request.html">
-                    Request Blood
-                </a>
+            <a
+                href="login.html"
+                class="nav-login active"
+            >
+                Sign In
+            </a>
 
-                <a href="compatibility.html">
-                    Compatibility
-                </a>
+        </div>
 
-                <a href="about.html">
-                    About
-                </a>
+    </nav>
 
-                <a href="login.html" class="nav-login active">
-                    Login
-                </a>
+</header>
+
+
+<main class="login-page">
+
+    <section class="login-hero">
+
+        <div class="login-hero-content">
+
+            <div>
+
+                <div class="login-badge">
+                    🔐 BloodLink Account
+                </div>
+
+                <h1>
+                    Join the BloodLink
+                    <br>
+                    <span>Community.</span>
+                </h1>
+
+                <p>
+                    Create your BloodLink account or sign in to
+                    continue using the blood donor management system.
+                </p>
 
             </div>
 
-        </nav>
+            <div class="login-visual">
 
-    </header>
-
-
-    <!-- =========================================================
-         PAGE
-         ========================================================= -->
-
-    <main class="login-page">
-
-        <!-- HERO -->
-
-        <section class="login-hero">
-
-            <div class="login-hero-content">
-
-                <div>
-
-                    <div class="login-badge">
-                        🔐 BloodLink Account
-                    </div>
-
-                    <h1>
-                        Join the BloodLink<br>
-                        <span>Community.</span>
-                    </h1>
-
-                    <p>
-                        Create your account to connect with the BloodLink
-                        blood donor management system and help make blood
-                        availability easier to manage.
-                    </p>
-
-                </div>
-
-
-                <div class="login-visual">
-
-                    <div class="login-heart">
-                        ❤️
-                    </div>
-
+                <div class="login-heart">
+                    ❤️
                 </div>
 
             </div>
 
-        </section>
+        </div>
+
+    </section>
 
 
-        <!-- MAIN CONTENT -->
+    <section class="login-main">
 
-        <section class="login-main">
-
-            <div class="auth-page-grid">
-
-                <!-- =================================================
-                     SIGNUP
-                     ================================================= -->
-
-                <div class="auth-box signup-box">
-
-                    <div class="auth-icon">
-                        🩸
-                    </div>
-
-                    <h2>
-                        Create Account
-                    </h2>
-
-                    <p class="form-description">
-                        Create your BloodLink account using your basic
-                        details and government ID document.
-                    </p>
+        <div class="auth-page-grid">
 
 
-                    <label for="signupName">
-                        Full Name
-                    </label>
+            <!-- =====================================================
+                 SIGN UP
+                 ===================================================== -->
 
-                    <input
-                        type="text"
-                        id="signupName"
-                        placeholder="Enter your full name"
-                        <label for="signupPhone">
-    Mobile Number
-</label>
+            <div
+                id="signupBox"
+                class="auth-box signup-box"
+            >
 
-<input
-    type="tel"
-    id="signupPhone"
-    placeholder="Enter your 10-digit mobile number"
-    maxlength="10"
->
-                    >
-
-
-                    <label for="signupEmail">
-                        Email Address
-                    </label>
-
-                    <input
-                        type="email"
-                        id="signupEmail"
-                        placeholder="Enter your email address"
-                    >
-
-
-                    <label for="signupPassword">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="signupPassword"
-                        placeholder="Create a password"
-                    >
-
-
-                    <!-- ID VERIFICATION -->
-
-                    <div class="age-verification-box">
-
-                        <h4>
-                            🔐 ID Verification
-                        </h4>
-
-                        <p>
-                            Upload your Aadhaar card or another valid
-                            government ID document for the BloodLink
-                            registration workflow.
-                        </p>
-
-                        <label for="aadhaarDocument">
-                            Aadhaar Document
-                        </label>
-
-                        <input
-                            type="file"
-                            id="aadhaarDocument"
-                            accept=".pdf,.jpg,.jpeg,.png,.webp"
-                            hidden
-                        >
-
-                        <div class="aadhaar-scan-actions">
-                            <button
-                                type="button"
-                                id="startAadhaarCamera"
-                                class="aadhaar-scan-button"
-                            >
-                                📷 Scan Aadhaar with Camera
-                            </button>
-
-                            <button
-                                type="button"
-                                id="chooseAadhaarFile"
-                                class="aadhaar-file-button"
-                            >
-                                📄 Choose Aadhaar File
-                            </button>
-                        </div>
-
-                        <div
-                            id="aadhaarCameraBox"
-                            class="aadhaar-camera-box"
-                            hidden
-                        >
-                            <video
-                                id="aadhaarCamera"
-                                autoplay
-                                playsinline
-                            ></video>
-
-                            <canvas
-                                id="aadhaarCanvas"
-                                hidden
-                            ></canvas>
-
-                            <div class="aadhaar-camera-controls">
-                                <button
-                                    type="button"
-                                    id="captureAadhaarButton"
-                                    class="aadhaar-capture-button"
-                                >
-                                    📸 Capture & Scan
-                                </button>
-
-                                <button
-                                    type="button"
-                                    id="stopAadhaarCamera"
-                                    class="aadhaar-stop-button"
-                                >
-                                    ✕ Stop Camera
-                                </button>
-                            </div>
-                        </div>
-
-                        <p
-                            id="aadhaarSelectedFile"
-                            class="aadhaar-selected-file"
-                        ></p>
-
-                        <p id="ageVerificationMessage"></p>
-
-                    </div>
-
-
-                    <button id="signupButton" type="button">
-                        Verify ID & Create Account
-                    </button>
-
-                    <p id="signupMessage"></p>
-
+                <div class="auth-icon">
+                    🩸
                 </div>
-
-
-                <!-- =================================================
-                     LOGIN
-                     ================================================= -->
-
-                <div class="auth-box login-box">
-
-                    <div class="auth-icon">
-                        🔐
-                    </div>
-
-                    <h2>
-                        Welcome Back
-                    </h2>
-
-                    <p class="form-description">
-                        Login to access your BloodLink account and
-                        continue helping connect donors with people
-                        who need blood.
-                    </p>
-
-
-                    <label for="loginEmail">
-                        Email Address
-                    </label>
-
-                    <input
-                        type="email"
-                        id="loginEmail"
-                        placeholder="Enter your email address"
-                    >
-
-
-                    <label for="loginPassword">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="loginPassword"
-                        placeholder="Enter your password"
-                    >
-
-
-                    <button id="loginButton" type="button">
-                        Login
-                    </button>
-
-                    <p id="loginMessage"></p>
-
-
-                    <div class="login-note">
-
-                        <strong>BloodLink Account:</strong>
-                        Your login details are used to access your
-                        BloodLink account and donor-related features.
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- BENEFITS -->
-
-            <section class="login-benefits">
-
-                <div class="login-section-heading">
-
-                    <span>
-                        Why Create an Account?
-                    </span>
-
-                    <h2>
-                        One Account. Multiple Possibilities.
-                    </h2>
-
-                    <p>
-                        BloodLink brings important blood management
-                        functions together in one simple platform.
-                    </p>
-
-                </div>
-
-
-                <div class="benefit-grid">
-
-                    <div class="benefit-card">
-
-                        <div class="benefit-icon">
-                            🩸
-                        </div>
-
-                        <h3>
-                            Become a Donor
-                        </h3>
-
-                        <p>
-                            Register your blood group and contact
-                            information to participate as a donor.
-                        </p>
-
-                    </div>
-
-
-                    <div class="benefit-card">
-
-                        <div class="benefit-icon">
-                            🔎
-                        </div>
-
-                        <h3>
-                            Find Donors
-                        </h3>
-
-                        <p>
-                            Search registered donors according to
-                            blood group and location.
-                        </p>
-
-                    </div>
-
-
-                    <div class="benefit-card">
-
-                        <div class="benefit-icon">
-                            ❤️
-                        </div>
-
-                        <h3>
-                            Help Save Lives
-                        </h3>
-
-                        <p>
-                            A connected blood management system can
-                            make it easier to respond when blood is needed.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- IMPORTANT NOTE -->
-
-            <div class="login-note">
-
-                <strong>Important:</strong>
-                The ID upload on this college project is a demonstration
-                of a verification workflow. The website does not actually
-                authenticate Aadhaar details or extract personal information
-                from the uploaded document.
-
-            </div>
-
-
-            <!-- CTA -->
-
-            <section class="login-cta">
 
                 <h2>
-                    Every Donor Can Be Someone's Hope.
+                    Create Account
+                </h2>
+
+                <p class="form-description">
+                    Create your BloodLink account and check your
+                    age eligibility before registration.
+                </p>
+
+
+                <label for="signupName">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="signupName"
+                    placeholder="Enter your full name"
+                    autocomplete="name"
+                >
+
+
+                <label for="signupPhone">
+                    Mobile Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="signupPhone"
+                    placeholder="Enter your 10-digit mobile number"
+                    maxlength="10"
+                    inputmode="numeric"
+                    autocomplete="tel"
+                >
+
+
+                <label for="signupEmail">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="signupEmail"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                >
+
+
+                <label for="signupPassword">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="signupPassword"
+                    placeholder="Create a password"
+                    autocomplete="new-password"
+                >
+
+
+                <div class="age-box">
+
+                    <h4>
+                        🎂 Age Eligibility
+                    </h4>
+
+                    <p>
+                        Enter your date of birth. BloodLink will
+                        automatically calculate your age.
+                    </p>
+
+                    <label for="signupDob">
+                        Date of Birth
+                    </label>
+
+                    <input
+                        type="date"
+                        id="signupDob"
+                    >
+
+                    <button
+                        type="button"
+                        id="checkAgeButton"
+                        class="age-button"
+                    >
+                        Check Age Eligibility
+                    </button>
+
+                    <div
+                        id="ageResult"
+                        class="age-result"
+                    ></div>
+
+                </div>
+
+
+                <button
+                    id="signupButton"
+                    type="button"
+                    disabled
+                >
+                    Create Account
+                </button>
+
+                <p
+                    id="signupMessage"
+                ></p>
+
+
+                <div class="switch-box">
+
+                    Already have an account?
+
+                    <button
+                        type="button"
+                        id="showLoginButton"
+                        class="switch-button"
+                    >
+                        Sign In
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 SIGN IN
+                 ===================================================== -->
+
+            <div
+                id="loginBox"
+                class="auth-box login-box hidden"
+            >
+
+                <div class="auth-icon">
+                    🔐
+                </div>
+
+                <h2>
+                    Welcome Back
+                </h2>
+
+                <p class="form-description">
+                    Sign in with your existing BloodLink account.
+                </p>
+
+
+                <label for="loginEmail">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                >
+
+
+                <label for="loginPassword">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                >
+
+
+                <button
+                    id="loginButton"
+                    type="button"
+                >
+                    Sign In
+                </button>
+
+                <p
+                    id="loginMessage"
+                ></p>
+
+
+                <div class="switch-box">
+
+                    Don't have an account?
+
+                    <button
+                        type="button"
+                        id="showSignupButton"
+                        class="switch-button"
+                    >
+                        Create Account
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="login-note">
+
+            <strong>
+                BloodLink Age Eligibility:
+            </strong>
+
+            Users between 18 and 65 years are allowed to continue
+            to donor registration. Users below 18 or above 65 are
+            not eligible.
+
+        </div>
+
+
+        <section class="benefits">
+
+            <div class="benefit-heading">
+
+                <span>
+                    BloodLink Features
+                </span>
+
+                <h2>
+                    One Account. Multiple Possibilities.
                 </h2>
 
                 <p>
-                    Create your BloodLink account and become part of a
-                    system designed around blood donors, blood requests
-                    and easier access to important blood information.
+                    Access the BloodLink donor management system
+                    through one account.
                 </p>
 
-            </section>
-
-        </section>
-
-    </main>
+            </div>
 
 
-    <!-- =========================================================
-         FOOTER
-         ========================================================= -->
+            <div class="benefit-grid">
 
-    <footer class="new-footer">
+                <div class="benefit-card">
 
-        <div class="footer-main">
-
-            <div class="footer-brand">
-
-                <div class="brand">
-
-                    <div class="brand-drop">🩸</div>
-
-                    <div>
-                        <strong>BloodLink</strong>
-                        <span>Life • Hope • Humanity</span>
+                    <div class="benefit-icon">
+                        🩸
                     </div>
+
+                    <h3>
+                        Become a Donor
+                    </h3>
+
+                    <p>
+                        Register your blood group and become part
+                        of the BloodLink donor community.
+                    </p>
 
                 </div>
 
-                <p>
-                    Connecting blood donors with people who need them.
-                </p>
+
+                <div class="benefit-card">
+
+                    <div class="benefit-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        Find Donors
+                    </h3>
+
+                    <p>
+                        Find registered donors using blood group
+                        and location.
+                    </p>
+
+                </div>
+
+
+                <div class="benefit-card">
+
+                    <div class="benefit-icon">
+                        ❤️
+                    </div>
+
+                    <h3>
+                        Help Save Lives
+                    </h3>
+
+                    <p>
+                        Connect people who need blood with registered
+                        donors.
+                    </p>
+
+                </div>
 
             </div>
 
+        </section>
 
-            <div class="footer-column">
 
-                <h4>
-                    Quick Links
-                </h4>
+        <section class="login-cta">
 
-                <a href="index.html">
-                    Home
-                </a>
+            <h2>
+                Every Donor Can Be Someone's Hope.
+            </h2>
 
-                <a href="donor.html">
-                    Become a Donor
-                </a>
+            <p>
+                Create your BloodLink account today and be part
+                of a community built around life and humanity.
+            </p>
 
-                <a href="search.html">
-                    Find Donor
-                </a>
+        </section>
+
+    </section>
+
+</main>
+
+
+<footer class="new-footer">
+
+    <div class="footer-main">
+
+        <div class="footer-brand">
+
+            <div class="brand">
+
+                <div class="brand-drop">
+                    🩸
+                </div>
+
+                <div>
+                    <strong>
+                        BloodLink
+                    </strong>
+
+                    <span>
+                        Life • Hope • Humanity
+                    </span>
+                </div>
 
             </div>
 
-
-            <div class="footer-column">
-
-                <h4>
-                    Services
-                </h4>
-
-                <a href="request.html">
-                    Request Blood
-                </a>
-
-                <a href="compatibility.html">
-                    Compatibility
-                </a>
-
-                <a href="about.html">
-                    About BloodLink
-                </a>
-
-            </div>
+            <p>
+                Connecting blood donors with people who need them.
+            </p>
 
         </div>
 
 
-        <div class="footer-bottom">
+        <div class="footer-column">
 
-            <span>
-                © 2026 BloodLink
-            </span>
+            <h4>
+                Quick Links
+            </h4>
 
-            <span>
-                Blood Donor Management System
-            </span>
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="donor.html">
+                Become a Donor
+            </a>
+
+            <a href="search.html">
+                Find Donor
+            </a>
 
         </div>
 
-    </footer>
+
+        <div class="footer-column">
+
+            <h4>
+                Services
+            </h4>
+
+            <a href="request.html">
+                Request Blood
+            </a>
+
+            <a href="compatibility.html">
+                Compatibility
+            </a>
+
+            <a href="about.html">
+                About BloodLink
+            </a>
+
+        </div>
+
+    </div>
 
 
-   <script src="account.js"></script>
-<script src="script.js"></script>
+    <div class="footer-bottom">
+
+        <span>
+            © 2026 BloodLink
+        </span>
+
+        <span>
+            Blood Donor Management System
+        </span>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+const API_URL =
+    "https://bloodlink-x2h7.onrender.com/api";
+
+
+let ageVerified =
+    false;
+
+let calculatedAge =
+    null;
+
+
+// =========================================================
+// ELEMENTS
+// =========================================================
+
+const signupBox =
+    document.getElementById(
+        "signupBox"
+    );
+
+const loginBox =
+    document.getElementById(
+        "loginBox"
+    );
+
+const showLoginButton =
+    document.getElementById(
+        "showLoginButton"
+    );
+
+const showSignupButton =
+    document.getElementById(
+        "showSignupButton"
+    );
+
+const signupDob =
+    document.getElementById(
+        "signupDob"
+    );
+
+const checkAgeButton =
+    document.getElementById(
+        "checkAgeButton"
+    );
+
+const ageResult =
+    document.getElementById(
+        "ageResult"
+    );
+
+const signupButton =
+    document.getElementById(
+        "signupButton"
+    );
+
+const signupMessage =
+    document.getElementById(
+        "signupMessage"
+    );
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+const loginMessage =
+    document.getElementById(
+        "loginMessage"
+    );
+
+
+// =========================================================
+// SWITCH SIGN UP / SIGN IN
+// =========================================================
+
+showLoginButton.addEventListener(
+    "click",
+    function () {
+
+        signupBox.classList.add(
+            "hidden"
+        );
+
+        loginBox.classList.remove(
+            "hidden"
+        );
+
+        loginMessage.textContent =
+            "";
+
+    }
+);
+
+
+showSignupButton.addEventListener(
+    "click",
+    function () {
+
+        loginBox.classList.add(
+            "hidden"
+        );
+
+        signupBox.classList.remove(
+            "hidden"
+        );
+
+        signupMessage.textContent =
+            "";
+
+    }
+);
+
+
+// =========================================================
+// AGE CALCULATION
+// =========================================================
+
+function calculateAge(
+    dateOfBirth
+) {
+
+    const today =
+        new Date();
+
+    const birth =
+        new Date(
+            `${dateOfBirth}T00:00:00`
+        );
+
+    if (
+        Number.isNaN(
+            birth.getTime()
+        )
+    ) {
+        return null;
+    }
+
+    if (
+        birth > today
+    ) {
+        return null;
+    }
+
+    let age =
+        today.getFullYear() -
+        birth.getFullYear();
+
+    const monthDifference =
+        today.getMonth() -
+        birth.getMonth();
+
+    if (
+        monthDifference < 0 ||
+        (
+            monthDifference === 0 &&
+            today.getDate() <
+            birth.getDate()
+        )
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+
+// =========================================================
+// CHECK AGE
+// =========================================================
+
+checkAgeButton.addEventListener(
+    "click",
+    function () {
+
+        const dob =
+            signupDob.value;
+
+        if (!dob) {
+
+            ageResult.textContent =
+                "Please select your date of birth.";
+
+            ageResult.style.color =
+                "#b00020";
+
+            ageVerified =
+                false;
+
+            calculatedAge =
+                null;
+
+            signupButton.disabled =
+                true;
+
+            return;
+        }
+
+
+        const age =
+            calculateAge(dob);
+
+
+        if (
+            age === null
+        ) {
+
+            ageResult.textContent =
+                "Please enter a valid date of birth.";
+
+            ageResult.style.color =
+                "#b00020";
+
+            ageVerified =
+                false;
+
+            calculatedAge =
+                null;
+
+            signupButton.disabled =
+                true;
+
+            return;
+        }
+
+
+        calculatedAge =
+            age;
+
+
+        if (
+            age >= 18 &&
+            age <= 65
+        ) {
+
+            ageVerified =
+                true;
+
+            ageResult.textContent =
+                `✅ Age: ${age} years — Eligible to register as a donor.`;
+
+            ageResult.style.color =
+                "#17633d";
+
+            signupButton.disabled =
+                false;
+
+        } else {
+
+            ageVerified =
+                false;
+
+            signupButton.disabled =
+                true;
+
+            if (age < 18) {
+
+                ageResult.textContent =
+                    `❌ Age: ${age} years — You must be at least 18 years old.`;
+
+            } else {
+
+                ageResult.textContent =
+                    `❌ Age: ${age} years — Maximum donor age is 65 years.`;
+            }
+
+            ageResult.style.color =
+                "#b00020";
+        }
+
+    }
+);
+
+
+// =========================================================
+// RESET AGE WHEN DOB CHANGES
+// =========================================================
+
+signupDob.addEventListener(
+    "change",
+    function () {
+
+        ageVerified =
+            false;
+
+        calculatedAge =
+            null;
+
+        signupButton.disabled =
+            true;
+
+        ageResult.textContent =
+            "";
+
+    }
+);
+
+
+// =========================================================
+// MOBILE VALIDATION
+// =========================================================
+
+document
+    .getElementById(
+        "signupPhone"
+    )
+    .addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                this.value
+                    .replace(
+                        /\D/g,
+                        ""
+                    )
+                    .slice(
+                        0,
+                        10
+                    );
+
+        }
+    );
+
+
+// =========================================================
+// SIGN UP
+// =========================================================
+
+signupButton.addEventListener(
+    "click",
+    async function () {
+
+        const name =
+            document.getElementById(
+                "signupName"
+            ).value.trim();
+
+        const phone =
+            document.getElementById(
+                "signupPhone"
+            ).value.trim();
+
+        const email =
+            document.getElementById(
+                "signupEmail"
+            ).value.trim();
+
+        const password =
+            document.getElementById(
+                "signupPassword"
+            ).value;
+
+
+        if (!name) {
+
+            signupMessage.textContent =
+                "Please enter your full name.";
+
+            signupMessage.style.color =
+                "#b00020";
+
+            return;
+        }
+
+
+        if (!/^[0-9]{10}$/.test(phone)) {
+
+            signupMessage.textContent =
+                "Please enter a valid 10-digit mobile number.";
+
+            signupMessage.style.color =
+                "#b00020";
+
+            return;
+        }
+
+
+        if (!email) {
+
+            signupMessage.textContent =
+                "Please enter your email address.";
+
+            signupMessage.style.color =
+                "#b00020";
+
+            return;
+        }
+
+
+        if (
+            password.length < 6
+        ) {
+
+            signupMessage.textContent =
+                "Password must contain at least 6 characters.";
+
+            signupMessage.style.color =
+                "#b00020";
+
+            return;
+        }
+
+
+        if (!ageVerified) {
+
+            signupMessage.textContent =
+                "Please complete age eligibility verification.";
+
+            signupMessage.style.color =
+                "#b00020";
+
+            return;
+        }
+
+
+        signupButton.disabled =
+            true;
+
+        signupButton.textContent =
+            "Creating Account...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/signup`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                name:
+                                    name,
+
+                                phone:
+                                    phone,
+
+                                email:
+                                    email,
+
+                                password:
+                                    password,
+
+                                dob:
+                                    signupDob.value,
+
+                                age:
+                                    calculatedAge,
+
+                                ageVerified:
+                                    true,
+
+                                documentUploaded:
+                                    true,
+
+                                verificationStatus:
+                                    "Age Verified"
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                signupMessage.textContent =
+                    data.message ||
+                    "Unable to create account.";
+
+                signupMessage.style.color =
+                    "#b00020";
+
+                signupButton.disabled =
+                    false;
+
+                signupButton.textContent =
+                    "Create Account";
+
+                return;
+            }
+
+
+            signupMessage.textContent =
+                "✅ Account created successfully. You can now sign in.";
+
+            signupMessage.style.color =
+                "#17633d";
+
+
+            document.getElementById(
+                "loginEmail"
+            ).value =
+                email;
+
+
+            document.getElementById(
+                "loginPassword"
+            ).value =
+                "";
+
+
+            signupBox.classList.add(
+                "hidden"
+            );
+
+            loginBox.classList.remove(
+                "hidden"
+            );
+
+
+            signupButton.disabled =
+                false;
+
+            signupButton.textContent =
+                "Create Account";
+
+
+        } catch (error) {
+
+            console.error(
+                "Signup error:",
+                error
+            );
+
+            signupMessage.textContent =
+                "Cannot connect to BloodLink server.";
+
+            signupMessage.style.color =
+                "#b00020";
+
+            signupButton.disabled =
+                false;
+
+            signupButton.textContent =
+                "Create Account";
+        }
+
+    }
+);
+
+
+// =========================================================
+// SIGN IN
+// =========================================================
+
+loginButton.addEventListener(
+    "click",
+    async function () {
+
+        const email =
+            document.getElementById(
+                "loginEmail"
+            ).value.trim();
+
+        const password =
+            document.getElementById(
+                "loginPassword"
+            ).value;
+
+
+        if (!email || !password) {
+
+            loginMessage.textContent =
+                "Please enter your email and password.";
+
+            loginMessage.style.color =
+                "#b00020";
+
+            return;
+        }
+
+
+        loginButton.disabled =
+            true;
+
+        loginButton.textContent =
+            "Signing In...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/login`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                email:
+                                    email,
+
+                                password:
+                                    password
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                loginMessage.textContent =
+                    data.message ||
+                    "Invalid email or password.";
+
+                loginMessage.style.color =
+                    "#b00020";
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "Sign In";
+
+                return;
+            }
+
+
+            localStorage.setItem(
+                "bloodlink_logged_in_user",
+                JSON.stringify(
+                    data.user
+                )
+            );
+
+
+            loginMessage.textContent =
+                "✅ Login successful. Redirecting...";
+
+            loginMessage.style.color =
+                "#17633d";
+
+
+            setTimeout(
+                function () {
+
+                    window.location.href =
+                        "index.html";
+
+                },
+                500
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+            loginMessage.textContent =
+                "Cannot connect to BloodLink server.";
+
+            loginMessage.style.color =
+                "#b00020";
+
+            loginButton.disabled =
+                false;
+
+            loginButton.textContent =
+                "Sign In";
+        }
+
+    }
+);
+
+</script>
+
+
+<script src="account.js"></script>
 
 </body>
 </html>
