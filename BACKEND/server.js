@@ -16,16 +16,8 @@ const FOUNDER_PASSWORD =
 
 let founderAdminToken = null;
 
-// =========================================================
-// MIDDLEWARE
-// =========================================================
-
 app.use(cors());
 app.use(express.json());
-
-// =========================================================
-// JSON FILE PATHS
-// =========================================================
 
 const dataFolder = path.join(__dirname, "data");
 
@@ -44,19 +36,11 @@ const requestsFile = path.join(
     "requests.json"
 );
 
-// =========================================================
-// CREATE DATA FOLDER
-// =========================================================
-
 if (!fs.existsSync(dataFolder)) {
     fs.mkdirSync(dataFolder, {
         recursive: true
     });
 }
-
-// =========================================================
-// CREATE JSON FILES
-// =========================================================
 
 if (!fs.existsSync(usersFile)) {
     fs.writeFileSync(
@@ -81,10 +65,6 @@ if (!fs.existsSync(requestsFile)) {
         "utf8"
     );
 }
-
-// =========================================================
-// HELPER FUNCTIONS
-// =========================================================
 
 function readJSON(file) {
     try {
@@ -113,7 +93,6 @@ function readJSON(file) {
     }
 }
 
-
 function writeJSON(file, data) {
     try {
         fs.writeFileSync(
@@ -138,24 +117,17 @@ function writeJSON(file, data) {
     }
 }
 
-
 function normalizePhone(phone) {
     return String(phone || "")
         .replace(/\D/g, "")
         .trim();
 }
 
-
 function isValidPhone(phone) {
     return /^[0-9]{10}$/.test(
         normalizePhone(phone)
     );
 }
-
-
-// =========================================================
-// AGE FUNCTIONS
-// =========================================================
 
 function calculateAge(dateOfBirth) {
 
@@ -207,7 +179,6 @@ function calculateAge(dateOfBirth) {
     return age;
 }
 
-
 function isEligibleAge(age) {
 
     return (
@@ -216,11 +187,6 @@ function isEligibleAge(age) {
         age <= 65
     );
 }
-
-
-// =========================================================
-// UNIQUE DONOR ID
-// =========================================================
 
 function generateDonorId(donors) {
 
@@ -257,22 +223,12 @@ function generateDonorId(donors) {
     return `BL-DON-${highestNumber + 1}`;
 }
 
-
-// =========================================================
-// FOUNDER TOKEN
-// =========================================================
-
 function generateAdminToken() {
 
     return crypto
         .randomBytes(32)
         .toString("hex");
 }
-
-
-// =========================================================
-// FOUNDER ACCESS MIDDLEWARE
-// =========================================================
 
 function requireFounderAdmin(
     req,
@@ -291,9 +247,7 @@ function requireFounderAdmin(
         return res
             .status(403)
             .json({
-
                 success: false,
-
                 message:
                     "Founder admin access is required."
             });
@@ -302,44 +256,26 @@ function requireFounderAdmin(
     next();
 }
 
-
-// =========================================================
-// HOME
-// =========================================================
-
 app.get(
     "/",
     (req, res) => {
-
         res.send(
             "BloodLink Backend is running!"
         );
     }
 );
 
-
-// =========================================================
-// API TEST
-// =========================================================
-
 app.get(
     "/api/test",
     (req, res) => {
 
         res.json({
-
             success: true,
-
             message:
                 "BloodLink API is working!"
         });
     }
 );
-
-
-// =========================================================
-// FOUNDER LOGIN
-// =========================================================
 
 app.post(
     "/api/founder-login",
@@ -360,9 +296,7 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Founder username and password are required."
                     });
@@ -378,9 +312,7 @@ app.post(
                 return res
                     .status(401)
                     .json({
-
                         success: false,
-
                         message:
                             "Invalid founder login."
                     });
@@ -389,17 +321,10 @@ app.post(
             founderAdminToken =
                 generateAdminToken();
 
-            console.log(
-                "Founder admin logged in."
-            );
-
             return res.json({
-
                 success: true,
-
                 message:
                     "Founder login successful.",
-
                 adminToken:
                     founderAdminToken
             });
@@ -414,20 +339,13 @@ app.post(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to process founder login."
                 });
         }
     }
 );
-
-
-// =========================================================
-// SIGNUP
-// =========================================================
 
 app.post(
     "/api/signup",
@@ -441,13 +359,8 @@ app.post(
                 password,
                 phone,
                 dob,
-                age,
                 ageVerified
             } = req.body;
-
-            // -------------------------------------------------
-            // BASIC VALIDATION
-            // -------------------------------------------------
 
             if (
                 !name ||
@@ -460,9 +373,7 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Name, email, password, mobile number and date of birth are required."
                     });
@@ -482,10 +393,6 @@ app.post(
             const cleanDob =
                 String(dob).trim();
 
-            // -------------------------------------------------
-            // MOBILE VALIDATION
-            // -------------------------------------------------
-
             if (
                 !isValidPhone(
                     cleanPhone
@@ -495,17 +402,11 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Please enter a valid 10-digit mobile number."
                     });
             }
-
-            // -------------------------------------------------
-            // PASSWORD VALIDATION
-            // -------------------------------------------------
 
             if (
                 String(password).length < 6
@@ -514,17 +415,11 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Password must contain at least 6 characters."
                     });
             }
-
-            // -------------------------------------------------
-            // CALCULATE AGE AGAIN ON BACKEND
-            // -------------------------------------------------
 
             const calculatedAge =
                 calculateAge(
@@ -538,17 +433,11 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Please enter a valid date of birth."
                     });
             }
-
-            // -------------------------------------------------
-            // AGE ELIGIBILITY
-            // -------------------------------------------------
 
             if (
                 !isEligibleAge(
@@ -556,41 +445,23 @@ app.post(
                 )
             ) {
 
-                let ageMessage;
-
-                if (
+                const ageMessage =
                     calculatedAge < 18
-                ) {
-
-                    ageMessage =
-                        "You must be at least 18 years old to register.";
-
-                } else {
-
-                    ageMessage =
-                        "The maximum donor age is 65 years.";
-                }
+                        ? "You must be at least 18 years old to register."
+                        : "The maximum donor age is 65 years.";
 
                 return res
                     .status(403)
                     .json({
-
                         success: false,
-
                         message:
                             ageMessage,
-
                         age:
                             calculatedAge,
-
                         ageVerified:
                             false
                     });
             }
-
-            // -------------------------------------------------
-            // CLIENT AGE CHECK MUST ALSO BE TRUE
-            // -------------------------------------------------
 
             if (
                 ageVerified !== true
@@ -599,30 +470,18 @@ app.post(
                 return res
                     .status(403)
                     .json({
-
                         success: false,
-
                         message:
                             "Please complete age eligibility verification.",
-
                         age:
                             calculatedAge,
-
                         ageVerified:
                             false
                     });
             }
 
-            // -------------------------------------------------
-            // READ USERS
-            // -------------------------------------------------
-
             const users =
                 readJSON(usersFile);
-
-            // -------------------------------------------------
-            // CHECK EXISTING EMAIL
-            // -------------------------------------------------
 
             const existingUser =
                 users.find(
@@ -640,17 +499,11 @@ app.post(
                 return res
                     .status(409)
                     .json({
-
                         success: false,
-
                         message:
                             "An account with this email already exists."
                     });
             }
-
-            // -------------------------------------------------
-            // CHECK EXISTING MOBILE
-            // -------------------------------------------------
 
             const existingPhone =
                 users.find(
@@ -668,17 +521,11 @@ app.post(
                 return res
                     .status(409)
                     .json({
-
                         success: false,
-
                         message:
                             "An account with this mobile number already exists."
                     });
             }
-
-            // -------------------------------------------------
-            // CREATE USER
-            // -------------------------------------------------
 
             const newUser = {
 
@@ -717,10 +564,6 @@ app.post(
                 newUser
             );
 
-            // -------------------------------------------------
-            // SAVE USER
-            // -------------------------------------------------
-
             const saved =
                 writeJSON(
                     usersFile,
@@ -732,55 +575,33 @@ app.post(
                 return res
                     .status(500)
                     .json({
-
                         success: false,
-
                         message:
                             "Unable to save user data."
                     });
             }
 
-            console.log(
-                "New user saved:",
-                newUser.email
-            );
-
-            // -------------------------------------------------
-            // RESPONSE
-            // -------------------------------------------------
-
             return res
                 .status(201)
                 .json({
-
                     success: true,
-
                     message:
                         "Account created successfully!",
-
                     user: {
-
                         id:
                             newUser.id,
-
                         name:
                             newUser.name,
-
                         email:
                             newUser.email,
-
                         phone:
                             newUser.phone,
-
                         dob:
                             newUser.dob,
-
                         age:
                             newUser.age,
-
                         ageVerified:
                             newUser.ageVerified,
-
                         verificationStatus:
                             newUser.verificationStatus
                     }
@@ -796,20 +617,13 @@ app.post(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to create account."
                 });
         }
     }
 );
-
-
-// =========================================================
-// LOGIN
-// =========================================================
 
 app.post(
     "/api/login",
@@ -830,9 +644,7 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Email and password are required."
                     });
@@ -860,9 +672,7 @@ app.post(
                 return res
                     .status(401)
                     .json({
-
                         success: false,
-
                         message:
                             "Invalid email or password."
                     });
@@ -876,24 +686,13 @@ app.post(
                 return res
                     .status(401)
                     .json({
-
                         success: false,
-
                         message:
                             "Invalid email or password."
                     });
             }
 
-            console.log(
-                "User logged in:",
-                cleanEmail
-            );
-
-            // -------------------------------------------------
-            // GET / RECALCULATE AGE
-            // -------------------------------------------------
-
-            let userAge =
+            const userAge =
                 Number.isInteger(
                     user.age
                 )
@@ -908,35 +707,24 @@ app.post(
                 );
 
             return res.json({
-
                 success: true,
-
                 message:
                     "Login successful!",
-
                 user: {
-
                     id:
                         user.id,
-
                     name:
                         user.name,
-
                     email:
                         user.email,
-
                     phone:
                         user.phone || "",
-
                     dob:
                         user.dob || "",
-
                     age:
                         userAge,
-
                     ageVerified:
                         userAgeVerified,
-
                     verificationStatus:
                         user.verificationStatus ||
                         (
@@ -957,20 +745,13 @@ app.post(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to login."
                 });
         }
     }
 );
-
-
-// =========================================================
-// GET ALL USERS - FOUNDER ONLY
-// =========================================================
 
 app.get(
     "/api/users",
@@ -985,41 +766,30 @@ app.get(
             const safeUsers =
                 users.map(
                     user => ({
-
                         id:
                             user.id,
-
                         name:
                             user.name,
-
                         email:
                             user.email,
-
                         phone:
                             user.phone || "",
-
                         dob:
                             user.dob || "",
-
                         age:
                             user.age ?? "",
-
                         ageVerified:
                             user.ageVerified === true,
-
                         verificationStatus:
                             user.verificationStatus ||
                             "Not Verified",
-
                         createdAt:
                             user.createdAt
                     })
                 );
 
             return res.json({
-
                 success: true,
-
                 users:
                     safeUsers
             });
@@ -1034,20 +804,13 @@ app.get(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to get users."
                 });
         }
     }
 );
-
-
-// =========================================================
-// GET SINGLE USER
-// =========================================================
 
 app.get(
     "/api/users/:userId",
@@ -1072,9 +835,7 @@ app.get(
                 return res
                     .status(404)
                     .json({
-
                         success: false,
-
                         message:
                             "User not found."
                     });
@@ -1088,34 +849,24 @@ app.get(
                     );
 
             return res.json({
-
                 success: true,
-
                 user: {
-
                     id:
                         user.id,
-
                     name:
                         user.name,
-
                     email:
                         user.email,
-
                     phone:
                         user.phone || "",
-
                     dob:
                         user.dob || "",
-
                     age:
                         userAge,
-
                     ageVerified:
                         isEligibleAge(
                             userAge
                         ),
-
                     verificationStatus:
                         user.verificationStatus ||
                         "Not Verified"
@@ -1132,20 +883,13 @@ app.get(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to get user."
                 });
         }
     }
 );
-
-
-// =========================================================
-// DONOR REGISTRATION
-// =========================================================
 
 app.post(
     "/api/donors",
@@ -1161,10 +905,6 @@ app.post(
                 phone
             } = req.body;
 
-            // -------------------------------------------------
-            // BASIC VALIDATION
-            // -------------------------------------------------
-
             if (
                 !userId ||
                 !name ||
@@ -1175,17 +915,11 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "User, name, blood group and city are required."
                     });
             }
-
-            // -------------------------------------------------
-            // FIND USER
-            // -------------------------------------------------
 
             const users =
                 readJSON(usersFile);
@@ -1202,17 +936,11 @@ app.post(
                 return res
                     .status(404)
                     .json({
-
                         success: false,
-
                         message:
                             "User account not found."
                     });
             }
-
-            // -------------------------------------------------
-            // CALCULATE USER AGE FROM SAVED DOB
-            // -------------------------------------------------
 
             const userAge =
                 Number.isInteger(
@@ -1223,10 +951,6 @@ app.post(
                         user.dob
                     );
 
-            // -------------------------------------------------
-            // AGE ELIGIBILITY CHECK
-            // -------------------------------------------------
-
             if (
                 !isEligibleAge(
                     userAge
@@ -1236,23 +960,15 @@ app.post(
                 return res
                     .status(403)
                     .json({
-
                         success: false,
-
                         message:
                             "You are not eligible to register as a blood donor. Donor age must be between 18 and 65 years.",
-
                         age:
                             userAge,
-
                         ageVerified:
                             false
                     });
             }
-
-            // -------------------------------------------------
-            // UPDATE USER AGE VERIFICATION
-            // -------------------------------------------------
 
             const userIndex =
                 users.findIndex(
@@ -1280,10 +996,6 @@ app.post(
                 );
             }
 
-            // -------------------------------------------------
-            // REGISTERED MOBILE
-            // -------------------------------------------------
-
             const registeredPhone =
                 normalizePhone(
                     user.phone
@@ -1298,17 +1010,11 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "A valid mobile number is not available in the user account."
                     });
             }
-
-            // -------------------------------------------------
-            // DO NOT ALLOW DIFFERENT MOBILE
-            // -------------------------------------------------
 
             if (
                 phone &&
@@ -1319,24 +1025,14 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Donor mobile number must match your registered account mobile number."
                     });
             }
 
-            // -------------------------------------------------
-            // READ DONORS
-            // -------------------------------------------------
-
             const donors =
                 readJSON(donorsFile);
-
-            // -------------------------------------------------
-            // PREVENT DUPLICATE DONOR
-            // -------------------------------------------------
 
             const existingDonor =
                 donors.find(
@@ -1354,29 +1050,18 @@ app.post(
                 return res
                     .status(409)
                     .json({
-
                         success: false,
-
                         message:
                             `You are already registered as a donor. Your Donor ID is ${existingDonor.donorId}.`,
-
                         donor:
                             existingDonor
                     });
             }
 
-            // -------------------------------------------------
-            // GENERATE DONOR ID
-            // -------------------------------------------------
-
             const donorId =
                 generateDonorId(
                     donors
                 );
-
-            // -------------------------------------------------
-            // CREATE DONOR
-            // -------------------------------------------------
 
             const newDonor = {
 
@@ -1412,10 +1097,6 @@ app.post(
                 newDonor
             );
 
-            // -------------------------------------------------
-            // SAVE DONOR
-            // -------------------------------------------------
-
             const saved =
                 writeJSON(
                     donorsFile,
@@ -1427,47 +1108,27 @@ app.post(
                 return res
                     .status(500)
                     .json({
-
                         success: false,
-
                         message:
                             "Unable to save donor data."
                     });
             }
 
-            console.log(
-                "New donor saved:",
-                newDonor.donorId,
-                newDonor.name
-            );
-
-            // -------------------------------------------------
-            // CONFIRMATION RESPONSE
-            // -------------------------------------------------
-
             return res
                 .status(201)
                 .json({
-
                     success: true,
-
                     message:
                         "Donor registered successfully!",
-
                     donor:
                         newDonor,
-
                     confirmation: {
-
                         donorId:
                             newDonor.donorId,
-
                         name:
                             newDonor.name,
-
                         phone:
                             newDonor.phone,
-
                         message:
                             `Dear ${newDonor.name}, you have successfully registered as a blood donor with BloodLink. Your Donor ID is ${newDonor.donorId}. Thank you for using the BloodLink website and helping save lives.`
                     }
@@ -1483,20 +1144,13 @@ app.post(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to register donor."
                 });
         }
     }
 );
-
-
-// =========================================================
-// GET ALL DONORS
-// =========================================================
 
 app.get(
     "/api/donors",
@@ -1508,9 +1162,7 @@ app.get(
                 readJSON(donorsFile);
 
             return res.json({
-
                 success: true,
-
                 donors:
                     donors
             });
@@ -1525,20 +1177,13 @@ app.get(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to get donors."
                 });
         }
     }
 );
-
-
-// =========================================================
-// GET SINGLE DONOR
-// =========================================================
 
 app.get(
     "/api/donors/:donorId",
@@ -1571,18 +1216,14 @@ app.get(
                 return res
                     .status(404)
                     .json({
-
                         success: false,
-
                         message:
                             "Donor not found."
                     });
             }
 
             return res.json({
-
                 success: true,
-
                 donor:
                     donor
             });
@@ -1597,16 +1238,13 @@ app.get(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to get donor."
                 });
         }
     }
 );
-
 
 // =========================================================
 // SEARCH DONORS
@@ -1631,48 +1269,85 @@ app.get(
             const donors =
                 readJSON(donorsFile);
 
+            const users =
+                readJSON(usersFile);
+
             const results =
-                donors.filter(
-                    donor => {
+                donors
+                    .filter(
+                        donor => {
 
-                        const donorBlood =
-                            String(
-                                donor.blood ||
-                                donor.bloodGroup ||
-                                ""
-                            ).trim();
+                            const donorBlood =
+                                String(
+                                    donor.blood ||
+                                    donor.bloodGroup ||
+                                    ""
+                                ).trim();
 
-                        const donorCity =
-                            String(
-                                donor.city ||
-                                ""
-                            ).trim();
+                            const donorCity =
+                                String(
+                                    donor.city ||
+                                    ""
+                                ).trim();
 
-                        const bloodMatch =
-                            !blood ||
-                            donorBlood
-                                .toLowerCase() ===
-                            blood.toLowerCase();
+                            const bloodMatch =
+                                !blood ||
+                                donorBlood
+                                    .toLowerCase() ===
+                                blood.toLowerCase();
 
-                        const cityMatch =
-                            !city ||
-                            donorCity
-                                .toLowerCase()
-                                .includes(
-                                    city.toLowerCase()
+                            const cityMatch =
+                                !city ||
+                                donorCity
+                                    .toLowerCase()
+                                    .includes(
+                                        city.toLowerCase()
+                                    );
+
+                            return (
+                                bloodMatch &&
+                                cityMatch
+                            );
+                        }
+                    )
+                    .map(
+                        donor => {
+
+                            const linkedUser =
+                                users.find(
+                                    user =>
+                                        String(
+                                            user.id
+                                        ) ===
+                                        String(
+                                            donor.userId
+                                        )
                                 );
 
-                        return (
-                            bloodMatch &&
-                            cityMatch
-                        );
-                    }
-                );
+                            const donorPhone =
+                                normalizePhone(
+                                    donor.phone
+                                );
+
+                            const userPhone =
+                                normalizePhone(
+                                    linkedUser
+                                        ? linkedUser.phone
+                                        : ""
+                                );
+
+                            return {
+                                ...donor,
+                                phone:
+                                    donorPhone ||
+                                    userPhone ||
+                                    ""
+                            };
+                        }
+                    );
 
             return res.json({
-
                 success: true,
-
                 donors:
                     results
             });
@@ -1687,20 +1362,13 @@ app.get(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to search donors."
                 });
         }
     }
 );
-
-
-// =========================================================
-// BLOOD REQUEST
-// =========================================================
 
 app.post(
     "/api/requests",
@@ -1732,9 +1400,7 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Name, blood group, city and phone are required."
                     });
@@ -1754,9 +1420,7 @@ app.post(
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "Please enter a valid 10-digit mobile number."
                     });
@@ -1822,28 +1486,18 @@ app.post(
                 return res
                     .status(500)
                     .json({
-
                         success: false,
-
                         message:
                             "Unable to save blood request."
                     });
             }
 
-            console.log(
-                "New blood request saved:",
-                newRequest.requesterName
-            );
-
             return res
                 .status(201)
                 .json({
-
                     success: true,
-
                     message:
                         "Blood request submitted successfully!",
-
                     request:
                         newRequest
                 });
@@ -1858,20 +1512,13 @@ app.post(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to submit blood request."
                 });
         }
     }
 );
-
-
-// =========================================================
-// GET BLOOD REQUESTS
-// =========================================================
 
 app.get(
     "/api/requests",
@@ -1885,9 +1532,7 @@ app.get(
                 );
 
             return res.json({
-
                 success: true,
-
                 requests:
                     requests
             });
@@ -1902,20 +1547,13 @@ app.get(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to get blood requests."
                 });
         }
     }
 );
-
-
-// =========================================================
-// DELETE USER - FOUNDER ONLY
-// =========================================================
 
 app.delete(
     "/api/users/:userId",
@@ -1952,9 +1590,7 @@ app.delete(
                 return res
                     .status(404)
                     .json({
-
                         success: false,
-
                         message:
                             "User not found."
                     });
@@ -1971,23 +1607,14 @@ app.delete(
                 return res
                     .status(500)
                     .json({
-
                         success: false,
-
                         message:
                             "Unable to delete user."
                     });
             }
 
-            console.log(
-                "User deleted by founder:",
-                userId
-            );
-
             return res.json({
-
                 success: true,
-
                 message:
                     "User deleted successfully."
             });
@@ -2002,20 +1629,13 @@ app.delete(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to delete user."
                 });
         }
     }
 );
-
-
-// =========================================================
-// DELETE DONOR - FOUNDER ONLY
-// =========================================================
 
 app.delete(
     "/api/donors/:donorId",
@@ -2056,9 +1676,7 @@ app.delete(
                 return res
                     .status(404)
                     .json({
-
                         success: false,
-
                         message:
                             "Donor not found."
                     });
@@ -2075,23 +1693,14 @@ app.delete(
                 return res
                     .status(500)
                     .json({
-
                         success: false,
-
                         message:
                             "Unable to delete donor."
                     });
             }
 
-            console.log(
-                "Donor deleted by founder:",
-                donorId
-            );
-
             return res.json({
-
                 success: true,
-
                 message:
                     "Donor deleted successfully."
             });
@@ -2106,20 +1715,13 @@ app.delete(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to delete donor."
                 });
         }
     }
 );
-
-
-// =========================================================
-// DELETE BLOOD REQUEST - FOUNDER ONLY
-// =========================================================
 
 app.delete(
     "/api/requests/:requestId",
@@ -2157,9 +1759,7 @@ app.delete(
                 return res
                     .status(404)
                     .json({
-
                         success: false,
-
                         message:
                             "Blood request not found."
                     });
@@ -2176,23 +1776,14 @@ app.delete(
                 return res
                     .status(500)
                     .json({
-
                         success: false,
-
                         message:
                             "Unable to delete blood request."
                     });
             }
 
-            console.log(
-                "Blood request deleted by founder:",
-                requestId
-            );
-
             return res.json({
-
                 success: true,
-
                 message:
                     "Blood request deleted successfully."
             });
@@ -2207,20 +1798,13 @@ app.delete(
             return res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "Unable to delete blood request."
                 });
         }
     }
 );
-
-
-// =========================================================
-// FOUNDER LOGOUT
-// =========================================================
 
 app.post(
     "/api/founder-logout",
@@ -2229,24 +1813,13 @@ app.post(
 
         founderAdminToken = null;
 
-        console.log(
-            "Founder admin logged out."
-        );
-
         return res.json({
-
             success: true,
-
             message:
                 "Founder admin logged out successfully."
         });
     }
 );
-
-
-// =========================================================
-// 404 ROUTE
-// =========================================================
 
 app.use(
     (req, res) => {
@@ -2254,19 +1827,12 @@ app.use(
         return res
             .status(404)
             .json({
-
                 success: false,
-
                 message:
                     "API route not found."
             });
     }
 );
-
-
-// =========================================================
-// ERROR HANDLER
-// =========================================================
 
 app.use(
     (
@@ -2284,19 +1850,12 @@ app.use(
         return res
             .status(500)
             .json({
-
                 success: false,
-
                 message:
                     "Internal server error."
             });
     }
 );
-
-
-// =========================================================
-// START SERVER
-// =========================================================
 
 app.listen(
     PORT,
@@ -2332,6 +1891,10 @@ app.listen(
 
         console.log(
             "DOB age eligibility enabled."
+        );
+
+        console.log(
+            "Donor search phone fallback enabled."
         );
 
         console.log(
