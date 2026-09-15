@@ -1802,6 +1802,84 @@ app.post(
         });
     }
 );
+// =========================================================
+// ADMIN DASHBOARD - FOUNDER ONLY
+// =========================================================
+
+app.get(
+    "/api/admin/dashboard",
+    requireFounderAdmin,
+    (req, res) => {
+        try {
+
+            const users =
+                readJSON(usersFile);
+
+            const donors =
+                readJSON(donorsFile);
+
+            const requests =
+                readJSON(requestsFile);
+
+
+            const safeUsers =
+                users.map(
+                    user => ({
+                        id:
+                            user.id,
+
+                        name:
+                            user.name,
+
+                        email:
+                            user.email,
+
+                        phone:
+                            user.phone || "",
+
+                        dob:
+                            user.dob || "",
+
+                        age:
+                            user.age ?? "",
+
+                        ageVerified:
+                            user.ageVerified === true,
+
+                        verificationStatus:
+                            user.verificationStatus ||
+                            "Not Verified",
+
+                        createdAt:
+                            user.createdAt
+                    })
+                );
+
+
+            return res.json({
+                success: true,
+                users: safeUsers,
+                donors: donors,
+                requests: requests
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Admin dashboard error:",
+                error
+            );
+
+            return res
+                .status(500)
+                .json({
+                    success: false,
+                    message:
+                        "Unable to load admin dashboard."
+                });
+        }
+    }
+);
 
 // =========================================================
 // 404
